@@ -4,6 +4,17 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="StoreSplashScreenRequest",
+ *     type="object",
+ *     @OA\Property(property="image", type="string", format="binary", description="Splash screen image"),
+ *     @OA\Property(property="display_time", type="integer", nullable=true, description="Display time for the splash screen"),
+ *     @OA\Property(property="text_message", type="string", description="Text message for the splash screen"),
+ *     @OA\Property(property="active", type="integer", description="Whether the splash screen is active"),
+ *     @OA\Property(property="display_order", type="integer", nullable=true, description="Order to display the splash screen")
+ * )
+ */
 class StoreSplashScreenRequest extends FormRequest
 {
     /**

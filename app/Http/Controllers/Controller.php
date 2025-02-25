@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Response;
 
+/**
+ * @OA\Info(title="Sellaty", version="1.0.0")
+ */
 abstract class Controller
 {
     /**
@@ -32,7 +35,7 @@ abstract class Controller
      * @param array|null $errors
      * @return \Illuminate\Http\Response
      */
-    public function failure($message = 'Failure', $statusCode = Response::HTTP_BAD_REQUEST, $errors = null ,)
+    public function failure($message = 'Failure', $statusCode = Response::HTTP_BAD_REQUEST, $errors = null)
     {
         return response()->json([
             'status' => 'error',
