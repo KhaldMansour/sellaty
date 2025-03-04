@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # Laravel application container
+  laravel-docker:
+    container_name: laravel-docker
+    build: .
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - 9000:80
+    depends_on:
+      - mysql_db
+
+  # MySQL database container
+  mysql_db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sellaty
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # PHPMyAdmin for easy DB management
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - 9001:80
+    environment:
+      - PMA_ARBITRARY=1
+    depends_on:
+      - mysql_db
+
+volumes:
+  mysql_data:

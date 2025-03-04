@@ -2,23 +2,23 @@
 
 namespace App\Http\Services;
 
-use App\Repositories\SplashScreenRepository;
+use App\Repositories\IntroMessageRepository;
 use Illuminate\Support\Facades\Storage;
 
-class SplashScreenService
+class IntroMessageService
 {
-    public function __construct(private readonly SplashScreenRepository $splashScreenRepository)
+    public function __construct(private readonly IntroMessageRepository $introMessageRepository)
     {
     }
 
     public function getAll($limit)
     {
-        return $this->splashScreenRepository->paginate($limit);
+        return $this->introMessageRepository->paginate($limit);
     }
 
     public function create($data)
     {
-        return $this->splashScreenRepository->create($data);
+        return $this->introMessageRepository->create($data);
     }
 
     public function update($data, $splashScreen)
@@ -27,16 +27,16 @@ class SplashScreenService
             $imagePath = str_replace([url('/storage/'), 'storage/'], '', $splashScreen->image_url);
             Storage::disk('public')->delete($imagePath);
 
-            $imagePath = request()->file('image')->store('splash_images', 'public');
+            $imagePath = request()->file('image')->store('Intro_messages__images', 'public');
             $imageUrl = asset('storage/' . $imagePath);
             $data['image_url'] = $imageUrl;
         }
 
-        return $this->splashScreenRepository->update($data, $splashScreen->id);
+        return $this->introMessageRepository->update($data, $splashScreen->id);
     }
 
     public function delete($id)
     {
-        return $this->splashScreenRepository->delete($id);
+        return $this->introMessageRepository->delete($id);
     }
 }

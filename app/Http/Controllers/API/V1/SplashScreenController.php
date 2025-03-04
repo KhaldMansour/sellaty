@@ -17,7 +17,7 @@ class SplashScreenController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/splash_screens",
+     *     path="/api/v1/splash-screens",
      *     summary="Retrieve a list of splash screens",
      *     description="Get a paginated list of splash screens",
      *     tags={"SplashScreens"},
@@ -29,7 +29,18 @@ class SplashScreenController extends Controller
      *         @OA\Schema(
      *             type="integer",
      *             default=15
-     *         )
+     *         ),
+     *     ),
+     *     @OA\Parameter(
+     *         name="locale",
+     *         in="query",
+     *         required=false,
+     *         description="Locale for the splash screens",
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"en", "ar"},
+     *             default="en"
+     *         ),
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -45,14 +56,11 @@ class SplashScreenController extends Controller
      *     @OA\Response(
      *         response=400,
      *         description="Bad request",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Invalid parameters")
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
      *     )
      * )
      */
+
     public function index()
     {
         $limit = request('limit', 15);
@@ -63,10 +71,21 @@ class SplashScreenController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/splash_screens",
+     *     path="/api/v1/splash-screens",
      *     summary="Create a new splash screen",
      *     description="Creates a new splash screen with an image upload",
      *     tags={"SplashScreens"},
+     *     @OA\Parameter(
+     *         name="locale",
+     *         in="query",
+     *         required=false,
+     *         description="Locale for the splash screen",
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"en", "ar"},
+     *             default="en"
+     *         ),
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         description="Create a new splash screen",
@@ -89,11 +108,7 @@ class SplashScreenController extends Controller
      *     @OA\Response(
      *         response=400,
      *         description="Bad request",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Invalid parameters")
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
      *     )
      * )
      */
@@ -107,7 +122,7 @@ class SplashScreenController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/splash_screens/{id}",
+     *     path="/api/v1/splash-screens/{id}",
      *     summary="Retrieve a specific splash screen",
      *     description="Fetch the details of a specific splash screen by its ID.",
      *     tags={"SplashScreens"},
@@ -120,6 +135,17 @@ class SplashScreenController extends Controller
      *             type="integer",
      *             example=1
      *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="locale",
+     *         in="query",
+     *         required=false,
+     *         description="Locale for the splash screen",
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"en", "ar"},
+     *             default="en"
+     *         ),
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -139,11 +165,7 @@ class SplashScreenController extends Controller
      *     @OA\Response(
      *         response=404,
      *         description="Splash screen not found",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Splash screen not found")
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
      *     ),
      *     security={{ "bearerAuth": {} }}
      * )
@@ -156,7 +178,7 @@ class SplashScreenController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/splash_screens/update/{id}",
+     *     path="/api/v1/splash-screens/update/{id}",
      *     summary="Update an existing splash screen",
      *     description="Update the splash screen with the provided data. Only the fields provided in the request will be updated.",
      *     tags={"SplashScreens"},
@@ -166,6 +188,17 @@ class SplashScreenController extends Controller
      *         description="ID of the splash screen to update",
      *         required=true,
      *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="locale",
+     *         in="query",
+     *         required=false,
+     *         description="Locale for the splash screen",
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"en", "ar"},
+     *             default="en"
+     *         ),
      *     ),
      *     @OA\RequestBody(
      *         required=true,
@@ -186,18 +219,12 @@ class SplashScreenController extends Controller
      *     @OA\Response(
      *         response=400,
      *         description="Bad Request - Validation errors or missing required data",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string", example="Invalid input")
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
      *     ),
      *     @OA\Response(
      *         response=404,
      *         description="Not Found - The splash screen with the given ID does not exist",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string", example="Splash screen not found")
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
      *     )
      * )
      */
@@ -211,7 +238,7 @@ class SplashScreenController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/splash_screens/{id}",
+     *     path="/api/v1/splash-screens/{id}",
      *     summary="Delete a splash screen",
      *     description="Deletes the splash screen identified by the given ID.",
      *     tags={"SplashScreens"},
@@ -221,6 +248,17 @@ class SplashScreenController extends Controller
      *         description="ID of the splash screen to delete",
      *         required=true,
      *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="locale",
+     *         in="query",
+     *         required=false,
+     *         description="Locale for the splash screen",
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"en", "ar"},
+     *             default="en"
+     *         ),
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -234,22 +272,15 @@ class SplashScreenController extends Controller
      *     @OA\Response(
      *         response=404,
      *         description="Not Found - The splash screen with the given ID does not exist",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string", example="Splash screen not found")
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
      *     ),
      *     @OA\Response(
      *         response=400,
      *         description="Bad Request - Invalid data or request",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string", example="Invalid request")
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
      *     )
      * )
      */
-
     public function delete(SplashScreen $splashScreen)
     {
         $this->splashScreenService->delete($splashScreen->id);

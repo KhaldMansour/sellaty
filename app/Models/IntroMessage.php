@@ -4,20 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Prettus\Repository\Traits\TransformableTrait;
 use Spatie\Translatable\HasTranslations;
 
-class SplashScreen extends Model
+/**
+ * Class IntroMessage.
+ *
+ * @package namespace App\Entities;
+ */
+class IntroMessage extends Model
 {
+    use TransformableTrait;
+
     use HasTranslations;
 
     public $translatable = ['text_message'];
 
     protected $fillable = [
         'image_url',
-        'display_time',
         'text_message',
         'active',
-        'display_order',
     ];
 
     protected $casts = [
@@ -37,7 +43,7 @@ class SplashScreen extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
-            $imagePath = request()->file('image')->store('splash_images', 'public');
+            $imagePath = request()->file('image')->store('intro_screens__images', 'public');
             $imageUrl = asset('storage/' . $imagePath);
             $model->image_url = $imageUrl;
 

@@ -5,11 +5,11 @@ namespace App\Repositories;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
- * Interface SplashScreenRepositoryRepository.
+ * Interface IntroMessageRepository.
  *
  * @package namespace App\Repositories;
  */
-interface SplashScreenRepositoryInterface extends RepositoryInterface
+interface IntroMessageRepositoryInterface extends RepositoryInterface
 {
     //
 }

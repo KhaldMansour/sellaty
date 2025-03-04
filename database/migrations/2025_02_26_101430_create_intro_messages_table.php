@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration {
     /**
@@ -11,9 +12,11 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('splash_screen_repositories', function (Blueprint $table) {
+        Schema::create('intro_messages', function (Blueprint $table) {
             $table->increments('id');
-
+            $table->json('text_message')->nullable();
+            $table->string('image_url');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
@@ -25,6 +28,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::drop('splash_screen_repositories');
+        Schema::drop('intro_messages');
     }
 };

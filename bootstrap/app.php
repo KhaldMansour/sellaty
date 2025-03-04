@@ -15,8 +15,35 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'JwtMiddleware' => JwtMiddleware::class,
+            'SetLocale' => App\Http\Middleware\SetLocale::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+        $exceptions->renderable(function (Throwable $e, $request) {
+            if ($e instanceof \Illuminate\Validation\ValidationException) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Validation failed',
+                    'data' => null,
+                    'message' => $e->errors()
+                ], 422);
+            }
+
+            if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+                return response()->json([
+                    'status' => 'error',
+                    'data' => null,
+                    'error' => 'Resource not found.',
+                    'message' => $e->getMessage()
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'data' => null,
+                'error' => 'Something went wrong.',
+                'message' => $e->getMessage()
+            ], 500);
+        });
+    })
+    ->create();

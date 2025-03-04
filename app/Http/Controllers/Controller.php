@@ -28,12 +28,34 @@ abstract class Controller
     }
 
     /**
-     * Standardized failure response
-     *
-     * @param string $message
-     * @param int $statusCode
-     * @param array|null $errors
-     * @return \Illuminate\Http\Response
+     * @OA\Schema(
+     *     schema="ErrorResponseSchema",
+     *     type="object",
+     *     @OA\Property(
+     *         property="status",
+     *         type="string",
+     *         example="error"
+     *     ),
+     *     @OA\Property(
+     *         property="message",
+     *         type="string",
+     *         example="An error occurred"
+     *     ),
+     *     @OA\Property(
+     *         property="data",
+     *         type="array",
+     *         description="Array of error-related data",
+     *         @OA\Items(type="string"),
+     *         example={}
+     *     ),
+     *     @OA\Property(
+     *         property="errors",
+     *         type="array",
+     *         description="Array of specific error messages",
+     *         @OA\Items(type="string"),
+     *         example={}
+     *     )
+     * )
      */
     public function failure($message = 'Failure', $statusCode = Response::HTTP_BAD_REQUEST, $errors = null)
     {

@@ -7,6 +7,7 @@ $finder = Finder::create()
     ->in(__DIR__) 
     ->notPath('vendor')
     ->notPath('bootstrap/cache')
+    ->notPath('storage')
     ->name('*.php');
 
 return (new Config())

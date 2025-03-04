@@ -26,7 +26,8 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'phone_number'
+        'phone_number',
+        'is_verified'
     ];
 
     /**
@@ -49,6 +50,7 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_verified' => 'boolean'
         ];
     }
 
@@ -60,5 +62,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
     }
 }

@@ -2,16 +2,16 @@
 
 namespace App\Repositories;
 
-use App\Models\SplashScreen;
+use App\Models\IntroMessage;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
- * Class SplashScreenRepositoryRepositoryEloquent.
+ * Class IntroMessageRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class SplashScreenRepository extends BaseRepository implements SplashScreenRepositoryInterface
+class IntroMessageRepository extends BaseRepository implements IntroMessageRepositoryInterface
 {
     /**
      * Specify Model class name
@@ -20,8 +20,10 @@ class SplashScreenRepository extends BaseRepository implements SplashScreenRepos
      */
     public function model()
     {
-        return SplashScreen::class;
+        return IntroMessage::class;
     }
+
+
 
     /**
      * Boot up the repository, pushing criteria
