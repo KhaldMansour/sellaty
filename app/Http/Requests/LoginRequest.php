@@ -4,6 +4,15 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="LoginRequestSchema",
+ *     type="object",
+ *     @OA\Property(property="phone_number", type="string", example="+201005594752"),
+ *     @OA\Property(property="otp", type="string", example="800085")
+ * )
+ */
+
 class LoginRequest extends FormRequest
 {
     /**
