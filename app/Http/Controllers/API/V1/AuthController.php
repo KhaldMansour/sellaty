@@ -18,6 +18,42 @@ class AuthController extends Controller
     {
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/v1/register",
+     *     summary="Register a new user",
+     *     description="Registers a new user with the provided credentials",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/RegisterUserRequestSchema")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User registered successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="User registered successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="user", ref="#/components/schemas/UserSchema")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid input - Validation errors",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
+     *     ),
+     * )
+     */
+
     public function register(RegisterUserRequest $request)
     {
         $user = User::create($request->validated());
@@ -29,7 +65,49 @@ class AuthController extends Controller
         return $this->success(['user' => $user], 'User registered successfully', 201);
     }
 
-
+    /**
+     * @OA\Post(
+     *     path="/api/v1/login",
+     *     summary="Login with phone number and OTP",
+     *     description="Logs in a user with the provided phone number and OTP",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/LoginRequestSchema")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login successful",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ...")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid input - Bad request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Invalid OTP or phone number")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - Invalid credentials",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthorized access")
+     *         )
+     *     )
+     * )
+     */
     public function login(LoginRequest $request)
     {
         $isValid = $this->otpService->validateOtp($request->phone_number, $request->otp);
@@ -51,6 +129,45 @@ class AuthController extends Controller
         return $this->success(['token' => $token]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/v1/resend-otp",
+     *     summary="Resend OTP to the phone number",
+     *     description="Resends the OTP to the provided phone number",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="phone_number", type="string", example="+201000000000")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OTP sent successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="message", type="string", example="Otp has been sent.")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="OTP has already been sent, please wait",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="OTP has already been sent. Please wait."),
+     *             @OA\Property(property="data", type="object", nullable=true),
+     *             @OA\Property(property="errors", type="object", nullable=true)
+     *         )
+     *     )
+     * )
+     */
     public function resendOtp(Request $request)
     {
         $request->validate([
@@ -67,7 +184,7 @@ class AuthController extends Controller
         $this->otpService->setOtpSender($otpSender);
         $this->otpService->sendOtp($phoneNumber);
 
-        return response()->json(['message' => 'OTP has been sent.'], 200);
+        return $this->success(['message' => 'OTP has been sent.'], 200);
     }
 
     public function me()
