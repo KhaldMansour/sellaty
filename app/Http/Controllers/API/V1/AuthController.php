@@ -2,52 +2,72 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Factories\OtpSenderFactory;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterUserRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Services\OtpService;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    // Register a user
-    public function register(Request $request)
+    public function __construct(private readonly OtpService $otpService)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'phone_number' => $request->phone_number
-        ]);
-
-        return response()->json(['message' => 'User registered successfully'], 201);
     }
 
-    // Login a user and return JWT token
-    public function login(Request $request)
+    public function register(RegisterUserRequest $request)
     {
-        $credentials = $request->only('phone_number', 'password');
+        $user = User::create($request->validated());
 
-        try {
-            if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-        } catch (JWTException $e) {
-            return response()->json(['error' => 'Could not create token'], 500);
+        $otpSender = OtpSenderFactory::create('whatsapp');
+        $this->otpService->setOtpSender($otpSender);
+        $this->otpService->generateOtp($request->phone_number);
+
+        return $this->success(['user' => $user], 'User registered successfully', 201);
+    }
+
+
+    public function login(LoginRequest $request)
+    {
+        $isValid = $this->otpService->validateOtp($request->phone_number, $request->otp);
+
+        if (!$isValid) {
+            return $this->failure('Invalid OTP or OTP expired.', 400);
         }
 
-        return response()->json(['token' => $token]);
+        $user = User::where('phone_number', $request->phone_number)->first();
+
+        try {
+            if (!$token = JWTAuth::fromUser($user)) {
+                return $this->failure('Unauthorized', 401);
+            }
+        } catch (JWTException $e) {
+            return $this->failure('Could not create token', 500);
+        }
+
+        return $this->success(['token' => $token]);
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $request->validate([
+            'phone_number' => 'required|string|regex:/^\+?[1-9]\d{1,14}$/|exists:users,phone_number',
+        ]);
+
+        $phoneNumber = $request->input('phone_number');
+
+        if (!$this->otpService->shouldSendOtp($phoneNumber)) {
+            return $this->failure('OTP has already been sent. Please wait.', 400);
+        }
+
+        $otpSender = OtpSenderFactory::create('whatsapp');
+        $this->otpService->setOtpSender($otpSender);
+        $this->otpService->sendOtp($phoneNumber);
+
+        return response()->json(['message' => 'OTP has been sent.'], 200);
     }
 
     public function me()
@@ -55,7 +75,6 @@ class AuthController extends Controller
         return response()->json(auth()->user());
     }
 
-    // Logout a user (invalidate the token)
     public function logout()
     {
         auth()->logout();

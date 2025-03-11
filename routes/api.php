@@ -25,6 +25,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
 
     Route::post('register', 'AuthController@register');
     Route::post('login', 'AuthController@login');
+    Route::post('resend-otp', 'AuthController@resendOtp');
 
     // Route::middleware('auth:sanctum')->group(function () {
     //     Route::get('/user', function (Request $request) {
