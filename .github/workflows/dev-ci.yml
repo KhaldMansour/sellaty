@@ -112,49 +112,51 @@ jobs:
           duration=$((end_time - start_time))
           echo "::set-output name=duration::$duration"
 
-  # Deploy-B2B-MacQueen-Development:
-  #   environment: staging
-  #   runs-on: ubuntu-latest
-  #   needs: [Build-Push-B2B-MacQueen-Development]
+  deploy:
+    name: Deploy
+    environment: development
+    runs-on: ubuntu-latest
+    needs: [build]
 
-  #   outputs:
-  #     deploy_duration: ${{ steps.capture_duration.outputs.duration }}
-  #   if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/development' || startsWith(github.ref, 'refs/heads/development_test/')) }}
+    outputs:
+      deploy_duration: ${{ steps.capture_duration.outputs.duration }}
 
-  #   steps:
-  #     - name: Capture Start Time
-  #       id: start_time
-  #       run: echo "start_time=$(date +%s)" >> $GITHUB_OUTPUT
+    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/development' || startsWith(github.ref, 'refs/heads/development_test/')) }}
 
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Capture Start Time
+        id: start_time
+        run: echo "start_time=$(date +%s)" >> $GITHUB_OUTPUT
 
-  #     # Capture the short SHA and store it as a TAG
-  #     - name: Add SHORT_SHA env property with commit short sha
-  #       run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-  #     # Deploy to Staging Server using SSH and pass the TAG (SHORT_SHA)
-  #     - name: Add SSH key and Deploy to Staging Server
-  #       env:
-  #         EC2_SSH_KEY: ${{ secrets.STAGING_B2B_SSH_PRIVATE_KEY }}
-  #         HOST: 16.170.50.219
-  #         USER: ubuntu
-  #         TAG: ${{ env.SHORT_SHA }}  # Pass SHORT_SHA as TAG
-  #       run: |
-  #         # Save the private SSH key to a file
-  #         echo "${{ secrets.STAGING_B2B_SSH_PRIVATE_KEY }}" | tr -d '\r' | sed 's/\\n/\n/g' > private_key
-  #         chmod 600 private_key
+      # Capture the short SHA and store it as a TAG
+      - name: Add SHORT_SHA env property with commit short sha
+        run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
 
-  #         # SSH into the EC2 instance and run the deploy script
-  #         ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} "sudo /root/b2b/deploy.sh ${TAG} backend"
+      # Deploy to Staging Server using SSH and pass the TAG (SHORT_SHA)
+      - name: Add SSH key and Deploy to Staging Server
+        env:
+          EC2_SSH_KEY: ${{ secrets.STAGING_SELLATY_SSH_PRIVATE_KEY }}
+          HOST: 54.171.76.22
+          USER: ubuntu
+          TAG: ${{ env.SHORT_SHA }}  # Pass SHORT_SHA as TAG
+        run: |
+          # Save the private SSH key to a file
+          echo "${{ secrets.STAGING_SELLATY_SSH_PRIVATE_KEY }}" | tr -d '\r' | sed 's/\\n/\n/g' > private_key
+          chmod 600 private_key
 
-  #     - name: Capture End Time
-  #       id: capture_duration
-  #       run: |
-  #         end_time=$(date +%s)
-  #         start_time=${{ steps.start_time.outputs.start_time }} # Use start_time from the previous step
-  #         duration=$((end_time - start_time))
-  #         echo "::set-output name=duration::$duration"
+          # SSH into the EC2 instance and run the deploy script
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} "sudo /root/dev-sellaty/deploy.sh api:${TAG}"
+
+      - name: Capture End Time
+        id: capture_duration
+        run: |
+          end_time=$(date +%s)
+          start_time=${{ steps.start_time.outputs.start_time }} # Use start_time from the previous step
+          duration=$((end_time - start_time))
+          echo "::set-output name=duration::$duration"
 
   # Calculate-Total-Duration:
   #   runs-on: ubuntu-latest
