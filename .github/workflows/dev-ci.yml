@@ -131,17 +131,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Capture the short SHA and store it as a TAG
-      - name: Add SHORT_SHA env property with commit short sha
-        run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
-
       # Deploy to Staging Server using SSH and pass the TAG (SHORT_SHA)
       - name: Add SSH key and Deploy to Staging Server
         env:
           EC2_SSH_KEY: ${{ secrets.STAGING_SELLATY_SSH_PRIVATE_KEY }}
           HOST: 54.171.76.22
           USER: ubuntu
-          TAG: ${{ env.SHORT_SHA }}  # Pass SHORT_SHA as TAG
+          TAG: ${{ env.run_number }}  # Pass SHORT_SHA as TAG
         run: |
           # Save the private SSH key to a file
           echo "${{ secrets.STAGING_SELLATY_SSH_PRIVATE_KEY }}" | tr -d '\r' | sed 's/\\n/\n/g' > private_key
