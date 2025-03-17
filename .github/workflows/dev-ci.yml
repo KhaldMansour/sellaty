@@ -1,0 +1,212 @@
+name: Development Build,Push,EC2-Deploy
+
+on:
+  push:
+    branches:
+      - development
+      - development_test/*
+
+jobs:
+
+  build:
+    name: Build & Push
+    environment: development
+    runs-on: ubuntu-latest
+
+    outputs:
+      build_duration: ${{ steps.capture_duration.outputs.duration }}
+
+    steps:
+      - name: Capture Start Time
+        id: start_time
+        run: echo "start_time=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Checkout Repository
+        id: checkout_repository
+        uses: actions/checkout@v3
+
+    # - name: Install envsubst
+    #   run: sudo apt-get update && sudo apt-get install -y gettext
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Update .env with Secrets values - Development
+        env:
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_ENV: ${{ vars.APP_ENV }}
+          APP_KEY: ${{ secrets.APP_KEY }}
+          APP_DEBUG: ${{ vars.APP_DEBUG }}
+          APP_URL: ${{ vars.APP_URL }}
+          App_FRONT_URL: ${{ vars.App_FRONT_URL }}
+          API_VERSION: ${{ vars.API_VERSION}}
+          LOG_CHANNEL: ${{ vars.LOG_CHANNEL }}
+          DB_CONNECTION: ${{ vars.DB_CONNECTION }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_HOST_WRITE: ${{ secrets.DB_HOST_WRITE }}
+          DB_HOST_READ: ${{ secrets.DB_HOST_READ }}
+          DB_PORT: ${{ vars.DB_PORT }}
+          DB_DATABASE: ${{ vars.DB_DATABASE }}
+          DB_USERNAME: ${{ vars.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          BROADCAST_DRIVER: ${{ vars.BROADCAST_DRIVER }}
+          CACHE_DRIVER: ${{ vars.CACHE_DRIVER }}
+          QUEUE_CONNECTION: ${{ vars.QUEUE_CONNECTION }}
+          SESSION_DRIVER: ${{ vars.SESSION_DRIVER }}
+          SESSION_LIFETIME: ${{ vars.SESSION_LIFETIME }}
+          REDIS_HOST: ${{ vars.REDIS_HOST }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          REDIS_PORT: ${{ vars.REDIS_PORT }}
+          REDIS_CLIENT: ${{ vars.REDIS_CLIENT }}
+          REDIS_DB: ${{ vars.REDIS_DB }}
+          MAIL_DRIVER: ${{ vars.MAIL_DRIVER }}
+          MAIL_MAILER: ${{ vars.MAIL_MAILER }}
+          MAIL_HOST: ${{ vars.MAIL_HOST }}
+          MAIL_PORT: ${{ vars.MAIL_PORT }}
+          MAIL_USERNAME: ${{ vars.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_ENCRYPTION: ${{ vars.MAIL_ENCRYPTION }}
+          MAIL_FROM_ADDRESS: ${{ vars.MAIL_FROM_ADDRESS}}
+          MAIL_FROM_NAME: ${{ vars.MAIL_FROM_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
+          AWS_URL: ${{ secrets.AWS_URL }}
+          PUSHER_APP_CLUSTER: ${{ vars.PUSHER_APP_CLUSTER }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SCOUT_DRIVER: ${{ vars.SCOUT_DRIVER }}
+          ELASTIC_URL: ${{ vars.ELASTIC_URL }}
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          FCM_PROJECT_ID: ${{ secrets.FCM_PROJECT_ID }}
+        run: |
+          envsubst < .env.ci > .env.ci.tmp || true
+          mv .env.ci.tmp .env || true
+
+      - name: Prune Docker build cache
+        run: docker builder prune --filter until=24h --force
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v3
+        env:
+          DOCKER_CLIENT_TIMEOUT: 300
+          COMPOSE_HTTP_TIMEOUT: 300
+        with:
+          context: .
+          push: true
+          tags: |
+            zeidexmac/stg-sellaty:latest
+            zeidexmac/stg-sellaty:${{ github.run_number }}
+          build-args: |
+              NODE_ENV=development
+
+      - name: Capture End Time
+        id: capture_duration
+        run: |
+          end_time=$(date +%s)
+          start_time=${{ steps.start_time.outputs.start_time }} # Use start_time from the previous step
+          duration=$((end_time - start_time))
+          echo "::set-output name=duration::$duration"
+
+  # Deploy-B2B-MacQueen-Development:
+  #   environment: staging
+  #   runs-on: ubuntu-latest
+  #   needs: [Build-Push-B2B-MacQueen-Development]
+
+  #   outputs:
+  #     deploy_duration: ${{ steps.capture_duration.outputs.duration }}
+  #   if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/development' || startsWith(github.ref, 'refs/heads/development_test/')) }}
+
+  #   steps:
+  #     - name: Capture Start Time
+  #       id: start_time
+  #       run: echo "start_time=$(date +%s)" >> $GITHUB_OUTPUT
+
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+
+  #     # Capture the short SHA and store it as a TAG
+  #     - name: Add SHORT_SHA env property with commit short sha
+  #       run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
+
+  #     # Deploy to Staging Server using SSH and pass the TAG (SHORT_SHA)
+  #     - name: Add SSH key and Deploy to Staging Server
+  #       env:
+  #         EC2_SSH_KEY: ${{ secrets.STAGING_B2B_SSH_PRIVATE_KEY }}
+  #         HOST: 16.170.50.219
+  #         USER: ubuntu
+  #         TAG: ${{ env.SHORT_SHA }}  # Pass SHORT_SHA as TAG
+  #       run: |
+  #         # Save the private SSH key to a file
+  #         echo "${{ secrets.STAGING_B2B_SSH_PRIVATE_KEY }}" | tr -d '\r' | sed 's/\\n/\n/g' > private_key
+  #         chmod 600 private_key
+
+  #         # SSH into the EC2 instance and run the deploy script
+  #         ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} "sudo /root/b2b/deploy.sh ${TAG} backend"
+
+  #     - name: Capture End Time
+  #       id: capture_duration
+  #       run: |
+  #         end_time=$(date +%s)
+  #         start_time=${{ steps.start_time.outputs.start_time }} # Use start_time from the previous step
+  #         duration=$((end_time - start_time))
+  #         echo "::set-output name=duration::$duration"
+
+  # Calculate-Total-Duration:
+  #   runs-on: ubuntu-latest
+  #   needs: [Build-Push-B2B-MacQueen-Development, Deploy-B2B-MacQueen-Development]
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+
+  #     - name: Calculate Total Duration
+  #       id: calculate_duration
+  #       run: |
+  #         build_duration=${{ needs.Build-Push-B2B-MacQueen-Development.outputs.build_duration }}
+  #         deploy_duration=${{ needs.Deploy-B2B-MacQueen-Development.outputs.deploy_duration }}
+  #         total_duration=$((build_duration + deploy_duration)) # Sum build and deploy durations
+  #         total_duration_hr=$(printf "%02d:%02d:%02d" $((total_duration/3600)) $((total_duration%3600/60)) $((total_duration%60))) # Format total duration in HH:MM:SS
+  #         echo "::set-output name=total_duration::$total_duration" # Expose total duration in seconds
+  #         echo "::set-output name=total_duration_hr::$total_duration_hr" # Expose total duration in HH:MM:SS
+
+  #     - name: Notify Slack Action
+  #       if: always()
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ vars.B2B_SLACK_WEBHOOK_URL }}
+  #         STATUS: ":white_check_mark: Deployed Success"
+  #         TOTAL_DURATION: ${{ steps.calculate_duration.outputs.total_duration }}
+  #         TOTAL_DURATION_HR: ${{ steps.calculate_duration.outputs.total_duration_hr }}
+  #         REPORT_LINK: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+  #         GITHUB_JOB_STATUS: ${{ job.status }}
+  #         GITHUB_RUN_NUMBER: ${{ github.run_number }}
+  #         GITHUB_REF_NAME: ${{ github.ref_name }}
+  #         REPO_NAME: ${{ github.event.repository.name }}
+  #         REPO_URL: "https://github.com/${{ github.repository }}"
+  #       run: |
+  #         if [ "$GITHUB_JOB_STATUS" = "success" ]; then
+  #           STATUS=":white_check_mark: Deployed Success"
+  #           COLOR=65280
+  #         else
+  #           STATUS=":x: Deployed Failed"
+  #           COLOR=11141120
+  #         fi
+
+  #         COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
+  #         COMMIT_MESSAGE=$(git log -1 --pretty=format:'%s')
+
+  #         # Prepare Slack payload
+  #         curl -X POST -H "Content-Type: application/json" \
+  #           -d '{
+  #             "attachments": [
+  #               {
+  #                 "color": "'"$COLOR"'",
+  #                 "title": "Deployed <'"$REPO_URL"'|'"$REPO_NAME"'> with Build #'"$GITHUB_RUN_NUMBER"'",
+  #                 "text": "Status: '"$STATUS"'\nBranch: '"$GITHUB_REF_NAME"'\nCommit: '"$COMMIT_MESSAGE"'\nby: '"$COMMIT_AUTHOR"'\nDuration: '"$TOTAL_DURATION_HR"' ('"$TOTAL_DURATION"' seconds)\nView Logs: <'"$REPORT_LINK"'|GitHub Actions Logs>"
+  #               }
+  #             ]
+  #           }' "$SLACK_WEBHOOK_URL" || echo "Slack notification failed"
