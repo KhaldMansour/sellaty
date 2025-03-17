@@ -1,0 +1,926 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Sellaty",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/intro-messages": {
+            "get": {
+                "tags": [
+                    "IntroMessages"
+                ],
+                "summary": "Retrieve a list of intro messages",
+                "description": "Get a paginated list of intro messages",
+                "operationId": "90dedb4b1aed0cce5d4c040fb4adeeb0",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to return per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved intro messages",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Intro messages retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SplashScreenSchema"
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "IntroMessages"
+                ],
+                "summary": "Create a new intro message",
+                "description": "Creates a new intro message with an image upload",
+                "operationId": "b7f4596dc5d276d438614012164e9bbf",
+                "requestBody": {
+                    "description": "Create a new intro message",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreSplashScreenRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfully created intro message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Intro message created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/SplashScreenSchema"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/intro-messages/{id}": {
+            "get": {
+                "tags": [
+                    "IntroMessages"
+                ],
+                "summary": "Retrieve a specific intro message",
+                "description": "Fetch the details of a specific intro message by its ID.",
+                "operationId": "c8a94e7ec8afeaa2bdc8ef0ec7717c22",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the intro message to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved intro message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Intro message retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/SplashScreenSchema"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Intro message not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "IntroMessages"
+                ],
+                "summary": "Delete an intro message",
+                "description": "Deletes the intro message identified by the given ID.",
+                "operationId": "e3ffa209dcfb705e45417392539d3b7f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the intro message to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Intro message deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SplashScreenSchema"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Intro message deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - The intro message with the given ID does not exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/intro-messages/update/{id}": {
+            "post": {
+                "tags": [
+                    "IntroMessages"
+                ],
+                "summary": "Update an existing intro message",
+                "description": "Update the intro message with the provided data. Only the fields provided in the request will be updated.",
+                "operationId": "0f1ac9537eea50cd5f64787a239c640b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the intro message to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSplashScreenRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Intro message updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SplashScreenSchema"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Intro message updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Validation errors or missing required data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - The intro message with the given ID does not exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/splash-screens": {
+            "get": {
+                "tags": [
+                    "SplashScreens"
+                ],
+                "summary": "Retrieve a list of splash screens",
+                "description": "Get a paginated list of splash screens",
+                "operationId": "24ecb25e4d142255d00f4087490751f4",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to return per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    },
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "description": "Locale for the splash screens",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ar"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved splash screens",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Splash screens retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SplashScreenSchema"
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "SplashScreens"
+                ],
+                "summary": "Create a new splash screen",
+                "description": "Creates a new splash screen with an image upload",
+                "operationId": "ea01d2c044a14cdba6e5d799f068e80f",
+                "parameters": [
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "description": "Locale for the splash screen",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ar"
+                            ]
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Create a new splash screen",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreSplashScreenRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfully created splash screen",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Splash screen created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/SplashScreenSchema"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/splash-screens/{id}": {
+            "get": {
+                "tags": [
+                    "SplashScreens"
+                ],
+                "summary": "Retrieve a specific splash screen",
+                "description": "Fetch the details of a specific splash screen by its ID.",
+                "operationId": "a5c4bd21ffb7e8216a6dc18c255ff464",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the splash screen to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "description": "Locale for the splash screen",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ar"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved splash screen",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Splash screen retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/SplashScreenSchema"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Splash screen not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "SplashScreens"
+                ],
+                "summary": "Delete a splash screen",
+                "description": "Deletes the splash screen identified by the given ID.",
+                "operationId": "a531533731d3905842022696e485eb80",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the splash screen to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "description": "Locale for the splash screen",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ar"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Splash screen deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SplashScreenSchema"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Splash screen deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - The splash screen with the given ID does not exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid data or request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/splash-screens/update/{id}": {
+            "post": {
+                "tags": [
+                    "SplashScreens"
+                ],
+                "summary": "Update an existing splash screen",
+                "description": "Update the splash screen with the provided data. Only the fields provided in the request will be updated.",
+                "operationId": "7415264d8b08f28f3d7ab77826d6d296",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the splash screen to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "description": "Locale for the splash screen",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "en",
+                            "enum": [
+                                "en",
+                                "ar"
+                            ]
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSplashScreenRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Splash screen updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SplashScreenSchema"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Splash screen updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Validation errors or missing required data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - The splash screen with the given ID does not exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ErrorResponseSchema": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "error"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "An error occurred"
+                    },
+                    "data": {
+                        "description": "Array of error-related data",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": []
+                    },
+                    "errors": {
+                        "description": "Array of specific error messages",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": []
+                    }
+                },
+                "type": "object"
+            },
+            "StoreIntroMessageRequest": {
+                "properties": {
+                    "image": {
+                        "description": "Splash screen image",
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "text_message": {
+                        "description": "Text message for the splash screen",
+                        "type": "string"
+                    },
+                    "active": {
+                        "description": "Whether the splash screen is active",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreSplashScreenRequest": {
+                "properties": {
+                    "image": {
+                        "description": "Splash screen image",
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "display_time": {
+                        "description": "Display time for the splash screen",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "text_message": {
+                        "description": "Text message for the splash screen",
+                        "type": "string"
+                    },
+                    "active": {
+                        "description": "Whether the splash screen is active",
+                        "type": "integer"
+                    },
+                    "display_order": {
+                        "description": "Order to display the splash screen",
+                        "type": "integer",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateIntroScreenRequest": {
+                "properties": {
+                    "image": {
+                        "description": "Splash screen image (jpeg, png, jpg, gif, svg), max size 2MB",
+                        "type": "string",
+                        "format": "binary",
+                        "nullable": true
+                    },
+                    "text_message": {
+                        "description": "Text message to display on the splash screen",
+                        "type": "string",
+                        "maxLength": 255,
+                        "nullable": true
+                    },
+                    "active": {
+                        "description": "Indicates if the splash screen is active or not",
+                        "type": "boolean",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateSplashScreenRequest": {
+                "properties": {
+                    "image": {
+                        "description": "Splash screen image (jpeg, png, jpg, gif, svg), max size 2MB",
+                        "type": "string",
+                        "format": "binary",
+                        "nullable": true
+                    },
+                    "display_time": {
+                        "description": "The display time in seconds for the splash screen",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "text_message": {
+                        "description": "Text message to display on the splash screen",
+                        "type": "string",
+                        "maxLength": 255,
+                        "nullable": true
+                    },
+                    "active": {
+                        "description": "Indicates if the splash screen is active or not",
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "display_order": {
+                        "description": "The order in which the splash screen is displayed relative to others",
+                        "type": "integer",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "IntroMessageSchema": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "image_url": {
+                        "type": "string",
+                        "example": "http://localhost:8000/storage/splash_images/Jph0KuayfVBC4szEsoFuGfzoIqJUhPnrJ93qkVCE.png"
+                    },
+                    "text_message": {
+                        "type": "string",
+                        "example": "lknnh"
+                    },
+                    "active": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-02-24T13:16:20.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-02-24T13:22:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "SplashScreenSchema": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "image_url": {
+                        "type": "string",
+                        "example": "http://localhost:8000/storage/splash_images/Jph0KuayfVBC4szEsoFuGfzoIqJUhPnrJ93qkVCE.png"
+                    },
+                    "display_time": {
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "text_message": {
+                        "type": "string",
+                        "example": "lknnh"
+                    },
+                    "active": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "display_order": {
+                        "type": "integer",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-02-24T13:16:20.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-02-24T13:22:16.000000Z"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "IntroMessages",
+            "description": "IntroMessages"
+        },
+        {
+            "name": "SplashScreens",
+            "description": "SplashScreens"
+        }
+    ]
+}
