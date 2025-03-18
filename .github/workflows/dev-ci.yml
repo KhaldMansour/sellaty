@@ -62,9 +62,9 @@ jobs:
           DB_CONNECTION: ${{ vars.DB_CONNECTION }}
           DB_HOST: ${{ vars.DB_HOST }}
           DB_PORT: ${{ vars.DB_PORT }}
-          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_DATABASE: ${{ vars.DB_DATABASE }}
           DB_USERNAME: ${{ vars.DB_USERNAME }}
-          DB_PASSWORD: ${{ vars.DB_PASSWORD }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
           SESSION_DRIVER: ${{ vars.SESSION_DRIVER }}
           SESSION_LIFETIME: ${{ vars.SESSION_LIFETIME }}
