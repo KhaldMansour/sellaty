@@ -40,49 +40,75 @@ jobs:
           APP_ENV: ${{ vars.APP_ENV }}
           APP_KEY: ${{ secrets.APP_KEY }}
           APP_DEBUG: ${{ vars.APP_DEBUG }}
+          APP_TIMEZONE: ${{ vars.APP_TIMEZONE }}
           APP_URL: ${{ vars.APP_URL }}
-          App_FRONT_URL: ${{ vars.App_FRONT_URL }}
-          API_VERSION: ${{ vars.API_VERSION}}
+
+          APP_LOCALE: ${{ vars.APP_LOCALE }}
+          APP_FALLBACK_LOCALE: ${{ vars.APP_FALLBACK_LOCALE }}
+          APP_FAKER_LOCALE: ${{ vars.APP_FAKER_LOCALE }}
+
+          APP_MAINTENANCE_DRIVER: ${{ vars.APP_MAINTENANCE_DRIVER }}
+          # APP_MAINTENANCE_STORE: ${{ vars.APP_MAINTENANCE_STORE }}
+
+          PHP_CLI_SERVER_WORKERS: ${{ vars.PHP_CLI_SERVER_WORKERS }}
+
+          BCRYPT_ROUNDS: ${{ vars.BCRYPT_ROUNDS }}
+
           LOG_CHANNEL: ${{ vars.LOG_CHANNEL }}
+          LOG_STACK: ${{ vars.LOG_STACK }}
+          LOG_DEPRECATIONS_CHANNEL: ${{ vars.LOG_DEPRECATIONS_CHANNEL }}
+          LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+
           DB_CONNECTION: ${{ vars.DB_CONNECTION }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_HOST_WRITE: ${{ secrets.DB_HOST_WRITE }}
-          DB_HOST_READ: ${{ secrets.DB_HOST_READ }}
+          DB_HOST: ${{ vars.DB_HOST }}
           DB_PORT: ${{ vars.DB_PORT }}
-          DB_DATABASE: ${{ vars.DB_DATABASE }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
           DB_USERNAME: ${{ vars.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          BROADCAST_DRIVER: ${{ vars.BROADCAST_DRIVER }}
-          CACHE_DRIVER: ${{ vars.CACHE_DRIVER }}
-          QUEUE_CONNECTION: ${{ vars.QUEUE_CONNECTION }}
+          DB_PASSWORD: ${{ vars.DB_PASSWORD }}
+
           SESSION_DRIVER: ${{ vars.SESSION_DRIVER }}
           SESSION_LIFETIME: ${{ vars.SESSION_LIFETIME }}
-          REDIS_HOST: ${{ vars.REDIS_HOST }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          REDIS_PORT: ${{ vars.REDIS_PORT }}
+          SESSION_ENCRYPT: ${{ vars.SESSION_ENCRYPT }}
+          SESSION_PATH: ${{ vars.SESSION_PATH }}
+          SESSION_DOMAIN: ${{ vars.SESSION_DOMAIN }}
+
+          BROADCAST_CONNECTION: ${{ vars.BROADCAST_CONNECTION }}
+          FILESYSTEM_DISK: ${{ vars.FILESYSTEM_DISK }}
+          QUEUE_CONNECTION: ${{ vars.QUEUE_CONNECTION }}
+
+          CACHE_STORE: ${{ vars.CACHE_STORE }}
+          CACHE_PREFIX: ${{ vars.CACHE_PREFIX }}
+
+          MEMCACHED_HOST: ${{ vars.MEMCACHED_HOST }}
+
           REDIS_CLIENT: ${{ vars.REDIS_CLIENT }}
-          REDIS_DB: ${{ vars.REDIS_DB }}
-          MAIL_DRIVER: ${{ vars.MAIL_DRIVER }}
+          REDIS_HOST: ${{ vars.REDIS_HOST }}
+          REDIS_PASSWORD: ${{ vars.REDIS_PASSWORD }}
+          REDIS_PORT: ${{ vars.REDIS_PORT }}
+
           MAIL_MAILER: ${{ vars.MAIL_MAILER }}
+          MAIL_SCHEME: ${{ vars.MAIL_SCHEME }}
           MAIL_HOST: ${{ vars.MAIL_HOST }}
           MAIL_PORT: ${{ vars.MAIL_PORT }}
           MAIL_USERNAME: ${{ vars.MAIL_USERNAME }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-          MAIL_ENCRYPTION: ${{ vars.MAIL_ENCRYPTION }}
-          MAIL_FROM_ADDRESS: ${{ vars.MAIL_FROM_ADDRESS}}
+          MAIL_PASSWORD: ${{ vars.MAIL_PASSWORD }}
+          MAIL_FROM_ADDRESS: ${{ vars.MAIL_FROM_ADDRESS }}
           MAIL_FROM_NAME: ${{ vars.MAIL_FROM_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-          AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
-          AWS_URL: ${{ secrets.AWS_URL }}
-          PUSHER_APP_CLUSTER: ${{ vars.PUSHER_APP_CLUSTER }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          SCOUT_DRIVER: ${{ vars.SCOUT_DRIVER }}
-          ELASTIC_URL: ${{ vars.ELASTIC_URL }}
-          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
-          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-          FCM_PROJECT_ID: ${{ secrets.FCM_PROJECT_ID }}
+
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ vars.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+          AWS_BUCKET: ${{ vars.AWS_BUCKET }}
+          AWS_USE_PATH_STYLE_ENDPOINT: ${{ vars.AWS_USE_PATH_STYLE_ENDPOINT }}
+
+          VITE_APP_NAME: ${{ vars.VITE_APP_NAME }}
+
+          JWT_SECRET: ${{ vars.JWT_SECRET }}
+
+          TWILIO_SID: ${{ vars.TWILIO_SID }}
+          TWILIO_AUTH_TOKEN: ${{ vars.TWILIO_AUTH_TOKEN }}
+          TWILIO_PHONE_NUMBER: ${{ vars.TWILIO_PHONE_NUMBER }}
+
         run: |
           envsubst < .env.ci > .env.ci.tmp || true
           mv .env.ci.tmp .env || true
