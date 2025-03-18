@@ -263,6 +263,395 @@
                 }
             }
         },
+        "/api/v1/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get a list of categories with optional filters.",
+                "operationId": "31e09b07cc70144d81afecfde9ee0671",
+                "parameters": [
+                    {
+                        "name": "filters",
+                        "in": "query",
+                        "description": "Query parameters for filtering the categories.",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/ListResourceRequestSchema"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of categories.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Categories fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CategorySchema"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Create a new category",
+                "operationId": "374fdadfe12789f4691c2f9c234e7ac2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCategoryRequestSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/CategorySchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/categories/{id}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get a specific category by ID",
+                "operationId": "0b17b920e8f9593611edc90941587251",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the category to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/CategorySchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Update an existing category",
+                "operationId": "35e887d1063bbb47ff63654e11733070",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the category to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCategoryRequestSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/CategorySchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Delete a specific category by ID",
+                "operationId": "9aed2a5d0402b3b7f1b75368ca77c29f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the category to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category deleted successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/CategorySchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/categories/{id}/products/stock": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get the stock of products in a specific category.",
+                "operationId": "92ae28c2eb719623abcbe36447c83a0f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the category",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The stock of products in the category.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "stock": {
+                                                    "type": "integer",
+                                                    "example": 4
+                                                },
+                                                "category": {
+                                                    "$ref": "#/components/schemas/CategorySchema"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/intro-messages": {
             "get": {
                 "tags": [
@@ -997,6 +1386,59 @@
                 },
                 "type": "object"
             },
+            "CreateCategoryRequestSchema": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "The name of the category",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "description": "A description of the category",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ListResourceRequestSchema": {
+                "title": "List Resource Request",
+                "description": "Request parameters for listing resources with optional filters.",
+                "properties": {
+                    "limit": {
+                        "description": "The number of items to return per page. Maximum value is 100.",
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "search": {
+                        "description": "Search term to filter resources.",
+                        "type": "string",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "searchFields": {
+                        "description": "Fields to search within. Can be 'name' or 'description'.",
+                        "type": "string",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "find": {
+                        "description": "Additional filters as key-value pairs.",
+                        "type": "string",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "locale": {
+                        "description": "The locale to apply for translations. Defaults to 'en'.",
+                        "type": "string",
+                        "example": "",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "LoginRequestSchema": {
                 "properties": {
                     "phone_number": {
@@ -1082,6 +1524,23 @@
                 },
                 "type": "object"
             },
+            "UpdateCategoryRequestSchema": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "The name of the category",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "description": "A description of the category",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "UpdateIntroScreenRequest": {
                 "properties": {
                     "image": {
@@ -1132,6 +1591,33 @@
                         "description": "The order in which the splash screen is displayed relative to others",
                         "type": "integer",
                         "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "CategorySchema": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "test"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "hello"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-13T05:53:52.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-13T05:53:52.000000Z"
                     }
                 },
                 "type": "object"
@@ -1245,6 +1731,10 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Categories",
+            "description": "Categories"
         },
         {
             "name": "IntroMessages",
