@@ -1,4 +1,4 @@
-name: Staging Run Artisan Command
+name: Development Run Artisan Command
 
 on:
   workflow_dispatch:
