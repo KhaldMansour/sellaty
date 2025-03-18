@@ -1,0 +1,237 @@
+name: Development Build,Push,EC2-Deploy
+
+on:
+  push:
+    branches:
+      - development
+      - development_test/*
+
+jobs:
+
+  build:
+    name: Build & Push
+    environment: development
+    runs-on: ubuntu-latest
+
+    outputs:
+      build_duration: ${{ steps.capture_duration.outputs.duration }}
+
+    steps:
+      - name: Capture Start Time
+        id: start_time
+        run: echo "start_time=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Checkout Repository
+        id: checkout_repository
+        uses: actions/checkout@v3
+
+    # - name: Install envsubst
+    #   run: sudo apt-get update && sudo apt-get install -y gettext
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Update .env with Secrets values - Development
+        env:
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_ENV: ${{ vars.APP_ENV }}
+          APP_KEY: ${{ secrets.APP_KEY }}
+          APP_DEBUG: ${{ vars.APP_DEBUG }}
+          APP_TIMEZONE: ${{ vars.APP_TIMEZONE }}
+          APP_URL: ${{ vars.APP_URL }}
+
+          APP_LOCALE: ${{ vars.APP_LOCALE }}
+          APP_FALLBACK_LOCALE: ${{ vars.APP_FALLBACK_LOCALE }}
+          APP_FAKER_LOCALE: ${{ vars.APP_FAKER_LOCALE }}
+
+          APP_MAINTENANCE_DRIVER: ${{ vars.APP_MAINTENANCE_DRIVER }}
+          # APP_MAINTENANCE_STORE: ${{ vars.APP_MAINTENANCE_STORE }}
+
+          PHP_CLI_SERVER_WORKERS: ${{ vars.PHP_CLI_SERVER_WORKERS }}
+
+          BCRYPT_ROUNDS: ${{ vars.BCRYPT_ROUNDS }}
+
+          LOG_CHANNEL: ${{ vars.LOG_CHANNEL }}
+          LOG_STACK: ${{ vars.LOG_STACK }}
+          LOG_DEPRECATIONS_CHANNEL: ${{ vars.LOG_DEPRECATIONS_CHANNEL }}
+          LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+
+          DB_CONNECTION: ${{ vars.DB_CONNECTION }}
+          DB_HOST: ${{ vars.DB_HOST }}
+          DB_PORT: ${{ vars.DB_PORT }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ vars.DB_USERNAME }}
+          DB_PASSWORD: ${{ vars.DB_PASSWORD }}
+
+          SESSION_DRIVER: ${{ vars.SESSION_DRIVER }}
+          SESSION_LIFETIME: ${{ vars.SESSION_LIFETIME }}
+          SESSION_ENCRYPT: ${{ vars.SESSION_ENCRYPT }}
+          SESSION_PATH: ${{ vars.SESSION_PATH }}
+          SESSION_DOMAIN: ${{ vars.SESSION_DOMAIN }}
+
+          BROADCAST_CONNECTION: ${{ vars.BROADCAST_CONNECTION }}
+          FILESYSTEM_DISK: ${{ vars.FILESYSTEM_DISK }}
+          QUEUE_CONNECTION: ${{ vars.QUEUE_CONNECTION }}
+
+          CACHE_STORE: ${{ vars.CACHE_STORE }}
+          CACHE_PREFIX: ${{ vars.CACHE_PREFIX }}
+
+          MEMCACHED_HOST: ${{ vars.MEMCACHED_HOST }}
+
+          REDIS_CLIENT: ${{ vars.REDIS_CLIENT }}
+          REDIS_HOST: ${{ vars.REDIS_HOST }}
+          REDIS_PASSWORD: ${{ vars.REDIS_PASSWORD }}
+          REDIS_PORT: ${{ vars.REDIS_PORT }}
+
+          MAIL_MAILER: ${{ vars.MAIL_MAILER }}
+          MAIL_SCHEME: ${{ vars.MAIL_SCHEME }}
+          MAIL_HOST: ${{ vars.MAIL_HOST }}
+          MAIL_PORT: ${{ vars.MAIL_PORT }}
+          MAIL_USERNAME: ${{ vars.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ vars.MAIL_PASSWORD }}
+          MAIL_FROM_ADDRESS: ${{ vars.MAIL_FROM_ADDRESS }}
+          MAIL_FROM_NAME: ${{ vars.MAIL_FROM_NAME }}
+
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ vars.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+          AWS_BUCKET: ${{ vars.AWS_BUCKET }}
+          AWS_USE_PATH_STYLE_ENDPOINT: ${{ vars.AWS_USE_PATH_STYLE_ENDPOINT }}
+
+          VITE_APP_NAME: ${{ vars.VITE_APP_NAME }}
+
+          JWT_SECRET: ${{ vars.JWT_SECRET }}
+
+          TWILIO_SID: ${{ vars.TWILIO_SID }}
+          TWILIO_AUTH_TOKEN: ${{ vars.TWILIO_AUTH_TOKEN }}
+          TWILIO_PHONE_NUMBER: ${{ vars.TWILIO_PHONE_NUMBER }}
+
+        run: |
+          envsubst < .env.ci > .env.ci.tmp || true
+          mv .env.ci.tmp .env || true
+
+      - name: Prune Docker build cache
+        run: docker builder prune --filter until=24h --force
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v3
+        env:
+          DOCKER_CLIENT_TIMEOUT: 300
+          COMPOSE_HTTP_TIMEOUT: 300
+        with:
+          context: .
+          file: ./Dockerfile-dev
+          push: true
+          tags: |
+            zeidexmac/stg-sellaty:latest
+            zeidexmac/stg-sellaty:${{ github.run_number }}
+          # build-args: |
+          #     NODE_ENV=development
+
+      - name: Capture End Time
+        id: capture_duration
+        run: |
+          end_time=$(date +%s)
+          start_time=${{ steps.start_time.outputs.start_time }} # Use start_time from the previous step
+          duration=$((end_time - start_time))
+          echo "::set-output name=duration::$duration"
+
+  deploy:
+    name: Deploy
+    environment: development
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    outputs:
+      deploy_duration: ${{ steps.capture_duration.outputs.duration }}
+
+    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/development' || startsWith(github.ref, 'refs/heads/development_test/')) }}
+
+    steps:
+      - name: Capture Start Time
+        id: start_time
+        run: echo "start_time=$(date +%s)" >> $GITHUB_OUTPUT
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Deploy to Staging Server using SSH and pass the TAG (SHORT_SHA)
+      - name: Add SSH key and Deploy to Staging Server
+        env:
+          EC2_SSH_KEY: ${{ secrets.STAGING_SELLATY_SSH_PRIVATE_KEY }}
+          HOST: 54.171.76.22
+          USER: ubuntu
+          TAG: ${{ env.run_number }}  # Pass SHORT_SHA as TAG
+        run: |
+          # Save the private SSH key to a file
+          echo "${{ secrets.STAGING_SELLATY_SSH_PRIVATE_KEY }}" | tr -d '\r' | sed 's/\\n/\n/g' > private_key
+          chmod 600 private_key
+
+          # SSH into the EC2 instance and run the deploy script
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} "sudo /root/dev-sellaty/deploy.sh api:${TAG}"
+
+      - name: Capture End Time
+        id: capture_duration
+        run: |
+          end_time=$(date +%s)
+          start_time=${{ steps.start_time.outputs.start_time }} # Use start_time from the previous step
+          duration=$((end_time - start_time))
+          echo "::set-output name=duration::$duration"
+
+  # Calculate-Total-Duration:
+  #   runs-on: ubuntu-latest
+  #   needs: [Build-Push-B2B-MacQueen-Development, Deploy-B2B-MacQueen-Development]
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+
+  #     - name: Calculate Total Duration
+  #       id: calculate_duration
+  #       run: |
+  #         build_duration=${{ needs.Build-Push-B2B-MacQueen-Development.outputs.build_duration }}
+  #         deploy_duration=${{ needs.Deploy-B2B-MacQueen-Development.outputs.deploy_duration }}
+  #         total_duration=$((build_duration + deploy_duration)) # Sum build and deploy durations
+  #         total_duration_hr=$(printf "%02d:%02d:%02d" $((total_duration/3600)) $((total_duration%3600/60)) $((total_duration%60))) # Format total duration in HH:MM:SS
+  #         echo "::set-output name=total_duration::$total_duration" # Expose total duration in seconds
+  #         echo "::set-output name=total_duration_hr::$total_duration_hr" # Expose total duration in HH:MM:SS
+
+  #     - name: Notify Slack Action
+  #       if: always()
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ vars.B2B_SLACK_WEBHOOK_URL }}
+  #         STATUS: ":white_check_mark: Deployed Success"
+  #         TOTAL_DURATION: ${{ steps.calculate_duration.outputs.total_duration }}
+  #         TOTAL_DURATION_HR: ${{ steps.calculate_duration.outputs.total_duration_hr }}
+  #         REPORT_LINK: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+  #         GITHUB_JOB_STATUS: ${{ job.status }}
+  #         GITHUB_RUN_NUMBER: ${{ github.run_number }}
+  #         GITHUB_REF_NAME: ${{ github.ref_name }}
+  #         REPO_NAME: ${{ github.event.repository.name }}
+  #         REPO_URL: "https://github.com/${{ github.repository }}"
+  #       run: |
+  #         if [ "$GITHUB_JOB_STATUS" = "success" ]; then
+  #           STATUS=":white_check_mark: Deployed Success"
+  #           COLOR=65280
+  #         else
+  #           STATUS=":x: Deployed Failed"
+  #           COLOR=11141120
+  #         fi
+
+  #         COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
+  #         COMMIT_MESSAGE=$(git log -1 --pretty=format:'%s')
+
+  #         # Prepare Slack payload
+  #         curl -X POST -H "Content-Type: application/json" \
+  #           -d '{
+  #             "attachments": [
+  #               {
+  #                 "color": "'"$COLOR"'",
+  #                 "title": "Deployed <'"$REPO_URL"'|'"$REPO_NAME"'> with Build #'"$GITHUB_RUN_NUMBER"'",
+  #                 "text": "Status: '"$STATUS"'\nBranch: '"$GITHUB_REF_NAME"'\nCommit: '"$COMMIT_MESSAGE"'\nby: '"$COMMIT_AUTHOR"'\nDuration: '"$TOTAL_DURATION_HR"' ('"$TOTAL_DURATION"' seconds)\nView Logs: <'"$REPORT_LINK"'|GitHub Actions Logs>"
+  #               }
+  #             ]
+  #           }' "$SLACK_WEBHOOK_URL" || echo "Slack notification failed"
