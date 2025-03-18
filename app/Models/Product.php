@@ -4,30 +4,38 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Prettus\Repository\Traits\TransformableTrait;
 use Spatie\Translatable\HasTranslations;
 
-/**
- * Class IntroMessage.
- *
- * @package namespace App\Entities;
- */
-class IntroMessage extends Model
+class Product extends Model
 {
-    use TransformableTrait;
-
     use HasTranslations;
 
-    public $translatable = ['text_message'];
-
     protected $fillable = [
-        'image_url',
-        'text_message',
-        'active',
+        'name',
+        'price',
+        'description',
+        'category_id',
+        'quantity',
+        'featured',
+        'user_id'
     ];
+    
+    public $translatable = ['name' , 'description'];
+
+    protected $hidden = ['pivot'];
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id');
+    }
+
+    public function seller()
+    {
+        return $this->belongsTo(User::class , 'user_id');
+    }
 
     protected $casts = [
-        'text_message' => 'array',
+        'name' => 'array',
     ];
 
     protected function handleTranslations()
@@ -43,7 +51,7 @@ class IntroMessage extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
-            $imagePath = request()->file('image')->store('intro_screens_images', 'public');
+            $imagePath = request()->file('image')->store('products', 'public');
             $imageUrl = asset('storage/' . $imagePath);
             $model->image_url = $imageUrl;
 

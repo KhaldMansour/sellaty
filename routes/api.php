@@ -22,6 +22,25 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::delete('{introMessage}', 'IntroMessageController@delete');
     });
 
+    Route::prefix('categories')->group(function () {
+        Route::post('/', 'CategoryController@create');
+        Route::get('/', 'CategoryController@index');
+        Route::get('{category}', 'CategoryController@show');
+        Route::put('{category}', 'CategoryController@update');
+        Route::delete('{category}', 'CategoryController@destroy');
+        Route::get('{category}/products/stock', 'CategoryController@countStockByCategory');
+    });
+
+    Route::prefix('products')->group(function () {
+        Route::get('/', 'ProductController@index');
+        Route::post('/', 'ProductController@create');
+        Route::get('{product}', 'ProductController@show');
+        Route::put('{product}', 'ProductController@update');
+        Route::delete('{product}', 'ProductController@destroy');
+        Route::put('{product}/toggle-featured', 'ProductController@toggleFeatured');
+        Route::post('{product}/categories/attach', 'ProductController@attachCategories');
+        Route::post('{product}/categories/detach', 'ProductController@detachCategories');
+    });
 
     Route::post('register', 'AuthController@register');
     Route::post('login', 'AuthController@login');
@@ -32,7 +51,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
     //         return $request->user();
     //     });
     // });
-
+    
     Route::middleware([JwtMiddleware::class])->group(function () {
         Route::post('verify-otp', 'AuthController@verifyOtp');
         Route::get('user', 'AuthController@me');

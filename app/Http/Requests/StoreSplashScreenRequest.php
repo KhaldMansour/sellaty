@@ -33,7 +33,7 @@ class StoreSplashScreenRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Image validation
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'display_time' => 'nullable|integer',
             'text_message' => 'nullable|string|max:255',
             'active' => 'nullable|boolean',
