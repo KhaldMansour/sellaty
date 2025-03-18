@@ -97,12 +97,13 @@ jobs:
           COMPOSE_HTTP_TIMEOUT: 300
         with:
           context: .
+          file: ./Dockerfile-dev
           push: true
           tags: |
             zeidexmac/stg-sellaty:latest
             zeidexmac/stg-sellaty:${{ github.run_number }}
-          build-args: |
-              NODE_ENV=development
+          # build-args: |
+          #     NODE_ENV=development
 
       - name: Capture End Time
         id: capture_duration
