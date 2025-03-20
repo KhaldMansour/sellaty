@@ -25,7 +25,7 @@ class ProductResource extends JsonResource
             'featured' => $this->featured,
             'image_url' => $this->image_url,
             'seller' => new UserResource($this->seller),
-            'categories' => CategoryResource::collection($this->categories), 
+            'categories' => CategoryResource::collection($this->categories),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

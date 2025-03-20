@@ -19,7 +19,7 @@ class Product extends Model
         'featured',
         'user_id'
     ];
-    
+
     public $translatable = ['name' , 'description'];
 
     protected $hidden = ['pivot'];
@@ -31,7 +31,7 @@ class Product extends Model
 
     public function seller()
     {
-        return $this->belongsTo(User::class , 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     protected $casts = [

@@ -51,7 +51,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
     //         return $request->user();
     //     });
     // });
-    
+
     Route::middleware([JwtMiddleware::class])->group(function () {
         Route::post('verify-otp', 'AuthController@verifyOtp');
         Route::get('user', 'AuthController@me');

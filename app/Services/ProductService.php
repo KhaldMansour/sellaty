@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductService
 {
-
     public function __construct(private readonly ProductRepository $productRepository)
-    {}
+    {
+    }
 
     public function getAll(int $limit = 10)
     {
@@ -22,7 +22,7 @@ class ProductService
         $data['user_id'] = $user->id;
         $product = $this->productRepository->create($data);
         $product->categories()->attach($data['category_ids']);
-        
+
         return $product;
     }
 
@@ -37,7 +37,7 @@ class ProductService
             $data['image_url'] = $imageUrl;
         }
 
-        return $this->productRepository->update($data , $product->id);
+        return $this->productRepository->update($data, $product->id);
     }
 
     public function getProductById($id)
@@ -48,6 +48,7 @@ class ProductService
     public function toggleFeaturedStatus($product)
     {
         $product->featured = !$product->featured;
+
         return $this->productRepository->update(['featured' => $product->featured], $product->id);
     }
 
