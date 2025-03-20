@@ -1,10 +1,10 @@
 <?php
-// app/Services/CategoryService.php
 
 namespace App\Services;
 
 use App\Repositories\CategoryRepository;
 use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryService
 {
@@ -23,9 +23,16 @@ class CategoryService
 
     public function update(Category $category, array $data)
     {
-        $category->update($data);
+        if (isset($data['image'])) {
+            $imagePath = str_replace([url('/storage/'), 'storage/'], '', $category->image_url);
+            Storage::disk('public')->delete($imagePath);
 
-        return $category;
+            $imagePath = request()->file('image')->store('categories', 'public');
+            $imageUrl = asset('storage/' . $imagePath);
+            $data['image_url'] = $imageUrl;
+        }
+        
+        return $this->categoryRepository->update($data , $category->id);
     }
 
     public function getById($categoryId)

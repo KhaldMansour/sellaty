@@ -8,9 +8,10 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * @OA\Schema(
  *     schema="CreateCategoryRequestSchema",
- *     required={"name"},
+ *     required={"name" , "image"},
  *     @OA\Property(property="name", type="string", description="The name of the category", maxLength=255),
- *     @OA\Property(property="description", type="string", description="A description of the category")
+ *     @OA\Property(property="description", type="string", description="A description of the category"),
+ *     @OA\Property(property="image", type="string", format="binary", description="The category image")
  * )
  */
 class CreateCategoryRequest extends FormRequest
@@ -47,6 +48,7 @@ class CreateCategoryRequest extends FormRequest
                 }
             ],
             'description' => 'nullable|string',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

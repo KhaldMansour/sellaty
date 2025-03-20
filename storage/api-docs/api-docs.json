@@ -329,7 +329,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/CreateCategoryRequestSchema"
                             }
@@ -349,7 +349,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Success"
+                                            "example": "Category created successfully."
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/CategorySchema"
@@ -362,6 +362,114 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity - Validation errors in request data.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "additionalProperties": [
+                                                {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    },
+                                                    "property": "name"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/categories/update/{id}": {
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Update an existing category",
+                "operationId": "474ecbfc00346c44777a37c12b2ed79e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the category to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCategoryRequestSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/CategorySchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -406,80 +514,6 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Category retrieved successfully"
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/CategorySchema"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponseSchema"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Category not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponseSchema"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "Update an existing category",
-                "operationId": "35e887d1063bbb47ff63654e11733070",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "The ID of the category to update",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateCategoryRequestSchema"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Category updated successfully.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Category updated successfully"
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/CategorySchema"
@@ -1388,7 +1422,8 @@
             },
             "CreateCategoryRequestSchema": {
                 "required": [
-                    "name"
+                    "name",
+                    "image"
                 ],
                 "properties": {
                     "name": {
@@ -1399,6 +1434,11 @@
                     "description": {
                         "description": "A description of the category",
                         "type": "string"
+                    },
+                    "image": {
+                        "description": "The category image (optional)",
+                        "type": "string",
+                        "format": "binary"
                     }
                 },
                 "type": "object"
@@ -1525,9 +1565,6 @@
                 "type": "object"
             },
             "UpdateCategoryRequestSchema": {
-                "required": [
-                    "name"
-                ],
                 "properties": {
                     "name": {
                         "description": "The name of the category",
@@ -1537,6 +1574,11 @@
                     "description": {
                         "description": "A description of the category",
                         "type": "string"
+                    },
+                    "image": {
+                        "description": "The category image (optional)",
+                        "type": "string",
+                        "format": "binary"
                     }
                 },
                 "type": "object"
@@ -1608,6 +1650,9 @@
                     "description": {
                         "type": "string",
                         "example": "hello"
+                    },
+                    "imgae_url": {
+                        "type": "string"
                     },
                     "created_at": {
                         "type": "string",

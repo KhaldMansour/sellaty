@@ -57,36 +57,51 @@ class CategoryController extends Controller
     }
 
     /**
- * @OA\Post(
- *     path="/api/v1/categories",
- *     summary="Create a new category",
- *     tags={"Categories"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             ref="#/components/schemas/CreateCategoryRequestSchema"
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Category created successfully.",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(property="status", type="string", example="success"),
- *             @OA\Property(property="message", type="string", example="Success"),
- *             @OA\Property(
- *                 property="data",
- *                 ref="#/components/schemas/CategorySchema"
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=400,
- *         description="Bad Request",
- *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
- *     )
- * )
- */
+     * @OA\Post(
+     *     path="/api/v1/categories",
+     *     summary="Create a new category",
+     *     tags={"Categories"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 ref="#/components/schemas/CreateCategoryRequestSchema"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Category created successfully.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Category created successfully."),
+     *             @OA\Property(
+     *                 property="data",
+     *                 ref="#/components/schemas/CategorySchema"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Unprocessable Entity - Validation errors in request data.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Validation failed"),
+     *             @OA\Property(property="errors", type="object", additionalProperties={
+     *                 @OA\Property(property="name", type="array", items=@OA\Items(type="string"))
+     *             })
+     *         )
+     *     )
+     * )
+     */
     public function create(CreateCategoryRequest $request)
     {
         $category = $this->categoryService->create($request->validated());
@@ -94,9 +109,9 @@ class CategoryController extends Controller
         return $this->success(new CategoryResource($category));
     }
 
-    /**
- * @OA\Put(
- *     path="/api/v1/categories/{id}",
+/**
+ * @OA\Post(
+ *     path="/api/v1/categories/update/{id}",
  *     summary="Update an existing category",
  *     tags={"Categories"},
  *     @OA\Parameter(
@@ -108,8 +123,11 @@ class CategoryController extends Controller
  *     ),
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(
- *             ref="#/components/schemas/UpdateCategoryRequestSchema"
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 ref="#/components/schemas/UpdateCategoryRequestSchema"
+ *             )
  *         )
  *     ),
  *     @OA\Response(
@@ -137,10 +155,8 @@ class CategoryController extends Controller
  *     )
  * )
  */
-
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-
         $category = $this->categoryService->update($category, $request->validated());
 
         return $this->success(new CategoryResource($category));
