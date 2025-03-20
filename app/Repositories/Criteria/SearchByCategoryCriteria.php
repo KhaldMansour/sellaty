@@ -4,7 +4,6 @@ namespace App\Repositories\Criteria;
 
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
-use Illuminate\Http\Request;
 
 class SearchByCategoryCriteria implements CriteriaInterface
 {
@@ -26,4 +25,3 @@ class SearchByCategoryCriteria implements CriteriaInterface
         return $model;
     }
 }
-

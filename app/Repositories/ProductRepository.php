@@ -15,7 +15,7 @@ use Prettus\Repository\Criteria\RequestCriteria;
 class ProductRepository extends BaseRepository implements ProductRepositoryInterface
 {
     protected $fieldSearchable = [
-        'name'=>'like',
+        'name' => 'like',
         'featured',
     ];
 

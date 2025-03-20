@@ -31,7 +31,7 @@ class CreateCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $locale = app()->getLocale(); 
+        $locale = app()->getLocale();
 
         return [
             'name' => [

@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Storage;
 class CategoryService
 {
     public function __construct(private readonly CategoryRepository $categoryRepository)
-    {}
+    {
+    }
 
     public function getAll(int $limit = 10)
     {
@@ -31,8 +32,8 @@ class CategoryService
             $imageUrl = asset('storage/' . $imagePath);
             $data['image_url'] = $imageUrl;
         }
-        
-        return $this->categoryRepository->update($data , $category->id);
+
+        return $this->categoryRepository->update($data, $category->id);
     }
 
     public function getById($categoryId)
