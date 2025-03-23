@@ -14,7 +14,6 @@ return new class () extends Migration {
             $table->id();
             $table->json('name')->nullable();
             $table->json('description')->nullable();
-            $table->string('image_url')->nullable();
             $table->decimal('price', 10, 2);
             $table->unsignedInteger('quantity')->default(0);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
@@ -28,6 +27,11 @@ return new class () extends Migration {
      */
     public function down(): void
     {
+        Schema::table('product_images', function (Blueprint $table) {
+            $table->dropForeign(['product_id']);
+        });
+        Schema::dropIfExists('product_images');
+        Schema::dropIfExists('category_product');
         Schema::dropIfExists('products');
     }
 };

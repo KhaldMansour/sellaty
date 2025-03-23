@@ -6,6 +6,13 @@ use Illuminate\Http\Response;
 
 /**
  * @OA\Info(title="Sellaty", version="1.0.0")
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     description="Please provide your JWT token in the Authorization header."
+ * )
  */
 abstract class Controller
 {

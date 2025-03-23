@@ -34,6 +34,11 @@ class Product extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
     protected $casts = [
         'name' => 'array',
     ];
@@ -51,9 +56,24 @@ class Product extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
-            $imagePath = request()->file('image')->store('products', 'public');
-            $imageUrl = asset('storage/' . $imagePath);
-            $model->image_url = $imageUrl;
+            $model->handleTranslations();
+        });
+
+        static::saved(function ($model) {
+            if (request()->has('images')) {
+                $productImages = request()->images;
+                foreach ($productImages as $image) {
+                    // Store the image
+                    $imagePath = $image->store('products', 'public');
+                    $imageUrl = asset('storage/' . $imagePath);
+
+                    // Save the image with the correct product_id
+                    $model->images()->create([
+                        'image_url' => $imageUrl,
+                        'product_id' => $model->id, // Now the product_id is set after the model is saved
+                    ]);
+                }
+            }
 
             $model->handleTranslations();
         });

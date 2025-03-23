@@ -996,6 +996,197 @@
                 }
             }
         },
+        "/api/v1/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get a list of products with optional filters.",
+                "operationId": "8b21ed56c46801538b7accb805b61f37",
+                "parameters": [
+                    {
+                        "name": "filters",
+                        "in": "query",
+                        "description": "Query parameters for filtering the products.",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/ListResourceRequestSchema"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of products.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Products fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ProductResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create a new product",
+                "operationId": "createProduct",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "price",
+                                    "quantity",
+                                    "category_ids[]",
+                                    "images[]",
+                                    "featured"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Product name",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Product Name"
+                                    },
+                                    "description": {
+                                        "description": "Product description",
+                                        "type": "string",
+                                        "example": "Product description goes here."
+                                    },
+                                    "images[]": {
+                                        "description": "Product images (array of files)",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "category_ids[]": {
+                                        "description": "List of category IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "price": {
+                                        "description": "Product price",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 29.99
+                                    },
+                                    "quantity": {
+                                        "description": "Product quantity",
+                                        "type": "integer",
+                                        "example": 100
+                                    },
+                                    "featured": {
+                                        "description": "Is the product featured (0 = false, 1 = true)",
+                                        "type": "integer",
+                                        "enum": [
+                                            0,
+                                            1
+                                        ],
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Product Name"
+                                        },
+                                        "price": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 29.99
+                                        },
+                                        "quantity": {
+                                            "type": "integer",
+                                            "example": 100
+                                        },
+                                        "category_ids": {
+                                            "description": "List of category IDs",
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "featured": {
+                                            "description": "Is the product featured (0 = false, 1 = true)",
+                                            "type": "integer",
+                                            "enum": [
+                                                0,
+                                                1
+                                            ],
+                                            "example": 1
+                                        },
+                                        "images": {
+                                            "description": "Product images (array of files)",
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "format": "binary"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/splash-screens": {
             "get": {
                 "tags": [
@@ -1436,9 +1627,49 @@
                         "type": "string"
                     },
                     "image": {
-                        "description": "The category image (optional)",
+                        "description": "The category image",
                         "type": "string",
                         "format": "binary"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateProductRequestSchema": {
+                "required": [
+                    "name",
+                    "price",
+                    "quantity",
+                    "category_ids"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "Product name",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "description": "Product description",
+                        "type": "string"
+                    },
+                    "price": {
+                        "description": "Product price",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "quantity": {
+                        "description": "Product quantity",
+                        "type": "integer"
+                    },
+                    "category_ids": {
+                        "description": "List of category IDs",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "featured": {
+                        "description": "Is the product featured",
+                        "type": "boolean"
                     }
                 },
                 "type": "object"
@@ -1698,6 +1929,116 @@
                 },
                 "type": "object"
             },
+            "ProductImageResourceSchema": {
+                "required": [
+                    "id",
+                    "product_id",
+                    "url",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "product_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "url": {
+                        "type": "string",
+                        "example": "http://localhost/storage/products/sample-image.jpg"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-23T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-23T12:34:56Z"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductResource": {
+                "required": [
+                    "id",
+                    "name",
+                    "price",
+                    "quantity",
+                    "categories",
+                    "seller",
+                    "images",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Product ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Product name",
+                        "type": "string",
+                        "example": "Product Name"
+                    },
+                    "price": {
+                        "description": "Product price",
+                        "type": "number",
+                        "format": "float",
+                        "example": 29.99
+                    },
+                    "description": {
+                        "description": "Product description",
+                        "type": "string",
+                        "example": "This is a product description"
+                    },
+                    "quantity": {
+                        "description": "Product quantity",
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "featured": {
+                        "description": "Whether the product is featured",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "images": {
+                        "description": "List of product images",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductImageResourceSchema"
+                        }
+                    },
+                    "seller": {
+                        "$ref": "#/components/schemas/UserSchema"
+                    },
+                    "categories": {
+                        "description": "Product categories",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategorySchema"
+                        }
+                    },
+                    "created_at": {
+                        "description": "Product creation date",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-23T13:49:38"
+                    },
+                    "updated_at": {
+                        "description": "Product last update date",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-23T13:49:38"
+                    }
+                },
+                "type": "object"
+            },
             "SplashScreenSchema": {
                 "properties": {
                     "id": {
@@ -1770,6 +2111,14 @@
                 },
                 "type": "object"
             }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Please provide your JWT token in the Authorization header.",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
         }
     },
     "tags": [
@@ -1784,6 +2133,10 @@
         {
             "name": "IntroMessages",
             "description": "IntroMessages"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
         },
         {
             "name": "SplashScreens",
