@@ -5,6 +5,19 @@ namespace App\Http\Requests;
 use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="CreateProductRequestSchema",
+ *     type="object",
+ *     required={"name", "price", "quantity", "category_ids"},
+ *     @OA\Property(property="name", type="string", maxLength=255, description="Product name"),
+ *     @OA\Property(property="description", type="string", description="Product description"),
+ *     @OA\Property(property="price", type="number", format="float", description="Product price"),
+ *     @OA\Property(property="quantity", type="integer", description="Product quantity"),
+ *     @OA\Property(property="category_ids", type="array", items=@OA\Items(type="integer"), description="List of category IDs"),
+ *     @OA\Property(property="featured", type="boolean", description="Is the product featured")
+ * )
+ */
 class CreateProductRequest extends FormRequest
 {
     /**
@@ -39,7 +52,8 @@ class CreateProductRequest extends FormRequest
                 }
             ],
             'description' => 'nullable|string',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
             'category_ids' => 'required|array',

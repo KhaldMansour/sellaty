@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('product_images', function (Blueprint $table) {
             $table->id();
-            $table->json('name')->nullable();
-            $table->json('description')->nullable();
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->string('image_url');
             $table->timestamps();
         });
@@ -21,10 +22,11 @@ return new class () extends Migration {
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_product');
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('product_images');
     }
 };
