@@ -40,14 +40,8 @@ class ProductSeeder extends Seeder
 
             // Create a new product
             $product = Product::create([
-                'name' =>[
-                    'en' => $faker->word,
-                    'ar' => $faker->word,
-                ],
-                'description' => [
-                    'en' => $faker->sentence,
-                    'ar' => $faker->sentence,
-                ],
+                'name' => $faker->word(),
+                'description' => $faker->sentence(),
                 'price' => $faker->randomFloat(2, 5, 100), // Price between 5 and 100
                 'quantity' => $faker->numberBetween(1, 50), // Quantity between 1 and 50
                 'featured' => $faker->boolean,
