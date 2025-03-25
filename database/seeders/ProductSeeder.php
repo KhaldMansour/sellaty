@@ -25,6 +25,12 @@ class ProductSeeder extends Seeder
             Storage::disk('public')->makeDirectory('products');
         }
 
+        $files = Storage::disk('public')->files('products');
+
+        foreach ($files as $file) {
+            Storage::disk('public')->delete($file);
+        }
+
         $categoryIds = Category::take(10)->pluck('id')->toArray();
 
         $userIds = User::take(10)->pluck('id')->toArray();

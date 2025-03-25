@@ -24,6 +24,12 @@ class CategorySeeder extends Seeder
             Storage::disk('public')->makeDirectory('categories');
         }
 
+        $files = Storage::disk('public')->files('categories');
+
+        foreach ($files as $file) {
+            Storage::disk('public')->delete($file);
+        }
+
         $categoryCount = 10;
 
         foreach (range(1, $categoryCount) as $index) {
