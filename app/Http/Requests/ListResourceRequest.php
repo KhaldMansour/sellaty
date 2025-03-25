@@ -39,6 +39,7 @@ class ListResourceRequest extends FormRequest
             'search' => 'nullable|string',
             'searchFields' => 'nullable|string',
             'find' => 'nullable|string',
+            'page' => 'nullable|integer',
         ];
     }
 }
