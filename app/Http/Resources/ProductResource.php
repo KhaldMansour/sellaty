@@ -44,8 +44,8 @@ class ProductResource extends JsonResource
             'images' => ProductImageResource::collection($this->images),
             'seller' => new UserResource($this->seller),
             'categories' => CategoryResource::collection($this->categories),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at->format('l, d F Y'),
+            'updated_at' => $this->updated_at->format('l, d F Y'),
         ];
     }
 }
