@@ -19,7 +19,7 @@ class ProductSeeder extends Seeder
 
         $faker = Faker::create();
 
-        $productCount = 10;
+        $productCount = 2;
 
         if (!Storage::disk('public')->exists('products')) {
             Storage::disk('public')->makeDirectory('products');
@@ -39,17 +39,18 @@ class ProductSeeder extends Seeder
             return;
         }
 
-        // Loop to create the products
         foreach (range(1, $productCount) as $index) {
             $userId = $userIds[array_rand($userIds)];
             $categoryId = $categoryIds[array_rand($categoryIds)];
 
-            // Create a new product
+            $imageFolder = database_path('seeders/seeded_data/products');
+            $imageFiles = array_diff(scandir($imageFolder), ['..', '.']);
+
             $product = Product::create([
                 'name' => $faker->word(),
                 'description' => $faker->sentence(),
-                'price' => $faker->randomFloat(2, 5, 100), // Price between 5 and 100
-                'quantity' => $faker->numberBetween(1, 50), // Quantity between 1 and 50
+                'price' => $faker->randomFloat(2, 5, 100),
+                'quantity' => $faker->numberBetween(1, 50),
                 'featured' => $faker->boolean,
                 'user_id' => $userId,
             ]);
@@ -58,24 +59,29 @@ class ProductSeeder extends Seeder
 
             $imageFolder = database_path('seeders/seeded_data/products');
 
-            $productImageUrl = $this->handleProductImage($imageFolder, $index);
+            foreach ($imageFiles as $imageFile) {
+                $productImageUrl = $this->handleProductImage($imageFolder, $imageFile);
 
-            if ($productImageUrl) {
-                $product->images()->create([
-                    'image_url' => $productImageUrl,
-                ]);
-            };
+                if ($productImageUrl) {
+                    $product->images()->create([
+                        'image_url' => $productImageUrl,
+                    ]);
+                }
+            }
         }
     }
 
-    protected function handleProductImage($imageFolder, $index)
+    protected function handleProductImage($imageFolder, $imageFile)
     {
-        $imageName = 'product_' . $index . '.png';
-
-        $imagePath = $imageFolder . '/' . $imageName;
+        $imagePath = $imageFolder . '/' . $imageFile;
 
         if (file_exists($imagePath)) {
-            $imageStoragePath = 'products/' . $imageName;
+            $extension = pathinfo($imageFile, PATHINFO_EXTENSION);
+            $baseName = pathinfo($imageFile, PATHINFO_FILENAME);
+            $uniqueName = $baseName . '_' . uniqid() . '.' . $extension;
+
+            $imageStoragePath = 'products/' . $uniqueName;
+
             Storage::disk('public')->put($imageStoragePath, file_get_contents($imagePath));
 
             return asset('storage/' . $imageStoragePath);
