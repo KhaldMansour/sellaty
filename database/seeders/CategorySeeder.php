@@ -62,7 +62,7 @@ class CategorySeeder extends Seeder
         $imagePath = $imageFolder . '/' . $imageName;
 
         if (file_exists($imagePath)) {
-            $imageStoragePath = 'categories/' . $imageName;
+            $imageStoragePath = 'categories/'. uniqid() . $imageName;
             Storage::disk('public')->put($imageStoragePath, file_get_contents($imagePath));
 
             return asset('storage/' . $imageStoragePath);

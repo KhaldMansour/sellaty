@@ -42,6 +42,13 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::post('{product}/categories/detach', 'ProductController@detachCategories');
     });
 
+    Route::prefix('wanted-products')->group(function () {
+        Route::get('/', 'WantedProductController@index');
+        Route::get('/my-wanted-products', 'WantedProductController@myWantedProducts');
+        Route::post('/', 'WantedProductController@create');
+        Route::get('/{wantedProduct}', 'WantedProductController@show');
+    });
+
     Route::post('register', 'AuthController@register');
     Route::post('login', 'AuthController@login');
     Route::post('resend-otp', 'AuthController@resendOtp');

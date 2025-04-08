@@ -39,7 +39,7 @@ class CreateProductRequest extends FormRequest
 
         return [
             'name' => [
-                'nullable',
+                'required',
                 'string',
                 'max:255',
                 function ($attribute, $value, $fail) use ($locale) {
