@@ -11,7 +11,7 @@ services:
       - 9000:80
     depends_on:
       - mysql_db
-    command: bash -c "dockerize -wait tcp://mysql_db:3306 -timeout 60s php artisan migrate --force && php artisan storage:link && apache2-foreground"
+    command: bash -c "dockerize -wait tcp://mysql_db:3306 -timeout 60s php artisan migrate:fresh && php artisan storage:link --relative && apache2-foreground"
 
   # MySQL database container
   mysql_db:
