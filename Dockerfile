@@ -33,6 +33,8 @@ RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
 
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage
+RUN chown -R www-data:www-data /var/www/html/public/storage
 
 RUN php artisan storage:link
 
