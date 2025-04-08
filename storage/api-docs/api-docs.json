@@ -1578,6 +1578,216 @@
                     }
                 }
             }
+        },
+        "/api/v1/wanted-products": {
+            "get": {
+                "tags": [
+                    "Wanted Products"
+                ],
+                "summary": "Get a list of products with optional filters.",
+                "operationId": "4d370b0066a8c61d17043d21a8da2424",
+                "parameters": [
+                    {
+                        "name": "filters",
+                        "in": "query",
+                        "description": "Query parameters for filtering the wanted products.",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/ListResourceRequestSchema"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of products.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Products fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/WantedProductSchema"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Wanted Products"
+                ],
+                "summary": "Create a new wanted product",
+                "operationId": "7eaef75e6a0e469f30dc72d9eb84bc6f",
+                "requestBody": {
+                    "description": "Create a new wanted product",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateWantedProductRequestSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The created wanted product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WantedProductSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/wanted-products/{id}": {
+            "get": {
+                "tags": [
+                    "Wanted Products"
+                ],
+                "summary": "Get the details of a wanted product",
+                "operationId": "7768b855e152e1ce09bb9417df6087eb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the wanted product to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The wanted product details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WantedProductSchema"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The wanted product was not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Wanted product not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/wanted-products/my-wanted-products": {
+            "get": {
+                "tags": [
+                    "Wanted Products"
+                ],
+                "summary": "Get a list of the authenticated user's wanted products",
+                "operationId": "482095670b79b367a7c015295a36b152",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to return per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number to retrieve",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of the user's wanted products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/WantedProductSchema"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - No valid token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1670,6 +1880,121 @@
                     "featured": {
                         "description": "Is the product featured",
                         "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateWantedProductRequestSchema": {
+                "required": [
+                    "duration",
+                    "min_price",
+                    "max_price",
+                    "condition[]",
+                    "delivery_options[]",
+                    "address",
+                    "country",
+                    "state",
+                    "city",
+                    "postal_code"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "The name of the wanted product",
+                        "type": "string",
+                        "maxLength": 255,
+                        "nullable": true
+                    },
+                    "description": {
+                        "description": "Description of the wanted product",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "brand": {
+                        "description": "The brand of the wanted product",
+                        "type": "string",
+                        "maxLength": 255,
+                        "nullable": true
+                    },
+                    "model": {
+                        "description": "The model of the wanted product",
+                        "type": "string",
+                        "maxLength": 255,
+                        "nullable": true
+                    },
+                    "duration": {
+                        "description": "Duration for the wanted product (e.g., '2 weeks')",
+                        "type": "string",
+                        "pattern": "^\\d+\\s(?:week|weeks|day|days)$"
+                    },
+                    "min_price": {
+                        "description": "Minimum price for the wanted product",
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0
+                    },
+                    "max_price": {
+                        "description": "Maximum price for the wanted product",
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0
+                    },
+                    "condition[]": {
+                        "description": "Condition of the wanted product (e.g., new, used)",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "new"
+                        }
+                    },
+                    "delivery_options[]": {
+                        "description": "Delivery options for the wanted product",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "shipping"
+                        }
+                    },
+                    "address": {
+                        "description": "The address of the buyer",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "country": {
+                        "description": "The country where the buyer is located",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "state": {
+                        "description": "The state where the buyer is located",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "city": {
+                        "description": "The city where the buyer is located",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "postal_code": {
+                        "description": "Postal code of the buyer's address",
+                        "type": "string",
+                        "maxLength": 6
+                    },
+                    "images[]": {
+                        "description": "Product images (array of files)",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary"
+                        }
+                    },
+                    "active": {
+                        "description": "Is the product active (0 = false, 1 = true)",
+                        "type": "integer",
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "example": 1
                     }
                 },
                 "type": "object"
@@ -2110,6 +2435,134 @@
                     }
                 },
                 "type": "object"
+            },
+            "WantedProductSchema": {
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "brand",
+                    "model",
+                    "duration",
+                    "min_price",
+                    "max_price",
+                    "condition",
+                    "delivery_options",
+                    "address",
+                    "country",
+                    "state",
+                    "city",
+                    "postal_code",
+                    "listed_until",
+                    "active",
+                    "user",
+                    "images"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "The ID of the wanted product",
+                        "type": "integer"
+                    },
+                    "name": {
+                        "description": "The name of the wanted product",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "description": "Description of the wanted product",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "brand": {
+                        "description": "The brand of the wanted product",
+                        "type": "string",
+                        "maxLength": 255,
+                        "nullable": true
+                    },
+                    "model": {
+                        "description": "The model of the wanted product",
+                        "type": "string",
+                        "maxLength": 255,
+                        "nullable": true
+                    },
+                    "duration": {
+                        "description": "The duration for the wanted product (e.g., '2 weeks')",
+                        "type": "string",
+                        "pattern": "^\\d+\\s(?:week|weeks|day|days)$"
+                    },
+                    "min_price": {
+                        "description": "The minimum price of the wanted product",
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0
+                    },
+                    "max_price": {
+                        "description": "The maximum price of the wanted product",
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0
+                    },
+                    "condition": {
+                        "description": "Condition of the wanted product (e.g., new, used)",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "delivery_options": {
+                        "description": "Delivery options for the wanted product",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "address": {
+                        "description": "The address of the buyer",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "country": {
+                        "description": "The country where the buyer is located",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "state": {
+                        "description": "The state where the buyer is located",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "city": {
+                        "description": "The city where the buyer is located",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "postal_code": {
+                        "description": "Postal code of the buyer's address",
+                        "type": "string",
+                        "maxLength": 6
+                    },
+                    "listed_until": {
+                        "description": "The date when the product will be listed until",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "active": {
+                        "description": "The active status of the wanted product",
+                        "type": "boolean"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserSchema"
+                    },
+                    "images": {
+                        "description": "List of images for the wanted product",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary"
+                        }
+                    }
+                },
+                "type": "object"
             }
         },
         "securitySchemes": {
@@ -2141,6 +2594,10 @@
         {
             "name": "SplashScreens",
             "description": "SplashScreens"
+        },
+        {
+            "name": "Wanted Products",
+            "description": "Wanted Products"
         }
     ]
 }
