@@ -26,6 +26,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # PHP Extension
 RUN docker-php-ext-install gettext intl pdo_mysql gd
 
+RUN curl -sSL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar -xz -C /usr/local/bin
+
 RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
