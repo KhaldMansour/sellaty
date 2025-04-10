@@ -7,11 +7,12 @@ services:
     build: .
     volumes:
       - ./:/var/www/html
+      - laravel_storage:/var/www/html/storage/app/public
     ports:
       - 9000:80
     depends_on:
       - mysql_db
-    command: bash -c "php artisan storage:link && php-fpm"
+    command: ./entrypoint.sh
 
   # MySQL database container
   mysql_db:
@@ -36,3 +37,4 @@ services:
 
 volumes:
   mysql_data:
+  laravel_storage:
