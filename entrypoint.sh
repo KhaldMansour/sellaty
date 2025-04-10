@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# Wait for storage folder to mount (optional small delay)
-sleep 2
+# Make sure the target exists (inside mounted volume)
+mkdir -p storage/app/public
 
-# Run Laravel setup tasks
-php artisan storage:link || echo "Storage link already exists"
+# Recreate the symlink safely
+rm -f public/storage
+php artisan storage:link
 
-# Start PHP FPM
+# Start the app
 php-fpm
