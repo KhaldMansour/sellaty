@@ -7,7 +7,9 @@ services:
     build: .
     volumes:
       - ./:/var/www/html
-      - ./laravel_storage:/var/www/html/storage/app/public
+      - ./storage/app/public:/var/www/html/storage/app/public
+      - .public/storage:/var/www/html/public/storage
+
     ports:
       - 9000:80
     depends_on:
