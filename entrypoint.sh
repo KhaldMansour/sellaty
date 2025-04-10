@@ -4,7 +4,7 @@
 mkdir -p storage/app/public
 
 # Recreate the symlink safely
-rm -f public/storage
+# rm -f public/storage
 php artisan storage:link
 
 # Start the app
