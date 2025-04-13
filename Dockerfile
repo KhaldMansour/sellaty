@@ -31,8 +31,16 @@ RUN curl -sSL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dock
 RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
-RUN chown -R www-data:www-data /var/www/html
-RUN chown -R www-data:www-data storage/app/public
+# RUN chown -R www-data:www-data /var/www/html
+# RUN chown -R www-data:www-data storage/app/public
+
+# Set proper permissions for Laravel
+RUN chown -R www-data:www-data /var/www/html \
+    && find storage -type d -exec chmod 775 {} \; \
+    && find bootstrap/cache -type d -exec chmod 775 {} \;
+
+# Laravel storage link (optional, you can do it in entrypoint too)
+RUN php artisan storage:link || true
 
 # Copy the custom Apache config
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
