@@ -30,7 +30,7 @@ return new class () extends Migration {
             $table->date('listed_until');
             $table->boolean('active')->default(true);
             $table->timestamps();
-        });
+        }); 
     }
 
     /**

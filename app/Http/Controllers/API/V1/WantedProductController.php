@@ -160,9 +160,7 @@ class WantedProductController extends Controller
      *     path="/api/v1/wanted-products/my-wanted-products",
      *     summary="Get a list of the authenticated user's wanted products",
      *     tags={"Wanted Products"},
-     *     security={
-     *         {"bearerAuth": {}}
-     *     },
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="limit",
      *         in="query",
@@ -222,7 +220,6 @@ class WantedProductController extends Controller
     {
         $user = auth()->user();
         $limit = $request->input('limit', 10);
-
 
         return $this->success(WantedProductResource::collection($user->wantedProducts()->paginate($limit)));
     }
