@@ -30,6 +30,7 @@ php artisan storage:link
 
 # Set ownership and permissions for the log file
 info "Setting log file ownership and permissions..."
+chown -R www-data:www-data storage/app/public
 touch /var/www/html/storage/logs/laravel.log
 chown www-data:www-data /var/www/html/storage/logs/laravel.log
 chmod 775 /var/www/html/storage/logs/laravel.log
