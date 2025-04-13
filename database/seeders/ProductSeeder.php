@@ -46,6 +46,9 @@ class ProductSeeder extends Seeder
             $imageFolder = database_path('seeders/seeded_data/products');
             $imageFiles = array_diff(scandir($imageFolder), ['..', '.']);
 
+            $conditions = ['new', 'used', 'refurbished'];
+            $deliveryOptions = ['pickup', 'shipping', 'local_delivery'];
+
             $product = Product::create([
                 'name' => $faker->word(),
                 'description' => $faker->sentence(),
@@ -53,6 +56,29 @@ class ProductSeeder extends Seeder
                 'quantity' => $faker->numberBetween(1, 50),
                 'featured' => $faker->boolean,
                 'user_id' => $userId,
+                'brand' => $faker->company(),
+                'model' => $faker->bothify('Model-??-##'),
+                'price' => $faker->randomFloat(2, 10, 1000),
+                'duration' => $faker->randomElement(['30 days', '60 days', '90 days']),
+                'quantity' => $faker->numberBetween(1, 100),
+                'condition' => [
+                    $faker->randomElement($conditions),
+                    $faker->randomElement($conditions)
+                ],
+                'delivery_options' => [
+                    $faker->randomElement($deliveryOptions),
+                    $faker->randomElement($deliveryOptions),
+                ],
+                'address' => $faker->streetAddress(),
+                'country' => $faker->country(),
+                'state' => $faker->state(),
+                'city' => $faker->city(),
+                'postal_code' => $faker->postcode(),
+                'listed_until' => $faker->dateTimeBetween('+1 month', '+1 year')->format('Y-m-d'),
+                'active' => $faker->boolean(50),
+                'negotiable' => $faker->boolean(50),
+                'deliverable' => $faker->boolean(50),
+                'featured' => $faker->boolean(50),
             ]);
 
             $product->categories()->attach($categoryId);

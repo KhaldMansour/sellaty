@@ -1032,7 +1032,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/ProductResource"
+                                                "$ref": "#/components/schemas/ProductSchema"
                                             }
                                         }
                                     },
@@ -1058,123 +1058,25 @@
                     "Products"
                 ],
                 "summary": "Create a new product",
-                "operationId": "createProduct",
+                "operationId": "e7fdaeda11d17a103c01e0cf057bc319",
                 "requestBody": {
+                    "description": "Create a new product",
                     "required": true,
                     "content": {
                         "multipart/form-data": {
                             "schema": {
-                                "required": [
-                                    "name",
-                                    "price",
-                                    "quantity",
-                                    "category_ids[]",
-                                    "images[]",
-                                    "featured"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "description": "Product name",
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "example": "Product Name"
-                                    },
-                                    "description": {
-                                        "description": "Product description",
-                                        "type": "string",
-                                        "example": "Product description goes here."
-                                    },
-                                    "images[]": {
-                                        "description": "Product images (array of files)",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "format": "binary"
-                                        }
-                                    },
-                                    "category_ids[]": {
-                                        "description": "List of category IDs",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer"
-                                        }
-                                    },
-                                    "price": {
-                                        "description": "Product price",
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": 29.99
-                                    },
-                                    "quantity": {
-                                        "description": "Product quantity",
-                                        "type": "integer",
-                                        "example": 100
-                                    },
-                                    "featured": {
-                                        "description": "Is the product featured (0 = false, 1 = true)",
-                                        "type": "integer",
-                                        "enum": [
-                                            0,
-                                            1
-                                        ],
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/CreateProductRequestSchema"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Product created successfully",
+                    "200": {
+                        "description": "The created product",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "example": "Product Name"
-                                        },
-                                        "price": {
-                                            "type": "number",
-                                            "format": "float",
-                                            "example": 29.99
-                                        },
-                                        "quantity": {
-                                            "type": "integer",
-                                            "example": 100
-                                        },
-                                        "category_ids": {
-                                            "description": "List of category IDs",
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "featured": {
-                                            "description": "Is the product featured (0 = false, 1 = true)",
-                                            "type": "integer",
-                                            "enum": [
-                                                0,
-                                                1
-                                            ],
-                                            "example": 1
-                                        },
-                                        "images": {
-                                            "description": "Product images (array of files)",
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string",
-                                                "format": "binary"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/ProductSchema"
                                 }
                             }
                         }
@@ -1849,37 +1751,134 @@
                     "name",
                     "price",
                     "quantity",
-                    "category_ids"
+                    "condition[]",
+                    "address",
+                    "country",
+                    "state",
+                    "city",
+                    "postal_code",
+                    "category_ids[]",
+                    "delivery_options[]",
+                    "images[]",
+                    "duration"
                 ],
                 "properties": {
                     "name": {
-                        "description": "Product name",
                         "type": "string",
-                        "maxLength": 255
+                        "example": "Product Name"
                     },
                     "description": {
-                        "description": "Product description",
-                        "type": "string"
+                        "type": "string",
+                        "example": "Product Description"
+                    },
+                    "brand": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Nike"
+                    },
+                    "model": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Air Max"
                     },
                     "price": {
-                        "description": "Product price",
                         "type": "number",
-                        "format": "float"
+                        "format": "float",
+                        "example": 99.99
+                    },
+                    "duration": {
+                        "description": "Product duration/availability",
+                        "type": "string",
+                        "example": "30 days"
                     },
                     "quantity": {
-                        "description": "Product quantity",
-                        "type": "integer"
+                        "type": "integer",
+                        "minimum": 0,
+                        "example": 10
                     },
-                    "category_ids": {
-                        "description": "List of category IDs",
+                    "condition[]": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "new"
+                        ]
+                    },
+                    "delivery_options[]": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "pickup"
+                        ]
+                    },
+                    "images[]": {
+                        "description": "Product images (array of files)",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary"
+                        }
+                    },
+                    "address": {
+                        "description": "Physical address",
+                        "type": "string",
+                        "example": "123 Main St"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "United States"
+                    },
+                    "state": {
+                        "type": "string",
+                        "example": "California"
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "Los Angeles"
+                    },
+                    "postal_code": {
+                        "type": "string",
+                        "example": "90001"
+                    },
+                    "active": {
+                        "description": "Whether the product is active (1 = yes, 0 = no)",
+                        "type": "integer",
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "example": 1
+                    },
+                    "negotiable": {
+                        "description": "Whether the product is negotiable (1 = yes, 0 = no)",
+                        "type": "integer",
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "example": 1
+                    },
+                    "deliverable": {
+                        "description": "Whether the product is deliverable (1 = yes, 0 = no)",
+                        "type": "integer",
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "example": 1
+                    },
+                    "category_ids[]": {
+                        "description": "Array of category IDs",
                         "type": "array",
                         "items": {
                             "type": "integer"
-                        }
-                    },
-                    "featured": {
-                        "description": "Is the product featured",
-                        "type": "boolean"
+                        },
+                        "example": [
+                            1
+                        ]
                     }
                 },
                 "type": "object"
@@ -2288,7 +2287,7 @@
                 },
                 "type": "object"
             },
-            "ProductResource": {
+            "ProductSchema": {
                 "required": [
                     "id",
                     "name",
@@ -2307,9 +2306,18 @@
                         "example": 1
                     },
                     "name": {
-                        "description": "Product name",
-                        "type": "string",
-                        "example": "Product Name"
+                        "description": "Product name translations",
+                        "properties": {
+                            "en": {
+                                "type": "string",
+                                "example": "Product Name"
+                            },
+                            "fr": {
+                                "type": "string",
+                                "example": "Nom du produit"
+                            }
+                        },
+                        "type": "object"
                     },
                     "price": {
                         "description": "Product price",
@@ -2318,14 +2326,109 @@
                         "example": 29.99
                     },
                     "description": {
-                        "description": "Product description",
+                        "description": "Product description translations",
+                        "properties": {
+                            "en": {
+                                "type": "string",
+                                "example": "Product description"
+                            },
+                            "fr": {
+                                "type": "string",
+                                "example": "Description du produit"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "brand": {
                         "type": "string",
-                        "example": "This is a product description"
+                        "example": "Nike"
+                    },
+                    "model": {
+                        "type": "string",
+                        "example": "Air Max"
+                    },
+                    "duration": {
+                        "description": "Product duration/availability",
+                        "type": "string",
+                        "example": "30 days"
                     },
                     "quantity": {
                         "description": "Product quantity",
                         "type": "integer",
                         "example": 100
+                    },
+                    "condition": {
+                        "description": "Product condition translations",
+                        "properties": {
+                            "en": {
+                                "type": "string",
+                                "example": "New"
+                            },
+                            "fr": {
+                                "type": "string",
+                                "example": "Neuf"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "delivery_options": {
+                        "description": "Delivery options",
+                        "properties": {
+                            "shipping": {
+                                "type": "boolean",
+                                "example": true
+                            },
+                            "pickup": {
+                                "type": "boolean",
+                                "example": true
+                            },
+                            "local_delivery": {
+                                "type": "boolean",
+                                "example": false
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "address": {
+                        "description": "Physical address",
+                        "type": "string",
+                        "example": "123 Main St"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "United States"
+                    },
+                    "state": {
+                        "type": "string",
+                        "example": "California"
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "Los Angeles"
+                    },
+                    "postal_code": {
+                        "type": "string",
+                        "example": "90001"
+                    },
+                    "listed_until": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2023-12-31"
+                    },
+                    "active": {
+                        "description": "Whether the product is active",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "negotiable": {
+                        "description": "Whether the price is negotiable",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "deliverable": {
+                        "description": "Whether the product can be delivered",
+                        "type": "boolean",
+                        "example": true
                     },
                     "featured": {
                         "description": "Whether the product is featured",
@@ -2568,7 +2671,8 @@
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
-                "description": "Please provide your JWT token in the Authorization header.",
+                "name": "Authorization",
+                "in": "header",
                 "bearerFormat": "JWT",
                 "scheme": "bearer"
             }
