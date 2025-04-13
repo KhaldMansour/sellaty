@@ -58,10 +58,6 @@ class AuthController extends Controller
     {
         $user = User::create($request->validated());
 
-        $otpSender = OtpSenderFactory::create('whatsapp');
-        $this->otpService->setOtpSender($otpSender);
-        $this->otpService->generateOtp($request->phone_number);
-
         return $this->success(['user' => $user], 'User registered successfully', 201);
     }
 
