@@ -11,7 +11,8 @@ use Illuminate\Http\Response;
  *     type="http",
  *     scheme="bearer",
  *     bearerFormat="JWT",
- *     description="Please provide your JWT token in the Authorization header."
+ *     in="header",
+ *     name="Authorization"
  * )
  */
 abstract class Controller
