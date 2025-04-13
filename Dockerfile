@@ -32,8 +32,6 @@ RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
 RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 storage/app/public
 RUN chown -R www-data:www-data storage/app/public
 
 # Copy the custom Apache config
