@@ -33,14 +33,12 @@ RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
 
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage
-RUN chown -R www-data:www-data /var/www/html/public/storage
+RUN chmod -R 775 storage/app/public
+RUN chown -R www-data:www-data storage/app/public
 
 # Copy the custom Apache config
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 
 
 EXPOSE 80
-
-RUN php artisan storage:link
 
