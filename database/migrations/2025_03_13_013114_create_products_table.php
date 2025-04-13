@@ -16,7 +16,7 @@ return new class () extends Migration {
             $table->json('description')->nullable();
             $table->string('brand')->nullable();
             $table->string('model')->nullable();
-            $table->decimal('price', 10, 2);            
+            $table->decimal('price', 10, 2);
             $table->string('duration');
             $table->unsignedInteger('quantity')->default(0);
             $table->json('condition');

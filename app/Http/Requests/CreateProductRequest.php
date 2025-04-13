@@ -37,7 +37,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *         @OA\Items(type="string"),
  *         example={"pickup"}
  *     ),
-  *     @OA\Property(
+ *     @OA\Property(
  *         property="images[]",
  *         type="array",
  *         description="Product images (array of files)",
@@ -108,7 +108,7 @@ class CreateProductRequest extends FormRequest
                 function ($attribute, $value, $fail) use ($locale) {
                     $productExists = Product::where('name->' . $locale, '=', $value)
                         ->exists();
-    
+
                     if ($productExists) {
                         $fail("The product name for this locale is already taken.");
                     }
