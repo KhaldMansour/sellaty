@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
@@ -90,6 +91,10 @@ class Product extends Model
                 foreach ($productImages as $image) {
                     $imagePath = $image->store('products', 'public');
                     $imageUrl = asset('storage/' . $imagePath);
+
+                    if (!Storage::disk('public')->exists($imagePath)) {
+                        Log::error('File storage failed', ['path' => $imagePath]);
+                    }        
 
                     $model->images()->create([
                         'image_url' => $imageUrl,
