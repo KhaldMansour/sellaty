@@ -26,5 +26,13 @@ cd /var/www/html && rm -f composer.lock | true && composer install
 
 # npm run build
 
+php artisan storage:link
+
+# Set ownership and permissions for the log file
+info "Setting log file ownership and permissions..."
+touch /var/www/html/storage/logs/laravel.log
+chown www-data:www-data /var/www/html/storage/logs/laravel.log
+chmod 775 /var/www/html/storage/logs/laravel.log
+
 ## Start Supervisord
 supervisord -c /etc/supervisor/supervisord.conf
