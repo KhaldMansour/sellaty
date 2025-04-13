@@ -33,7 +33,6 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
 
     Route::prefix('products')->group(function () {
         Route::get('/', 'ProductController@index');
-        Route::post('/', 'ProductController@create');
         Route::get('{product}', 'ProductController@show');
         Route::put('{product}', 'ProductController@update');
         Route::delete('{product}', 'ProductController@destroy');
@@ -44,8 +43,6 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
 
     Route::prefix('wanted-products')->group(function () {
         Route::get('/', 'WantedProductController@index');
-        Route::get('/my-wanted-products', 'WantedProductController@myWantedProducts');
-        Route::post('/', 'WantedProductController@create');
         Route::get('/{wantedProduct}', 'WantedProductController@show');
     });
 
@@ -61,6 +58,12 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
 
     Route::middleware([JwtMiddleware::class])->group(function () {
         Route::post('verify-otp', 'AuthController@verifyOtp');
+        Route::post('/products', 'ProductController@create');
+        Route::post('/wanted-products', 'WantedProductController@create');
+
+        Route::get('users/profile/wanted-products', 'UserController@myWantedProducts');
+        Route::get('users/profile/products', 'UserController@myProducts');
+
         Route::get('user', 'AuthController@me');
         Route::post('logout', 'AuthController@logout');
     });
