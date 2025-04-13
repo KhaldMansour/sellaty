@@ -149,7 +149,7 @@ class CreateWantedProductRequest extends FormRequest
 
         return [
             'name' => [
-                'nullable',
+                'required',
                 'string',
                 'max:255',
                 function ($attribute, $value, $fail) use ($locale) {
@@ -170,7 +170,9 @@ class CreateWantedProductRequest extends FormRequest
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'condition' => 'required|array',
+            'condition.*' => 'string|in:new,used,refurbished',
             'delivery_options' => 'required|array',
+            'delivery_options.*' => 'string|in:pickup,shipping,local_delivery',
             'address' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
