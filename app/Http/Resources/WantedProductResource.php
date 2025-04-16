@@ -159,7 +159,7 @@ class WantedProductResource extends JsonResource
             'city' => $this->city,
             'postal_code' => $this->postal_code,
             'listed_until' => $this->listed_until,
-            'active' => $this->active,
+            'status' => $this->status,
             'categories' => CategoryResource::collection($this->categories),
             'user' => new UserResource($this->user),
             'images' => WantedProductImageResource::collection($this->images),

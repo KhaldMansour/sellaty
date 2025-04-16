@@ -117,7 +117,7 @@ class ProductResource extends JsonResource
             'city' => $this->city,
             'postal_code' => $this->postal_code,
             'listed_until' => $this->listed_until?->format('Y-m-d'),
-            'active' => $this->active,
+            'status' => $this->status,
             'negotiable' => $this->negotiable,
             'deliverable' => $this->deliverable,
             'featured' => $this->featured,
