@@ -23,6 +23,11 @@ class Category extends Model
         return $this->belongsToMany(Product::class, 'category_product');
     }
 
+    public function wantedProducts()
+    {
+        return $this->belongsToMany(WantedProduct::class, 'category_wanted_product');
+    }
+
     protected function handleTranslations()
     {
         $locale = app()->getLocale();
