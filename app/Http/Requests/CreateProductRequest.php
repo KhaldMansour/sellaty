@@ -125,7 +125,7 @@ class CreateProductRequest extends FormRequest
             'delivery_options' => 'required|array',
             'delivery_options.*' => 'string|in:Meet up,Pickup',
             'images' => 'required|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:4048',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:20048',
             'address' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
