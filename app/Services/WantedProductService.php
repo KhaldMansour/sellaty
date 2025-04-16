@@ -2,16 +2,20 @@
 
 namespace App\Services;
 
+use App\Models\WantedProduct;
+use App\Repositories\RecentSearchRepository;
 use App\Repositories\WantedProductRepository;
 
 class WantedProductService
 {
-    public function __construct(private readonly WantedProductRepository $wantedProductRepository)
+    public function __construct(private readonly WantedProductRepository $wantedProductRepository, private readonly RecentSearchRepository $recentSearchRepository)
     {
     }
 
-    public function getAll(int $limit)
+    public function getAll(int $limit, $data = null)
     {
+        $this->saveSearchValue($data, auth()->user());
+
         return $this->wantedProductRepository->paginate($limit);
     }
 
@@ -28,6 +32,30 @@ class WantedProductService
             return $this->wantedProductRepository->create($data);
         } catch (\Exception $e) {
             throw new \Exception('Error while creating the wanted product: ' . $e->getMessage());
+        }
+    }
+
+    private function saveSearchValue($data, $user)
+    {
+        if (empty($data['search']) || empty($data['searchFields'] || empty($user))) {
+            return;
+        }
+
+        $fields = explode(';', $data['searchFields']);
+
+        $allowedFields = ['name', 'description'];
+
+        foreach ($fields as $field) {
+            [$fieldName] = explode(':', $field);
+
+            if (in_array(trim($fieldName), $allowedFields)) {
+                $this->recentSearchRepository->save(
+                    $user->id,
+                    $fieldName,
+                    $data['search'],
+                    new WantedProduct()
+                );
+            }
         }
     }
 }

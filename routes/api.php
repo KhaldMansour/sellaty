@@ -63,6 +63,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
 
         Route::get('users/profile/wanted-products', 'UserController@myWantedProducts');
         Route::get('users/profile/products', 'UserController@myProducts');
+        Route::get('users/profile/recent-search', 'UserController@myRecentSearches');
 
         Route::get('user', 'AuthController@me');
         Route::post('logout', 'AuthController@logout');

@@ -52,7 +52,7 @@ class WantedProductController extends Controller
     public function index(ListResourceRequest $request)
     {
         $limit = $request->input('limit', 10);
-        $wantedProducts = $this->wantedProductService->getAll($limit);
+        $wantedProducts = $this->wantedProductService->getAll($limit, $request->validated());
 
         return $this->success(WantedProductResource::collection($wantedProducts));
     }

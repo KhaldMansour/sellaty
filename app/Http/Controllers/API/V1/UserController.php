@@ -4,13 +4,14 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\RecentSearchResource;
 use App\Http\Resources\WantedProductResource;
-use App\Services\WantedProductService;
+use App\Repositories\RecentSearchRepository;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function __construct(private readonly WantedProductService $wantedProductService)
+    public function __construct(private readonly RecentSearchRepository $recentSearchRepository)
     {
     }
 
@@ -150,5 +151,13 @@ class UserController extends Controller
         $limit = $request->input('limit', 10);
 
         return $this->success(ProductResource::collection($user->products()->paginate($limit)));
+    }
+
+    public function myRecentSearches(Request $request)
+    {
+        $user = auth()->user();
+        $recentSearches = $this->recentSearchRepository->where('user_id', $user->id)->limit(10)->get();
+
+        return $this->success(RecentSearchResource::collection($recentSearches));
     }
 }
