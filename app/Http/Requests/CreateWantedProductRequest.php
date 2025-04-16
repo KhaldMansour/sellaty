@@ -179,6 +179,7 @@ class CreateWantedProductRequest extends FormRequest
             'city' => 'required|string|max:255',
             'postal_code' => 'required|string|max:6',
             'active' => 'nullable|boolean',
+            'currency' => 'required|string|max:3',
         ];
     }
 }

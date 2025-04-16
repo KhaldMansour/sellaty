@@ -18,6 +18,7 @@ return new class () extends Migration {
             $table->string('model')->nullable();
             $table->decimal('price', 10, 2);
             $table->string('duration');
+            $table->string('currency');
             $table->unsignedInteger('quantity')->default(0);
             $table->json('condition');
             $table->json('delivery_options');

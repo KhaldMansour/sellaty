@@ -27,7 +27,8 @@ class WantedProduct extends Model
         'city',
         'postal_code',
         'listed_until',
-        'active'
+        'active',
+        'currency'
     ];
 
     public $translatable = ['name' , 'description'];
