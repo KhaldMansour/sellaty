@@ -168,7 +168,7 @@ class CreateWantedProductRequest extends FormRequest
             'min_price' => 'required|numeric|min:0',
             'max_price' => 'required|numeric|min:0|gte:min_price',
             'images' => 'required|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:4048',
             'condition' => 'required|array',
             'condition.*' => 'string|in:New,Used',
             'delivery_options' => 'required|array',
