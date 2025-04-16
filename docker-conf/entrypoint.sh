@@ -35,5 +35,7 @@ touch /var/www/html/storage/logs/laravel.log
 chown www-data:www-data /var/www/html/storage/logs/laravel.log
 chmod 775 /var/www/html/storage/logs/laravel.log
 
+php artisan optimize
+
 ## Start Supervisord
 supervisord -c /etc/supervisor/supervisord.conf

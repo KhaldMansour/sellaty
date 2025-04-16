@@ -28,7 +28,6 @@ class Product extends Model
         'city',
         'postal_code',
         'listed_until',
-        'active',
         'negotiable',
         'deliverable',
         'user_id',
@@ -41,7 +40,6 @@ class Product extends Model
         'description' => 'array',
         'condition' => 'array',
         'delivery_options' => 'array',
-        'active' => 'boolean',
         'negotiable' => 'boolean',
         'deliverable' => 'boolean',
         'featured' => 'boolean',
@@ -82,7 +80,6 @@ class Product extends Model
     {
         static::creating(function ($model) {
             $model->setListedUntilAttribute();
-            $model->active = $model->active ?? 1;
             $model->handleTranslations();
         });
 

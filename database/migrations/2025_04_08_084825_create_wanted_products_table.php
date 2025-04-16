@@ -29,7 +29,7 @@ return new class () extends Migration {
             $table->string('city');
             $table->string('postal_code');
             $table->date('listed_until');
-            $table->boolean('active')->default(true);
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }

@@ -27,7 +27,6 @@ class WantedProduct extends Model
         'city',
         'postal_code',
         'listed_until',
-        'active',
         'currency'
     ];
 
@@ -36,7 +35,6 @@ class WantedProduct extends Model
     protected $casts = [
         'name' => 'array',
         'description' => 'array',
-        'active' => 'boolean',
         'condition' => 'array',
         'delivery_options' => 'array',
         'listed_until' => 'date',
@@ -58,7 +56,6 @@ class WantedProduct extends Model
         static::creating(function ($model) {
             $model->handleTranslations();
             $model->setListedUntilAttribute();
-            $model->active = $model->active ?? 1;
         });
 
         static::saved(function ($model) {
@@ -109,24 +106,6 @@ class WantedProduct extends Model
         }
 
         return Carbon::now();
-    }
-
-    // public function isActive()
-    // {
-    //     return $this->active && Carbon::now()->lt(Carbon::parse($this->listed_until));
-    // }
-
-    public function deactivateIfExpired()
-    {
-        if ($this->isActive() && Carbon::now()->gte(Carbon::parse($this->listed_until))) {
-            // $this->active = false;
-            $this->save();
-        }
-    }
-
-    public function scopeActive($query)
-    {
-        return $query->where('active', true);
     }
 
     public function user()

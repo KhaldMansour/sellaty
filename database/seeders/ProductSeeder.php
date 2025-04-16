@@ -75,10 +75,8 @@ class ProductSeeder extends Seeder
                 'city' => $faker->city(),
                 'postal_code' => $faker->postcode(),
                 'listed_until' => $faker->dateTimeBetween('+1 month', '+1 year')->format('Y-m-d'),
-                'active' => $faker->boolean(50),
                 'negotiable' => $faker->boolean(50),
                 'deliverable' => $faker->boolean(50),
-                'featured' => $faker->boolean(50),
                 'currency' => $faker->randomElement(['USD', 'SAR', 'EGP']),
             ]);
 
