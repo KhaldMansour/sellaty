@@ -28,8 +28,10 @@ class WantedProductService
         try {
             $user = auth()->user();
             $data['user_id'] = $user->id;
+            $wantedProduct = $this->wantedProductRepository->create($data);
+            $wantedProduct->categories()->attach($data['category_ids']);
 
-            return $this->wantedProductRepository->create($data);
+            return $wantedProduct;
         } catch (\Exception $e) {
             throw new \Exception('Error while creating the wanted product: ' . $e->getMessage());
         }

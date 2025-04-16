@@ -150,6 +150,7 @@ class WantedProductResource extends JsonResource
             'duration' => $this->duration,
             'min_price' => (float) $this->min_price,
             'max_price' => (float) $this->max_price,
+            'currency' => $this->currency,
             'condition' => array_map('strval', (array) $this->condition),
             'delivery_options' => array_map('strval', (array) $this->delivery_options),
             'address' => $this->address,
@@ -159,6 +160,7 @@ class WantedProductResource extends JsonResource
             'postal_code' => $this->postal_code,
             'listed_until' => $this->listed_until,
             'active' => $this->active,
+            'categories' => CategoryResource::collection($this->categories),
             'user' => new UserResource($this->user),
             'images' => WantedProductImageResource::collection($this->images),
         ];

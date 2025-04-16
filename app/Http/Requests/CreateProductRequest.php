@@ -135,7 +135,7 @@ class CreateProductRequest extends FormRequest
             'negotiable' => 'nullable|boolean',
             'deliverable' => 'nullable|boolean',
             'category_ids' => 'required|array',
-            'category_ids.*' => 'exists:categories,id',
+            'category_ids.*' => 'numeric|exists:categories,id',
             'currency' => 'required|string|max:3',
         ];
     }

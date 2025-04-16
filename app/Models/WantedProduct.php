@@ -138,4 +138,9 @@ class WantedProduct extends Model
     {
         return $this->hasMany(WantedProductImage::class);
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_wanted_product');
+    }
 }

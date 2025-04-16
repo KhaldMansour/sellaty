@@ -180,6 +180,8 @@ class CreateWantedProductRequest extends FormRequest
             'postal_code' => 'required|string|max:6',
             'active' => 'nullable|boolean',
             'currency' => 'required|string|max:3',
+            'category_ids' => 'required|array',
+            'category_ids.*' => 'numeric|exists:categories,id',
         ];
     }
 }
