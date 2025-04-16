@@ -17,6 +17,7 @@ return new class () extends Migration {
             $table->string('brand')->nullable();
             $table->string('model')->nullable();
             $table->string('duration');
+            $table->string('currency');
             $table->decimal('min_price', 10, 2);
             $table->decimal('max_price', 10, 2);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');

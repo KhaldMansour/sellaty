@@ -79,6 +79,7 @@ class ProductSeeder extends Seeder
                 'negotiable' => $faker->boolean(50),
                 'deliverable' => $faker->boolean(50),
                 'featured' => $faker->boolean(50),
+                'currency' => $faker->randomElement(['USD', 'SAR', 'EGP']),
             ]);
 
             $product->categories()->attach($categoryId);

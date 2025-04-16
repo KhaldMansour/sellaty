@@ -108,6 +108,7 @@ class ProductResource extends JsonResource
             'model' => $this->model,
             'duration' => $this->duration,
             'quantity' => (int) $this->quantity,
+            'currency' => $this->currency,
             'condition' => array_map('strval', (array) $this->condition),
             'delivery_options' => array_map('strval', (array) $this->delivery_options),
             'address' => $this->address,

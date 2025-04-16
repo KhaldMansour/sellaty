@@ -33,6 +33,7 @@ class Product extends Model
         'deliverable',
         'user_id',
         'featured',
+        'currency'
     ];
 
     protected $casts = [
@@ -94,7 +95,7 @@ class Product extends Model
 
                     if (!Storage::disk('public')->exists($imagePath)) {
                         Log::error('File storage failed', ['path' => $imagePath]);
-                    }        
+                    }
 
                     $model->images()->create([
                         'image_url' => $imageUrl,
