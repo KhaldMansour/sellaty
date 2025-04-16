@@ -170,7 +170,7 @@ class CreateWantedProductRequest extends FormRequest
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'condition' => 'required|array',
-            'condition.*' => 'string|in:New,Like New,Good,Used - Fair,Used - Poor',
+            'condition.*' => 'string|in:New,Used',
             'delivery_options' => 'required|array',
             'delivery_options.*' => 'string|in:Meet up,Pickup',
             'address' => 'required|string|max:255',
