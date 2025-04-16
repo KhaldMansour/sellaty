@@ -53,7 +53,8 @@ class ProductController extends Controller
     public function index(ListResourceRequest $request)
     {
         $limit = $request->input('limit', 10);
-        $products = $this->productService->getAll($limit);
+
+        $products = $this->productService->getAll($limit, $request->validated());
 
         return $this->success(ProductResource::collection($products));
     }

@@ -2,17 +2,21 @@
 
 namespace App\Services;
 
+use App\Models\Product;
+use App\Repositories\RecentSearchRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\Storage;
 
 class ProductService
 {
-    public function __construct(private readonly ProductRepository $productRepository)
+    public function __construct(private readonly ProductRepository $productRepository, private readonly RecentSearchRepository $recentSearchRepository)
     {
     }
 
-    public function getAll(int $limit = 10)
+    public function getAll(int $limit = 10, $data = null)
     {
+        $this->saveSearchValue($data, auth()->user());
+
         return $this->productRepository->with('categories')->paginate($limit);
     }
 
@@ -60,5 +64,29 @@ class ProductService
     public function detachCategoriesFromProduct($product, $categoryIds)
     {
         $product->categories()->detach($categoryIds);
+    }
+
+    private function saveSearchValue($data, $user)
+    {
+        if (empty($data['search']) || empty($data['searchFields'] || empty($user))) {
+            return;
+        }
+
+        $fields = explode(';', $data['searchFields']);
+
+        $allowedFields = ['name', 'description'];
+
+        foreach ($fields as $field) {
+            [$fieldName] = explode(':', $field);
+
+            if (in_array(trim($fieldName), $allowedFields)) {
+                $this->recentSearchRepository->save(
+                    $user->id,
+                    $fieldName,
+                    $data['search'],
+                    new Product()
+                );
+            }
+        }
     }
 }
