@@ -296,4 +296,15 @@ class CategoryController extends Controller
 
         return $this->success(['stock' => $stockData , 'category' => new CategoryResource($category)]);
     }
+
+    public function popularCategories()
+    {
+        $popularCategories = Category::withCount('products')
+            ->having('products_count', '>', 0)
+            ->orderBy('products_count', 'desc')
+            ->take(5)
+            ->get();
+
+        return $this->success(CategoryResource::collection($popularCategories));
+    }
 }
