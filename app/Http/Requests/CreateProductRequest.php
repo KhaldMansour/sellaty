@@ -121,7 +121,7 @@ class CreateProductRequest extends FormRequest
             'duration' => 'required|string|max:255',
             'quantity' => 'required|integer|min:0',
             'condition' => 'required|array',
-            'condition.*' => 'string|in:New,Like New,Good,Used - Fair,Used - Poor',
+            'condition.*' => 'string|in:New,Used',
             'delivery_options' => 'required|array',
             'delivery_options.*' => 'string|in:Meet up,Pickup',
             'images' => 'required|array',
