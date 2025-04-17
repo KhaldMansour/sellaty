@@ -16,6 +16,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 {
     protected $fieldSearchable = [
         'name' => 'like',
+        'status' => 'like',
         'featured',
     ];
 
