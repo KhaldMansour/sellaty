@@ -39,7 +39,7 @@ class WantedProductService
 
     private function saveSearchValue($data, $user)
     {
-        if (empty($data['search']) || empty($data['searchFields'] || empty($user))) {
+        if (is_null($user) || empty($data['searchFields']) || empty($data['search'])) {
             return;
         }
 
