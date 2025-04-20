@@ -130,7 +130,7 @@ class CreateProductRequest extends FormRequest
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
             'city' => 'required|string|max:255',
-            'postal_code' => 'required|string|max:20',
+            'postal_code' => 'required|string|max:5',
             'negotiable' => 'nullable|boolean',
             'deliverable' => 'nullable|boolean',
             'category_ids' => 'required|array',
