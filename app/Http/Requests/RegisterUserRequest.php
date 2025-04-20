@@ -36,7 +36,13 @@ class RegisterUserRequest extends FormRequest
         return [
             'name' => 'required|string',
             'email' => 'string|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:6',
+                'confirmed',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/',
+            ],
             'phone_number' => 'required|string|regex:/^\+?[1-9]\d{1,14}$/|unique:users',
         ];
     }
