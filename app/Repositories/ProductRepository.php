@@ -20,6 +20,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
     protected $fieldSearchable = [
         'status',
+        'name' => 'like'
     ];
 
     public function model()
@@ -36,7 +37,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
         $this->pushCriteria(new SearchByNameCriteria());
 
-        $this->pushCriteria(new SpaceOnlySearchDisabler());
+        // $this->pushCriteria(new SpaceOnlySearchDisabler());
 
         $this->pushCriteria(app(RequestCriteria::class));
     }

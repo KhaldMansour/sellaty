@@ -15,6 +15,11 @@ use Prettus\Repository\Criteria\RequestCriteria;
  */
 class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
 {
+    protected $fieldSearchable = [
+        'status',
+        'name' => 'like'
+    ];
+    
     public function model()
     {
         return Category::class;
@@ -27,7 +32,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     {
         $this->pushCriteria(new SearchByNameCriteria());
 
-        $this->pushCriteria(new SpaceOnlySearchDisabler());
+        // $this->pushCriteria(new SpaceOnlySearchDisabler());
 
         $this->pushCriteria(app(RequestCriteria::class));
     }
