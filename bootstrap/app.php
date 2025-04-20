@@ -4,6 +4,7 @@ use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -36,6 +37,15 @@ return Application::configure(basePath: dirname(__DIR__))
                     'error' => 'Resource not found.',
                     'message' => $e->getMessage()
                 ], 404);
+            }
+
+            if ($e instanceof HttpExceptionInterface) {
+                return response()->json([
+                    'status' => 'error',
+                    'data' => null,
+                    'error' => $e->getMessage(),
+                    'message' => $e->getMessage()
+                ], $e->getStatusCode());
             }
 
             return response()->json([
