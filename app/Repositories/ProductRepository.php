@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Product;
 use App\Repositories\Criteria\SearchByCategoryCriteria;
+use App\Repositories\Criteria\SearchByNameCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 
@@ -14,10 +15,10 @@ use Prettus\Repository\Criteria\RequestCriteria;
  */
 class ProductRepository extends BaseRepository implements ProductRepositoryInterface
 {
+    protected $searchJoin = 'and';
+
     protected $fieldSearchable = [
-        'name' => 'like',
-        'status' => 'like',
-        'featured',
+        'status',
     ];
 
     public function model()
@@ -27,7 +28,12 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
     public function boot()
     {
+        $request = request();
+        $request->merge(['searchJoin' => 'and']);
+
         $this->pushCriteria(new SearchByCategoryCriteria());
+
+        $this->pushCriteria(new SearchByNameCriteria());
 
         $this->pushCriteria(app(RequestCriteria::class));
     }

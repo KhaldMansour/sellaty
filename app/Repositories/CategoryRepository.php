@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Category;
+use App\Repositories\Criteria\SearchByNameCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 
@@ -13,22 +14,18 @@ use Prettus\Repository\Criteria\RequestCriteria;
  */
 class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
 {
-    protected $fieldSearchable = [
-        'name' => 'like',
-    ];
-
     public function model()
     {
         return Category::class;
     }
-
-
 
     /**
      * Boot up the repository, pushing criteria
      */
     public function boot()
     {
+        $this->pushCriteria(new SearchByNameCriteria());
+
         $this->pushCriteria(app(RequestCriteria::class));
     }
 }
