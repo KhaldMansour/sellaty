@@ -56,7 +56,7 @@ class ProductController extends Controller
 
         $products = $this->productService->getAll($limit, $request->validated());
 
-        return $this->success(ProductResource::collection($products));
+        return $this->success(ProductResource::collection($products)->response()->getData());
     }
 
     /**
