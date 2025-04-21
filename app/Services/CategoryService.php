@@ -52,4 +52,16 @@ class CategoryService
 
         return $totalStock;
     }
+
+    public function getNames()
+    {
+        return Category::select('id', 'name')
+            ->get()
+            ->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->getTranslation('name', app()->getLocale()),
+                ];
+            });
+    }
 }

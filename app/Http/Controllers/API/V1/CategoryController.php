@@ -307,4 +307,11 @@ class CategoryController extends Controller
 
         return $this->success(CategoryResource::collection($popularCategories));
     }
+
+    public function getNames()
+    {
+        $categoriesNames = $this->categoryService->getNames();
+
+        return $this->success($categoriesNames);
+    }
 }
