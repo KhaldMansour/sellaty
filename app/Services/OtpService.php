@@ -6,6 +6,7 @@ use App\Contracts\OtpSenderStrategy;
 use App\Models\Otp;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OtpService
 {
@@ -39,25 +40,33 @@ class OtpService
 
     public function validateOtp(string $phoneNumber, string $otp): bool
     {
-        $cachedOtp = Cache::get("otp:$phoneNumber");
+        $cacheKey = "otp:$phoneNumber";
+        $cachedOtp = Cache::get($cacheKey);
 
-        if ($cachedOtp && $cachedOtp == $otp) {
-            Cache::forget("otp:$phoneNumber");
+        if ($cachedOtp) {
+            if ($cachedOtp == $otp) {
+                Cache::forget($cacheKey);
+
+                return true;
+            }
+        }
+
+        $otpRecord = Otp::where('phone_number', $phoneNumber)->first();
+
+        if ($otpRecord) {
+            if ($otpRecord->otp != $otp) {
+                throw new HttpException(422, 'OTP is invalid.');
+            }
+
+            if ($otpRecord->expires_at < Carbon::now()) {
+                throw new HttpException(422, 'OTP is expired.');
+            }
+
+            Cache::forget($cacheKey);
 
             return true;
         }
-
-        $otpRecord = Otp::where('phone_number', $phoneNumber)
-                        ->where('expires_at', '>=', Carbon::now())
-                        ->first();
-
-        if ($otpRecord && $otpRecord->otp == $otp) {
-            Cache::forget("otp:$phoneNumber");
-
-            return true;
-        }
-
-        return false;
+        throw new HttpException(422, 'OTP is invalid.');
     }
 
     public function shouldSendOtp(string $phoneNumber): bool
