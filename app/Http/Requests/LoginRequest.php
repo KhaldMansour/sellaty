@@ -35,4 +35,16 @@ class LoginRequest extends FormRequest
             'otp' => 'required|numeric|digits:6',
         ];
     }
+
+    /**
+     * Custom error messages for validation.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'phone_number.exists' => 'Phone number is not registered.',
+        ];
+    }
 }
