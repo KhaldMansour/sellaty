@@ -20,7 +20,7 @@ class RecentSearchResource extends JsonResource
             'user_id' => $this->user_id,
             'field' => $this->field,
             'value' => $this->value,
-            'type' => $this-> model === Product::class ? 'seller' : 'buyer',
+            'type' => $this->model === Product::class ? 'seller' : 'buyer',
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
