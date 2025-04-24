@@ -31,7 +31,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone_number' => 'required|string|regex:/^\+?[1-9]\d{1,14}$/|exists:users,phone_number',
+            'phone_number' => 'required|string|exists:users,phone_number',
             'otp' => 'required|numeric|digits:6',
         ];
     }

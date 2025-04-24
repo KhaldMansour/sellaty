@@ -167,7 +167,7 @@ class AuthController extends Controller
     public function resendOtp(Request $request)
     {
         $request->validate([
-            'phone_number' => 'required|string|regex:/^\+?[1-9]\d{1,14}$/|exists:users,phone_number',
+            'phone_number' => 'required|string|exists:users,phone_number',
         ]);
 
         $phoneNumber = $request->input('phone_number');
