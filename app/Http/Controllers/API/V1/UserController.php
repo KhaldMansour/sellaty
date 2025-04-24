@@ -8,11 +8,12 @@ use App\Http\Resources\RecentSearchResource;
 use App\Http\Resources\WantedProductResource;
 use App\Repositories\ProductRepository;
 use App\Repositories\RecentSearchRepository;
+use App\Repositories\WantedProductRepository;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function __construct(private readonly RecentSearchRepository $recentSearchRepository, private readonly ProductRepository $productRepository, private readonly WantedProductResource $wantedProductResource)
+    public function __construct(private readonly RecentSearchRepository $recentSearchRepository, private readonly ProductRepository $productRepository, private readonly WantedProductRepository $wantedProductRepository)
     {
     }
 
@@ -80,7 +81,8 @@ class UserController extends Controller
     public function myWantedProducts(Request $request)
     {
         $limit = $request->input('limit', 10);
-        $wantedProducts = $this->wantedProductResource->where('user_id', auth()->user()->id)->paginate($limit);
+
+        $wantedProducts = $this->wantedProductRepository->where('user_id', auth()->user()->id)->paginate($limit);
 
         return $this->success(WantedProductResource::collection($wantedProducts));
     }
@@ -155,7 +157,7 @@ class UserController extends Controller
         return $this->success(ProductResource::collection($products));
     }
 
-    public function myRecentSearches(Request $request)
+    public function myRecentSearches()
     {
         $user = auth()->user();
 
