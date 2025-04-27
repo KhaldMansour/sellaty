@@ -53,6 +53,13 @@ class CategoryService
         return $totalStock;
     }
 
+    public function getProducts(Category $category, $limit = 10)
+    {
+        $categoryProducts = $category->products()->paginate($limit);
+
+        return $categoryProducts;
+    }
+
     public function getNames()
     {
         return Category::select('id', 'name')

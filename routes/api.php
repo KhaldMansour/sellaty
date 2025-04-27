@@ -28,6 +28,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::get('/popular-categories', 'CategoryController@popularCategories');
         Route::get('/names', 'CategoryController@getNames');
         Route::get('{category}', 'CategoryController@show');
+        Route::get('{category}/products', 'CategoryController@getProducts');
         Route::post('/update/{category}', 'CategoryController@update');
         Route::delete('{category}', 'CategoryController@destroy');
         Route::get('{category}/products/stock', 'CategoryController@countStockByCategory');
