@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ProductResource;
 use App\Services\CategoryService;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -313,5 +314,13 @@ class CategoryController extends Controller
         $categoriesNames = $this->categoryService->getNames();
 
         return $this->success($categoriesNames);
+    }
+
+    public function getProducts(Category $category)
+    {
+        $limit = request()->input('limit', 10);
+        $categoryProducts = $this->categoryService->getProducts($category, $limit);
+
+        return $this->success(['category' => new CategoryResource($category), 'products' => ProductResource::collection($categoryProducts)]);
     }
 }
