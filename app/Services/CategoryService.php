@@ -55,7 +55,11 @@ class CategoryService
 
     public function getProducts(Category $category, $limit = 10)
     {
-        $categoryProducts = $category->products()->paginate($limit);
+        $categoryProducts = $category->products()
+            ->with(['images' => function ($query) {
+                $query->limit(1);
+            }])
+            ->paginate($limit);
 
         return $categoryProducts;
     }
