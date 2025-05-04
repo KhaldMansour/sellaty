@@ -16,9 +16,8 @@ class ChatService
     {
     }
 
-    public function getOrCreateChat($productId, $buyerId): Chat
+    public function getOrCreateChat($product, $buyerId): Chat
     {
-        $product = Product::findOrFail($productId);
         $sellerId = $product->seller->id;
 
         if ($buyerId === $sellerId) {
@@ -26,7 +25,7 @@ class ChatService
         }
 
         return Chat::firstOrCreate(
-            ['product_id' => $productId, 'buyer_id' => $buyerId],
+            ['product_id' => $product->id, 'buyer_id' => $buyerId],
             ['seller_id' => $sellerId]
         );
     }
@@ -47,8 +46,8 @@ class ChatService
     public function getBuyerChatsWithUnseenCount(int $userId)
     {
         return Chat::where('buyer_id', $userId)
-            ->with('product')
-            ->withCount([
+        ->with(['product', 'buyer', 'seller'])
+        ->withCount([
                 'messages as unseen_messages_count' => function ($query) use ($userId) {
                     $query->where('sender_id', '!=', $userId)
                           ->whereNull('seen_at');
@@ -60,8 +59,8 @@ class ChatService
     public function getSellerChatsWithUnseenCount(int $userId)
     {
         return Chat::where('seller_id', $userId)
-            ->with('product')
-            ->withCount([
+        ->with(['product', 'buyer', 'seller'])
+        ->withCount([
                 'messages as unseen_messages_count' => function ($query) use ($userId) {
                     $query->where('sender_id', '!=', $userId)
                           ->whereNull('seen_at');

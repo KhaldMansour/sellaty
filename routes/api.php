@@ -49,9 +49,9 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::get('/{wantedProduct}', 'WantedProductController@show');
     });
 
-    // Route::prefix('chats')->group(function () {
-    //     Route::get('/chat', 'ChatController@index');
-    // });
+    Route::prefix('chats')->group(function () {
+        Route::get('/chat', 'ChatController@index');
+    });
 
     Route::post('register', 'AuthController@register');
     Route::post('login', 'AuthController@login');
@@ -75,7 +75,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         });
 
         Route::prefix('chats')->group(function () {
-            Route::post('product/{productId}', 'ChatController@getOrCreate');
+            Route::post('product/{product}', 'ChatController@getOrCreate');
             Route::get('buyer', 'ChatController@buyerChats');
             Route::get('seller', 'ChatController@sellerChats');
             Route::post('{chat}/messages', 'ChatMessageController@send');
