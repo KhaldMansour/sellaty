@@ -50,11 +50,7 @@
             if (!text.trim()) return;
             
 
-            axios.post(`/api/v1/chats/${chatId}/messages`, { text }, {
-                headers: {
-                    'X-Socket-Id': Echo.socketId()
-                }
-            })
+            axios.post(`/api/v1/chats/${chatId}/messages`, { text })
             .then(() => {
                 document.getElementById('text').value = '';
             })
