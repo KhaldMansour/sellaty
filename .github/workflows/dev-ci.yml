@@ -109,6 +109,20 @@ jobs:
           TWILIO_AUTH_TOKEN: ${{ vars.TWILIO_AUTH_TOKEN }}
           TWILIO_PHONE_NUMBER: ${{ vars.TWILIO_PHONE_NUMBER }}
 
+          REVERB_SERVER_HOST: ${{ vars.REVERB_SERVER_HOST }}
+
+          REVERB_APP_ID: ${{ vars.REVERB_APP_ID }}
+          REVERB_APP_KEY: ${{ vars.REVERB_APP_KEY }}
+          REVERB_APP_SECRET: ${{ vars.REVERB_APP_SECRET }}
+
+          REVERB_HOST: ${{ vars.REVERB_HOST }}
+          REVERB_PORT: ${{ vars.REVERB_PORT }}
+          REVERB_SCHEME: ${{ vars.REVERB_SCHEME }}
+
+          VITE_REVERB_APP_KEY: ${{ vars.VITE_REVERB_APP_KEY }}
+          VITE_REVERB_HOST: ${{ vars.VITE_REVERB_HOST }}
+          VITE_REVERB_PORT: ${{ vars.VITE_REVERB_PORT }}
+          VITE_REVERB_SCHEME: ${{ vars.VITE_REVERB_SCHEME }}
         run: |
           envsubst < .env.ci > .env.ci.tmp || true
           mv .env.ci.tmp .env || true

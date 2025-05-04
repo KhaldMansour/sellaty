@@ -18,7 +18,7 @@ RUN apt-get update -y && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
-    libpng-dev 
+    libpng-dev
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -46,5 +46,5 @@ RUN php artisan storage:link || true
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 
 
-EXPOSE 80
+EXPOSE 80 6001
 

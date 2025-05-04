@@ -28,6 +28,8 @@ cd /var/www/html && rm -f composer.lock | true && composer install
 
 php artisan storage:link
 
+php artisan reverb:start
+
 # Set ownership and permissions for the log file
 info "Setting log file ownership and permissions..."
 chown -R www-data:www-data storage/app/public
