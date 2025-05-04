@@ -42,9 +42,22 @@ RUN chown -R www-data:www-data /var/www/html \
 # Laravel storage link (optional, you can do it in entrypoint too)
 RUN php artisan storage:link || true
 
+RUN sudo apt remove nodejs npm
+
+# Clean up
+RUN apt autoremove
+RUN apt autoclean
+
+# Add NodeSource repository
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+RUN apt-get install -y nodejs
+RUN apt-get install -y npm
+
+# RUN apt-get install -y nodejs
+# RUN npm install -g npm@latest
+
 # Copy the custom Apache config
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
-
 
 EXPOSE 80 6001
 
