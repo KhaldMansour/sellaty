@@ -24,7 +24,7 @@ RUN apt-get update -y && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # PHP Extension
-RUN docker-php-ext-install gettext intl pdo_mysql gd
+RUN docker-php-ext-install gettext intl pdo_mysql pcntl gd
 
 RUN curl -sSL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar -xz -C /usr/local/bin
 

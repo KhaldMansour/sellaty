@@ -49,15 +49,14 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::get('/{wantedProduct}', 'WantedProductController@show');
     });
 
+    // Route::prefix('chats')->group(function () {
+    //     Route::get('/chat', 'ChatController@index');
+    // });
+
     Route::post('register', 'AuthController@register');
     Route::post('login', 'AuthController@login');
     Route::post('resend-otp', 'AuthController@resendOtp');
 
-    // Route::middleware('auth:sanctum')->group(function () {
-    //     Route::get('/user', function (Request $request) {
-    //         return $request->user();
-    //     });
-    // });
 
     Route::middleware([JwtMiddleware::class])->group(function () {
         Route::post('verify-otp', 'AuthController@verifyOtp');
@@ -67,6 +66,22 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::get('users/profile/wanted-products', 'UserController@myWantedProducts');
         Route::get('users/profile/products', 'UserController@myProducts');
         Route::get('users/profile/recent-search', 'UserController@myRecentSearches');
+
+        Route::prefix('users')->group(function () {
+            Route::get('profile/wanted-products', 'UserController@myWantedProducts');
+            Route::get('profile/products', 'UserController@myProducts');
+            Route::get('profile/recent-search', 'UserController@myRecentSearches');
+            Route::get('/profile', 'AuthController@me');
+        });
+
+        Route::prefix('chats')->group(function () {
+            Route::post('product/{productId}', 'ChatController@getOrCreate');
+            Route::get('buyer', 'ChatController@buyerChats');
+            Route::get('seller', 'ChatController@sellerChats');
+            Route::post('{chat}/messages', 'ChatMessageController@send');
+            Route::get('{chat}/messages', 'ChatMessageController@messages');
+            Route::post('{chat}/seen', 'ChatMessageController@markAsSeen');
+        });
 
         Route::get('user', 'AuthController@me');
         Route::post('logout', 'AuthController@logout');
