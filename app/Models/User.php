@@ -78,4 +78,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(WantedProduct::class);
     }
+
+    public function buyerChats()
+    {
+        return $this->hasMany(Chat::class, 'buyer_id');
+    }
+
+    public function sellerChats()
+    {
+        return $this->hasMany(Chat::class, 'seller_id');
+    }
 }
