@@ -142,10 +142,11 @@ class ChatMessageController extends Controller
         return $this->success(ChatMessageResource::collection($messages), 'Messages retrieved successfully');
     }
 
-    // public function markAsSeen(Chat $chat)
-    // {
-    //     $this->chatService->markMessagesAsSeen($chat, auth()->id());
+    public function markAsSeen(Chat $chat)
+    {
+        $user = auth()->user();
+        $this->chatMessageService->markMessagesAsSeen($user, $chat);
 
-    //     return response()->json(['status' => 'seen']);
-    // }
+        return $this->success([], 'Messages marked as seen successfully');
+    }
 }
