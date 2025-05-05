@@ -123,6 +123,9 @@ jobs:
           VITE_REVERB_HOST: ${{ vars.VITE_REVERB_HOST }}
           VITE_REVERB_PORT: ${{ vars.VITE_REVERB_PORT }}
           VITE_REVERB_SCHEME: ${{ vars.VITE_REVERB_SCHEME }}
+
+          BROADCAST_CONNECTION: ${{ vars.BROADCAST_CONNECTION }}
+          QUEUE_CONNECTION: ${{ vars.QUEUE_CONNECTION }}
         run: |
           envsubst < .env.ci > .env.ci.tmp || true
           mv .env.ci.tmp .env || true
