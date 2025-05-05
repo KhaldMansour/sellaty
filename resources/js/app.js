@@ -33,7 +33,7 @@ window.Echo = new Echo({
             Authorization: `Bearer ${token}`,
         },
     },
-    path: '/broadcasting', // Custom path to avoid '/app'
+    authEndpoint: '/broadcasting/auth',
 });
 
 
