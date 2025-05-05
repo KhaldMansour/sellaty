@@ -17,7 +17,7 @@ class ProductService
     {
         $this->saveSearchValue($data, auth()->user());
 
-        return $this->productRepository->with('categories')->paginate($limit);
+        return $this->productRepository->with('categories')->orderBy('created_at', 'desc')->paginate($limit);
     }
 
     public function createProduct($data)
