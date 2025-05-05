@@ -19,7 +19,6 @@ import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
 
-
 window.Echo = new Echo({
     broadcaster: 'reverb', // or 'pusher' depending on your setup
     key: process.env.VITE_REVERB_APP_KEY, // Use process.env to access environment variables
@@ -37,6 +36,12 @@ window.Echo = new Echo({
 });
 
 
+
+window.Echo.connector.pusher.connection.bind('connected', () => {
+    let socketId = window.Echo.connector.pusher.connection.socket_id;
+    axios.defaults.headers.common['X-Socket-ID'] = socketId;
+    console.log('Socket ID connected:', socketId);
+});
 
 // --- Listen to Chat Events ---
 window.Echo.private(`chat.1`)
