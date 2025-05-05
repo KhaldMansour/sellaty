@@ -13,7 +13,7 @@
     <button onclick="sendMessage()">Send</button>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    @vite('resources/js/app.js')
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <script>
         const chatId = 1;
