@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->validateCsrfTokens(except: [
+            '/broadcasting/auth',
+        ]);
         $middleware->alias([
             'JwtMiddleware' => JwtMiddleware::class,
             'SetLocale' => App\Http\Middleware\SetLocale::class,
