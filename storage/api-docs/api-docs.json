@@ -686,6 +686,382 @@
                 }
             }
         },
+        "/api/v1/chats/product/{productId}": {
+            "post": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Get or create a chat for the product",
+                "description": "Get an existing chat or create a new one between the authenticated buyer and the product's seller.",
+                "operationId": "getOrCreateChat",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "ID of the product",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chat retrieved or created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": null
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ChatResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/chats/buyer": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Get chats where the authenticated user is the buyer",
+                "description": "Returns a list of chats where the authenticated user is the buyer, including unseen message counts and counterpart (seller) information.",
+                "operationId": "getBuyerChats",
+                "responses": {
+                    "200": {
+                        "description": "List of buyer chats retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": null
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ChatResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/chats/seller": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Get chats where the authenticated user is the seller",
+                "description": "Returns a list of chats where the authenticated user is the seller, including unseen message counts and counterpart (buyer) information.",
+                "operationId": "getSellerChats",
+                "responses": {
+                    "200": {
+                        "description": "List of seller chats retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": null
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ChatResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/chats/{chat}/messages": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Get messages for a chat",
+                "description": "Returns a paginated list of messages for the specified chat. Only participants (buyer or seller) can access it.",
+                "operationId": "getChatMessages",
+                "parameters": [
+                    {
+                        "name": "chat",
+                        "in": "path",
+                        "description": "ID of the chat",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Messages retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Messages retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ChatMessageResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not belong to the chat",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You do not have access to this chat."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Send a message in a chat",
+                "description": "Send a new message from the authenticated user to a specific chat.",
+                "operationId": "sendChatMessage",
+                "parameters": [
+                    {
+                        "name": "chat",
+                        "in": "path",
+                        "description": "Chat ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SendChatMessageRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Message sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Message sent successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ChatMessageResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "text": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The text field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/intro-messages": {
             "get": {
                 "tags": [
@@ -2152,6 +2528,19 @@
                 },
                 "type": "object"
             },
+            "SendChatMessageRequest": {
+                "required": [
+                    "text"
+                ],
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "maxLength": 256,
+                        "example": "Hello, I'm interested in your product"
+                    }
+                },
+                "type": "object"
+            },
             "StoreIntroMessageRequest": {
                 "properties": {
                     "image": {
@@ -2297,6 +2686,101 @@
                         "type": "string",
                         "format": "date-time",
                         "example": "2025-03-13T05:53:52.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "ChatMessageResource": {
+                "title": "Chat Message",
+                "description": "Chat message resource structure",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "chat_id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "sender_id": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "sender_name": {
+                        "type": "string",
+                        "example": "Easton Prohaska"
+                    },
+                    "text": {
+                        "type": "string",
+                        "example": "Hello, how are you?"
+                    },
+                    "seen_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-03T22:45:43.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-03T22:45:43.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "ChatResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "product_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "buyer_id": {
+                        "type": "integer",
+                        "example": 29
+                    },
+                    "seller_id": {
+                        "type": "integer",
+                        "example": 23
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-03T22:45:43.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-03T22:45:43.000000Z"
+                    },
+                    "unseen_messages_count": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "product_name": {
+                        "type": "string",
+                        "example": "doloremque"
+                    },
+                    "counterpart": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 23
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "John Seller"
+                            }
+                        },
+                        "type": "object"
                     }
                 },
                 "type": "object"
@@ -2765,6 +3249,10 @@
         {
             "name": "Categories",
             "description": "Categories"
+        },
+        {
+            "name": "Chats",
+            "description": "Chats"
         },
         {
             "name": "IntroMessages",
