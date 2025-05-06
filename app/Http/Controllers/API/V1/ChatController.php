@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ChatResource;
+use App\Http\Resources\ChatSchema;
 use App\Models\Chat;
 use App\Models\Product;
 use App\Services\ChatService;
@@ -23,7 +23,7 @@ class ChatController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/chats/product/{productId}",
+     *     path="/api/v1/chats/products/{productId}",
      *     summary="Get or create a chat for the product",
      *     description="Get an existing chat or create a new one between the authenticated buyer and the product's seller.",
      *     operationId="getOrCreateChat",
@@ -42,7 +42,7 @@ class ChatController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="message", type="string", example=null),
-     *             @OA\Property(property="data", ref="#/components/schemas/ChatResource")
+     *             @OA\Property(property="data", ref="#/components/schemas/ChatSchema")
      *         )
      *     ),
      *     @OA\Response(
@@ -60,7 +60,7 @@ class ChatController extends Controller
         $buyerId = auth()->id();
         $chat = $this->chatService->getOrCreateChat($product, $buyerId);
 
-        return $this->success(new ChatResource($chat));
+        return $this->success(new ChatSchema($chat));
     }
 
     /**
@@ -80,7 +80,7 @@ class ChatController extends Controller
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/ChatResource")
+     *                 @OA\Items(ref="#/components/schemas/ChatSchema")
      *             )
      *         )
      *     ),
@@ -98,7 +98,7 @@ class ChatController extends Controller
         $userId = auth()->id();
         $buyerChats = $this->chatService->getBuyerChatsWithUnseenCount($userId);
 
-        return $this->success(ChatResource::collection($buyerChats));
+        return $this->success(ChatSchema::collection($buyerChats));
     }
 
     /**
@@ -118,7 +118,7 @@ class ChatController extends Controller
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/ChatResource")
+     *                 @OA\Items(ref="#/components/schemas/ChatSchema")
      *             )
      *         )
      *     ),
@@ -136,6 +136,6 @@ class ChatController extends Controller
         $userId = auth()->id();
         $sellerChats = $this->chatService->getSellerChatsWithUnseenCount($userId);
 
-        return $this->success(ChatResource::collection($sellerChats));
+        return $this->success(ChatSchema::collection($sellerChats));
     }
 }

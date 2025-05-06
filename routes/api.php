@@ -75,12 +75,21 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         });
 
         Route::prefix('chats')->group(function () {
-            Route::post('product/{product}', 'ChatController@getOrCreate');
+            Route::post('products/{product}', 'ChatController@getOrCreate');
             Route::get('buyer', 'ChatController@buyerChats');
             Route::get('seller', 'ChatController@sellerChats');
             Route::post('{chat}/messages', 'ChatMessageController@send');
             Route::get('{chat}/messages', 'ChatMessageController@messages');
             Route::post('{chat}/seen', 'ChatMessageController@markAsSeen');
+        });
+
+        Route::prefix('offers')->group(function () {
+            Route::post('products/{product}', 'OfferController@create');
+            // Route::get('buyer', 'ChatController@buyerChats');
+            // Route::get('seller', 'ChatController@sellerChats');
+            // Route::post('{chat}/messages', 'ChatMessageController@send');
+            // Route::get('{chat}/messages', 'ChatMessageController@messages');
+            // Route::post('{chat}/seen', 'ChatMessageController@markAsSeen');
         });
 
         Route::get('user', 'AuthController@me');

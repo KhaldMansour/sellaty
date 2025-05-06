@@ -686,7 +686,7 @@
                 }
             }
         },
-        "/api/v1/chats/product/{productId}": {
+        "/api/v1/chats/products/{productId}": {
             "post": {
                 "tags": [
                     "Chats"
@@ -721,7 +721,7 @@
                                             "example": null
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/ChatResource"
+                                            "$ref": "#/components/schemas/ChatSchema"
                                         }
                                     },
                                     "type": "object"
@@ -779,7 +779,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/ChatResource"
+                                                "$ref": "#/components/schemas/ChatSchema"
                                             }
                                         }
                                     },
@@ -838,7 +838,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/ChatResource"
+                                                "$ref": "#/components/schemas/ChatSchema"
                                             }
                                         }
                                     },
@@ -1370,6 +1370,127 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/v1/offers/products/{product}": {
+            "post": {
+                "tags": [
+                    "Offers"
+                ],
+                "summary": "Create an offer on a product",
+                "description": "Creates a new offer for a specific product and initiates a chat between the user and the seller.",
+                "operationId": "createOffer",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "ID of the product the offer is being made on",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOfferRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Offer and associated chat created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Offer created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "offer": {
+                                                    "$ref": "#/components/schemas/OfferSchema"
+                                                },
+                                                "chat": {
+                                                    "$ref": "#/components/schemas/ChatSchema"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "text": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The text field is required."
+                                                    }
+                                                },
+                                                "price": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The price must be at least 0."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/products": {
@@ -2201,6 +2322,26 @@
                 },
                 "type": "object"
             },
+            "CreateOfferRequest": {
+                "required": [
+                    "text",
+                    "price"
+                ],
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "maxLength": 1000,
+                        "example": "I would like to offer $150 for this item."
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0,
+                        "example": 150
+                    }
+                },
+                "type": "object"
+            },
             "CreateProductRequestSchema": {
                 "required": [
                     "name",
@@ -2733,7 +2874,7 @@
                 },
                 "type": "object"
             },
-            "ChatResource": {
+            "ChatSchema": {
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -2812,6 +2953,43 @@
                         "type": "string",
                         "format": "date-time",
                         "example": "2025-02-24T13:22:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "OfferSchema": {
+                "title": "Offer",
+                "description": "An offer made by a user on a product",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "text": {
+                        "type": "string",
+                        "example": "I would like to offer $150 for this item."
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 150
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserSchema"
+                    },
+                    "product_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-03T22:45:43Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-04T12:01:11Z"
                     }
                 },
                 "type": "object"
@@ -3257,6 +3435,10 @@
         {
             "name": "IntroMessages",
             "description": "IntroMessages"
+        },
+        {
+            "name": "Offers",
+            "description": "Offers"
         },
         {
             "name": "Products",

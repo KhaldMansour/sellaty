@@ -2,16 +2,16 @@
 
 namespace App\Repositories;
 
-use App\Models\Chat;
+use App\Models\Offer;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
- * Class ChatRepositoryEloquent.
+ * Class OfferRepositoryEloquent.
  *
  * @package namespace App\Repositories\App\Models;
  */
-class ChatRepository extends BaseRepository implements ChatRepositoryInterface
+class OfferRepository extends BaseRepository implements OfferRepositoryInterface
 {
     /**
      * Specify Model class name
@@ -20,8 +20,10 @@ class ChatRepository extends BaseRepository implements ChatRepositoryInterface
      */
     public function model()
     {
-        return Chat::class;
+        return Offer::class;
     }
+
+
 
     /**
      * Boot up the repository, pushing criteria
