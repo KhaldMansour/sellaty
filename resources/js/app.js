@@ -41,6 +41,11 @@ window.Echo.connector.pusher.connection.bind('connected', () => {
     let socketId = window.Echo.connector.pusher.connection.socket_id;
     axios.defaults.headers.common['X-Socket-ID'] = socketId;
     console.log('Socket ID connected:', socketId);
+    console.log('host:', process.env.VITE_REVERB_HOST);
+    console.log('secret:', process.env.VITE_REVERB_APP_SECRET);
+    console.log('q connection:', process.env.QUEUE_CONNECTION);
+    console.log('b connection:', process.env.BROADCAST_CONNECTION);
+
 });
 
 // --- Listen to Chat Events ---
