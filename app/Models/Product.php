@@ -141,4 +141,9 @@ class Product extends Model
 
         return Carbon::now();
     }
+
+    public function offers()
+    {
+        return $this->hasMany(Offer::class);
+    }
 }
