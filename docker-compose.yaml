@@ -12,6 +12,7 @@ services:
 
     ports:
       - 9000:80
+      - 6001:6001
     depends_on:
       - mysql_db
     command: ./entrypoint.sh
