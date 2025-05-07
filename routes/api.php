@@ -85,6 +85,8 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
 
         Route::prefix('offers')->group(function () {
             Route::post('products/{product}', 'OfferController@create');
+            Route::put('{offer}/status', 'OfferController@updateStatus');
+
             // Route::get('buyer', 'ChatController@buyerChats');
             // Route::get('seller', 'ChatController@sellerChats');
             // Route::post('{chat}/messages', 'ChatMessageController@send');

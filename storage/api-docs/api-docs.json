@@ -1493,6 +1493,98 @@
                 ]
             }
         },
+        "/api/v1/offers/{offer}/status": {
+            "put": {
+                "tags": [
+                    "Offers"
+                ],
+                "summary": "Update offer status",
+                "description": "Allows the product's seller to update the status of an offer (pending, accepted, rejected).",
+                "operationId": "updateOfferStatus",
+                "parameters": [
+                    {
+                        "name": "offer",
+                        "in": "path",
+                        "description": "ID of the offer to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pending",
+                                            "accepted",
+                                            "rejected"
+                                        ],
+                                        "example": "accepted"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Offer status updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Offer status updated successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/OfferSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - not authorized to update this offer",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not authorized to update this offer."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/products": {
             "get": {
                 "tags": [
@@ -2968,6 +3060,10 @@
                     "text": {
                         "type": "string",
                         "example": "I would like to offer $150 for this item."
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "pending"
                     },
                     "price": {
                         "type": "number",

@@ -9,6 +9,8 @@ use App\Http\Requests\CreateOfferRequest;
 use App\Http\Resources\OfferResource;
 use App\Models\Product;
 use App\Services\OfferService;
+use Illuminate\Validation\Rule;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OfferController extends Controller
 {
@@ -137,5 +139,67 @@ class OfferController extends Controller
     public function destroy(Offer $offer)
     {
         //
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/v1/offers/{offer}/status",
+     *     summary="Update offer status",
+     *     description="Allows the product's seller to update the status of an offer (pending, accepted, rejected).",
+     *     operationId="updateOfferStatus",
+     *     tags={"Offers"},
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="offer",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the offer to update",
+     *         @OA\Schema(type="integer", example=5)
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"status"},
+     *             @OA\Property(property="status", type="string", enum={"pending", "accepted", "rejected"}, example="accepted")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Offer status updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Offer status updated successfully."),
+     *             @OA\Property(property="data", ref="#/components/schemas/OfferSchema")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden - not authorized to update this offer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="You are not authorized to update this offer.")
+     *         )
+     *     ),
+     * )
+     */
+    public function updateStatus(Request $request, Offer $offer)
+    {
+        $user = auth()->user();
+
+        if ($user->id !== $offer->product->seller->id) {
+            throw new HttpException(403, 'You are not authorized to update this offer.');
+        }
+
+        $validated = $request->validate([
+            'status' => ['required', Rule::in(Offer::statuses())],
+        ]);
+
+        $offer->status = $validated['status'];
+        $offer->save();
+
+        return $this->success(new OfferResource($offer));
     }
 }
