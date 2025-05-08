@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ChatSchema;
+use App\Http\Resources\ChatResource;
 use App\Models\Chat;
 use App\Models\Product;
 use App\Services\ChatService;
@@ -60,7 +60,7 @@ class ChatController extends Controller
         $buyerId = auth()->id();
         $chat = $this->chatService->getOrCreateChat($product, $buyerId);
 
-        return $this->success(new ChatSchema($chat));
+        return $this->success(new ChatResource($chat));
     }
 
     /**
@@ -98,7 +98,7 @@ class ChatController extends Controller
         $userId = auth()->id();
         $buyerChats = $this->chatService->getBuyerChatsWithUnseenCount($userId);
 
-        return $this->success(ChatSchema::collection($buyerChats));
+        return $this->success(ChatResource::collection($buyerChats));
     }
 
     /**
@@ -136,6 +136,6 @@ class ChatController extends Controller
         $userId = auth()->id();
         $sellerChats = $this->chatService->getSellerChatsWithUnseenCount($userId);
 
-        return $this->success(ChatSchema::collection($sellerChats));
+        return $this->success(ChatResource::collection($sellerChats));
     }
 }
