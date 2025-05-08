@@ -8,6 +8,7 @@ use App\Http\Resources\ChatMessageResource;
 use App\Models\Chat;
 use App\Services\ChatMessageService;
 use App\Services\ChatService;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ChatMessageController extends Controller
@@ -79,6 +80,13 @@ class ChatMessageController extends Controller
         $message = $this->chatService->sendMessage($chat, auth()->id(), $request->text);
 
         return $this->success(new ChatMessageResource($message), 'Message sent successfully', 201);
+    }
+
+    public function sendTest(Request $request)
+    {
+        $message = $this->chatService->sendMessageTest($request->text);
+
+        return $this->success($message, 'Message sent successfully', 201);
     }
 
     /**

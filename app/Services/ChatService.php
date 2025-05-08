@@ -43,6 +43,19 @@ class ChatService
         return $message;
     }
 
+    public function sendMessageTest(string $text)
+    {
+        // $message = ChatMessage::create([
+        //     'chat_id' => $chat->id,
+        //     'sender_id' => $senderId,
+        //     'text' => $text,
+        // ]);
+
+        broadcast(new ChatMessageSent($text));
+
+        return $text;
+    }
+
     public function getBuyerChatsWithUnseenCount(int $userId)
     {
         return Chat::where('buyer_id', $userId)

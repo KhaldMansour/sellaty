@@ -13,20 +13,12 @@ window.Echo = new Echo({
     wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
     forceTLS: false,
     enabledTransports: ['ws', 'wss'],
-    // authEndpoint: '/broadcasting/auth',
     auth: {
         headers: {
             Authorization: `Bearer ${token}`
         }
     }
 });
-
-// console.log(window.Echo.connector.channels);
-// console.log(window.Echo.connector.pusher);
-
-// console.log(window.Echo.constructor.name); // Should be "Echo"
-// console.log(window.Pusher);   
-
 
 
 window.Echo.private(`chat.1`)

@@ -15,9 +15,6 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->validateCsrfTokens(except: [
-            '/broadcasting/auth',
-        ]);
         $middleware->alias([
             'JwtMiddleware' => JwtMiddleware::class,
             'SetLocale' => App\Http\Middleware\SetLocale::class,
@@ -52,12 +49,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], $e->getStatusCode());
             }
 
-            return response()->json([
-                'status' => 'error',
-                'data' => null,
-                'error' => 'Something went wrong.',
-                'message' => $e->getMessage()
-            ], 500);
+            // return response()->json([
+            //     'status' => 'error',
+            //     'data' => null,
+            //     'error' => 'Something went wrong.',
+            //     'message' => $e->getMessage()
+            // ], 500);
         });
     })
     ->create();
