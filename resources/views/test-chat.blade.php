@@ -16,15 +16,15 @@
     <script src="{{ asset('js/app.js') }}"></script>
 
     <script>
-        const chatId = 1;
-        const token = localStorage.getItem('access_token');
+        // const chatId = 1;
+        // const token = localStorage.getItem('access_token');
 
         // if (!token) {
         //     alert("Authorization token not found in local storage.");
         // }
 
         // Set up Axios with token
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
         // Connect to private channel
         // window.Echo.channel(`chat.`)
@@ -37,12 +37,12 @@
         //     });
 
         // const token = localStorage.getItem('access_token');
-        if (token) {
-            window.axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            console.log('Token set in Axios:', token);
-        } else {
-            console.warn('Token not found in localStorage.');
-        }
+        // if (token) {
+        //     window.axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        //     console.log('Token set in Axios:', token);
+        // } else {
+        //     console.warn('Token not found in localStorage.');
+        // }
 
         // Send message via API
         function sendMessage() {
@@ -50,7 +50,7 @@
             if (!text.trim()) return;
             
 
-            axios.post(`/api/v1/chats/${chatId}/messages`, { text })
+            axios.post(`/api/v1/chats/messages-test`, { text })
             .then(() => {
                 document.getElementById('text').value = '';
             })

@@ -21,6 +21,12 @@ class ChatController extends Controller
         return view('test-chat', ['chat' => $chat]);
     }
 
+    public function indexTest()
+    {
+        return view('test-chat');
+    }
+
+
     /**
      * @OA\Post(
      *     path="/api/v1/chats/products/{productId}",

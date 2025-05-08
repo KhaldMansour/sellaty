@@ -31,9 +31,7 @@ window.Echo = new Echo({
         headers: {
             Authorization: `Bearer ${token}`,
         },
-    },
-    authEndpoint: '/broadcasting/auth',
-    path: '/app',
+    }
 });
 
 
@@ -55,7 +53,7 @@ window.Echo.connector.pusher.connection.bind('connected', () => {
 });
 
 // --- Listen to Chat Events ---
-window.Echo.private(`chat.1`)
+window.Echo.channel(`chat`)
     .listen('.ChatMessageSent', (e) => {
         console.log('Received message:', e);
         const msg = e.text;

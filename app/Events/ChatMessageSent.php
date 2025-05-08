@@ -3,11 +3,14 @@
 namespace App\Events;
 
 use App\Models\ChatMessage;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Faker\Factory as Faker;
+
 
 class ChatMessageSent implements ShouldBroadcast
 {
@@ -17,26 +20,28 @@ class ChatMessageSent implements ShouldBroadcast
 
     public $chatMessage;
 
-    public function __construct(ChatMessage $chatMessage)
+    public function __construct($chatMessage)
     {
         $this->chatMessage = $chatMessage;
     }
 
     public function broadcastOn()
     {
-        return new PrivateChannel('chat.' . $this->chatMessage->chat_id);
+        return new Channel('chat');
     }
 
     public function broadcastWith()
     {
+        $faker = Faker::create();
+
         return [
-            'id' => $this->chatMessage->id,
-            'text' => $this->chatMessage->text,
-            'sender_id' => $this->chatMessage->sender_id,
-            'sender_name' => $this->chatMessage->sender->name,
-            'chat_id' => $this->chatMessage->chat_id,
-            'seen_at' => $this->chatMessage->seen_at,
-            'created_at' => $this->chatMessage->created_at->toISOString(),
+            'id' => $faker->randomNumber(),
+            'text' => $this->chatMessage,
+            'sender_id' => $faker->randomNumber(),
+            'sender_name' => $faker->name,
+            'chat_id' => $faker->randomNumber(),
+            'seen_at' => now()->toISOString(),
+            'created_at' => $faker->dateTimeThisMonth->format(DATE_ISO8601),
         ];
     }
 

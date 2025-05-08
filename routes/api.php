@@ -51,6 +51,9 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
 
     Route::prefix('chats')->group(function () {
         Route::get('/chat', 'ChatController@index');
+        Route::get('/chat-test', 'ChatController@indexTest');
+        Route::post('/messages-test', 'ChatMessageController@sendTest');
+
     });
 
     Route::post('register', 'AuthController@register');
