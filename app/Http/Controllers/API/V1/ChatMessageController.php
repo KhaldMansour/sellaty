@@ -77,9 +77,13 @@ class ChatMessageController extends Controller
      */
     public function send(SendChatMessageRequest $request, Chat $chat)
     {
-        $message = $this->chatService->sendMessage($chat, auth()->id(), $request->text);
+        $message = $this->chatService->sendMessageTest($request->text);
 
-        return $this->success(new ChatMessageResource($message), 'Message sent successfully', 201);
+        return $this->success($message, 'Message sent successfully', 201);
+
+        // $message = $this->chatService->sendMessage($chat, auth()->id(), $request->text);
+
+        // return $this->success(new ChatMessageResource($message), 'Message sent successfully', 201);
     }
 
     public function sendTest(Request $request)
