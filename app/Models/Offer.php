@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Offer extends Model
 {
-    const STATUS_PENDING = 'pending';
-    const STATUS_ACCEPTED = 'accepted';
-    const STATUS_REJECTED = 'rejected';
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_ACCEPTED = 'accepted';
+    public const STATUS_REJECTED = 'rejected';
 
     protected $fillable = ['text' , 'price' , 'product_id' , 'user_id' , 'status'];
     protected static function booted()

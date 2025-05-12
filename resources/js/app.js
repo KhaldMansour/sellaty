@@ -52,11 +52,45 @@ window.Echo.connector.pusher.connection.bind('connected', () => {
 
 });
 
+// Send Message Function
+window.sendMessage = function () {
+    const type = document.getElementById('type').value;
+    const text = document.getElementById('text').value;
+    const file = document.getElementById('file').files[0];
+
+    const formData = new FormData();
+    formData.append('type', type);
+
+    if (type === 'text') {
+        formData.append('content', text);
+    } else if (file) {
+        formData.append('file', file);
+    } else {
+        alert('Please select a file.');
+        return;
+    }
+
+    axios.post('/api/v1/chats/1/messages', formData)
+        .then(() => {
+            document.getElementById('text').value = '';
+            document.getElementById('file').value = '';
+        })
+        .catch(error => {
+            console.error("Send failed:", error);
+            // alert("Failed to send message.");
+        });
+};
+
+
 // --- Listen to Chat Events ---
-window.Echo.channel(`chat`)
+window.Echo.private(`chat.1`)
     .listen('.ChatMessageSent', (e) => {
         console.log('Received message:', e);
-        const msg = e.text;
+        const msg = e.content;
         const el = document.getElementById('messages');
-        el.innerHTML += `<p><strong>${e.sender_name}:</strong> ${msg}</p>`;
+        if (e.type !== 'text') { 
+           el.innerHTML += `<img src="${e.content}" width="200" />`;
+        }else{
+            el.innerHTML += `<p><strong>${e.sender_name}:</strong> ${msg}</p>`;
+        }
     });

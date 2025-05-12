@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SendChatMessageRequest;
 use App\Http\Resources\ChatMessageResource;
 use App\Models\Chat;
+use App\Models\ChatMessage;
 use App\Services\ChatMessageService;
 use App\Services\ChatService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ChatMessageController extends Controller
@@ -77,13 +79,13 @@ class ChatMessageController extends Controller
      */
     public function send(SendChatMessageRequest $request, Chat $chat)
     {
-        $message = $this->chatService->sendMessageTest($request->text);
+        try {
+            $message = $this->chatService->sendMessage($chat, auth()->user(), $request->validated());
 
-        return $this->success($message, 'Message sent successfully', 201);
-
-        // $message = $this->chatService->sendMessage($chat, auth()->id(), $request->text);
-
-        // return $this->success(new ChatMessageResource($message), 'Message sent successfully', 201);
+            return $this->success(new ChatMessageResource($message), 'Message sent successfully', 201);
+        } catch (\Exception $e) {
+            throw new HttpException(400, 'Failed to send message.');
+        }
     }
 
     public function sendTest(Request $request)
@@ -143,9 +145,9 @@ class ChatMessageController extends Controller
      */
     public function messages(Chat $chat)
     {
-        $userId = auth()->id();
+        $user = auth()->user();
 
-        if ($chat->buyer_id !== $userId && $chat->seller_id !== $userId) {
+        if (!in_array($user->id, $chat->users->pluck('id')->toArray())) {
             throw new HttpException(403, 'You do not have access to this chat.');
         }
 
@@ -160,5 +162,30 @@ class ChatMessageController extends Controller
         $this->chatMessageService->markMessagesAsSeen($user, $chat);
 
         return $this->success([], 'Messages marked as seen successfully');
+    }
+
+    public function getMedia(ChatMessage $chatMessage)
+    {
+        $chat = Chat::with(['buyer', 'seller'])->find($chatMessage->chat_id);
+
+        $user = auth()->user();
+
+        if (!$chat || !$user || !in_array($user?->id, $chat->users->pluck('id')->toArray())) {
+            abort(403, 'You are not authorized to access this chat.');
+        }
+
+        $filePath = $chatMessage->content;
+
+
+        if (!Storage::disk('local')->exists($filePath)) {
+            abort(404, 'File not found');
+        }
+
+        $mimeType = Storage::disk('local')->mimeType($filePath);
+
+        return response()->file(storage_path('app/private/' . $filePath), [
+            'Content-Type' => $mimeType,
+            'Cache-Control' => 'max-age=3600, public',
+        ]);
     }
 }

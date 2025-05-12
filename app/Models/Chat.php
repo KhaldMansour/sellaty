@@ -8,7 +8,9 @@ class Chat extends Model
 {
     protected $fillable = ['product_id', 'buyer_id', 'seller_id'];
 
-    protected $appends = ['name'];
+    protected $appends = ['name', 'users'];
+
+    protected $with = ['seller', 'buyer'];
 
     protected $hidden = ['product'];
 
@@ -35,5 +37,10 @@ class Chat extends Model
     public function getNameAttribute()
     {
         return $this->product?->name;
+    }
+
+    public function getUsersAttribute()
+    {
+        return collect([$this->buyer, $this->seller])->filter();
     }
 }

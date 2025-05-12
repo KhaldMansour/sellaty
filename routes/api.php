@@ -2,7 +2,6 @@
 
 use App\Http\Middleware\JwtMiddleware;
 use App\Http\Middleware\SetLocale;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Controllers\API\V1')->group(function () {
@@ -53,7 +52,6 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::get('/chat', 'ChatController@index');
         Route::get('/chat-test', 'ChatController@indexTest');
         Route::post('/messages-test', 'ChatMessageController@sendTest');
-
     });
 
     Route::post('register', 'AuthController@register');
@@ -81,6 +79,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::post('products/{product}', 'ChatController@getOrCreate');
             Route::get('buyer', 'ChatController@buyerChats');
             Route::get('seller', 'ChatController@sellerChats');
+            Route::get('messages/{chatMessage}/media', 'ChatMessageController@getMedia')->name('chat-uploads');
             Route::post('{chat}/messages', 'ChatMessageController@send');
             Route::get('{chat}/messages', 'ChatMessageController@messages');
             Route::post('{chat}/seen', 'ChatMessageController@markAsSeen');

@@ -93,10 +93,10 @@ class OfferController extends Controller
      *     )
      * )
      */
-    public function create(CreateOfferRequest $request , Product $product)
+    public function create(CreateOfferRequest $request, Product $product)
     {
         $user = auth()->user();
-        $offerWithChat = $this->offerService->createOffer($request->validated(), $user , $product);
+        $offerWithChat = $this->offerService->createOffer($request->validated(), $user, $product);
 
         return $this->success(['offer' => new OfferResource($offerWithChat['offer']) , 'chat' => $offerWithChat['chat']]);
     }

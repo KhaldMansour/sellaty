@@ -31,12 +31,12 @@ class OfferResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'         => $this->id,
-            'text'       => $this->text,
-            'price'      => $this->price,
-            'user'       => new UserResource($this->user),
-            'status'     => $this->status,
-            'product'    => $this->product_id,
+            'id' => $this->id,
+            'text' => $this->text,
+            'price' => $this->price,
+            'user' => new UserResource($this->user),
+            'status' => $this->status,
+            'product' => $this->product_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

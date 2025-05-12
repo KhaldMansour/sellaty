@@ -2943,9 +2943,13 @@
                         "type": "string",
                         "example": "Easton Prohaska"
                     },
-                    "text": {
+                    "content": {
                         "type": "string",
                         "example": "Hello, how are you?"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "text"
                     },
                     "seen_at": {
                         "type": "string",

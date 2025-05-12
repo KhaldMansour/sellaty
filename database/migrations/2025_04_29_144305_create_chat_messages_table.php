@@ -14,7 +14,8 @@ return new class () extends Migration {
             $table->id();
             $table->foreignId('chat_id')->constrained()->onDelete('cascade');
             $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
-            $table->text('text');
+            $table->text('content');
+            $table->string('type')->default('text');
             $table->timestamp('seen_at')->nullable();
             $table->timestamps();
         });

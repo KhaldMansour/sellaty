@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Repositories\ChatRepository;
 use App\Models\Chat;
-use App\Models\Product;
 use App\Models\ChatMessage;
 use App\Events\ChatMessageSent;
 use App\Events\MessagesSeen;
+use App\Models\User;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ChatService
@@ -30,12 +30,20 @@ class ChatService
         );
     }
 
-    public function sendMessage(Chat $chat, int $senderId, string $text): ChatMessage
+    public function sendMessage(Chat $chat, User $user, array $data): ChatMessage
     {
+        $content = $data['content'] ?? null;
+
+        if (in_array($data['type'], ['image', 'voice']) && isset($data['file'])) {
+            $file = $data['file'];
+            $content = $file->store('chat_uploads');
+        }
+
         $message = ChatMessage::create([
             'chat_id' => $chat->id,
-            'sender_id' => $senderId,
-            'text' => $text,
+            'sender_id' => $user->id,
+            'type' => $data['type'],
+            'content' => $content,
         ]);
 
         broadcast(new ChatMessageSent($message));

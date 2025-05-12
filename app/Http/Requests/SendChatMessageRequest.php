@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ChatMessage;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -26,8 +27,12 @@ class SendChatMessageRequest extends FormRequest
 
     public function rules()
     {
+        $types = implode(',', ChatMessage::types());
+
         return [
-            'text' => 'required|string|max:256',
+            'type' => 'required|in:' . $types,
+            'content' => 'required_if:type,text|string|nullable',
+            'file' => 'required_if:type,image,voice|file|mimes:jpeg,png,jpg,mp3,wav,ogg|max:10240',
         ];
     }
 }

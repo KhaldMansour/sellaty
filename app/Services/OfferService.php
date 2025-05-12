@@ -2,12 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Product;
-use App\Repositories\ChatRepository;
 use App\Repositories\OfferRepository;
-use App\Repositories\RecentSearchRepository;
-use App\Repositories\ProductRepository;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OfferService
@@ -16,7 +11,7 @@ class OfferService
     {
     }
 
-    public function createOffer($data , $user , $product)
+    public function createOffer($data, $user, $product)
     {
         if ($product->seller->id === $user->id) {
             throw new HttpException(403, 'You cannot make an offer to a product you own.');
@@ -26,11 +21,10 @@ class OfferService
 
         $offer = $this->offerRepository->create($data)->load(['product', 'user']);
 
-        $chat = $this->chatService->getOrCreateChat($product , $user->id);
+        $chat = $this->chatService->getOrCreateChat($product, $user->id);
 
         $this->chatService->sendMessage($chat, $user->id, $offer->text);
 
         return ['offer' => $offer , 'chat' => $chat];
     }
-
 }
