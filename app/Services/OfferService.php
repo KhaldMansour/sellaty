@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ChatMessage;
 use App\Repositories\OfferRepository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -23,7 +24,12 @@ class OfferService
 
         $chat = $this->chatService->getOrCreateChat($product, $user->id);
 
-        $this->chatService->sendMessage($chat, $user->id, $offer->text);
+        $offerData = [
+            'content' => $offer->text,
+            'type' => ChatMessage::$TYPE_TEXT,
+        ];
+
+        $this->chatService->sendMessage($chat, $user->id, $offerData);
 
         return ['offer' => $offer , 'chat' => $chat];
     }
