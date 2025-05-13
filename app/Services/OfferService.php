@@ -29,7 +29,7 @@ class OfferService
             'type' => ChatMessage::$TYPE_TEXT,
         ];
 
-        $this->chatService->sendMessage($chat, $user->id, $offerData);
+        $this->chatService->sendMessage($chat, $user, $offerData);
 
         return ['offer' => $offer , 'chat' => $chat];
     }
