@@ -90,6 +90,20 @@ class ChatService
             ->get();
     }
 
+    public function getChatsWithUnseenCount(int $userId)
+    {
+        return Chat::where('buyer_id', $userId)
+        ->orWhere('seller_id', $userId)
+        ->with(['product', 'buyer', 'seller'])
+        ->withCount([
+                'messages as unseen_messages_count' => function ($query) use ($userId) {
+                    $query->where('sender_id', '!=', $userId)
+                          ->whereNull('seen_at');
+                }
+            ])
+            ->get();
+    }
+
     // public function markMessagesAsSeen(Chat $chat, int $userId): void
     // {
     //     $chat->messages()

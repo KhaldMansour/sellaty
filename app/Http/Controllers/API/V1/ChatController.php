@@ -144,4 +144,42 @@ class ChatController extends Controller
 
         return $this->success(ChatResource::collection($sellerChats));
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/chats/my-chats",
+     *     summary="Get all chats of the current user",
+     *     description="Returns a list of chats of the authenticated .",
+     *     operationId="getAllChats",
+     *     tags={"Chats"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of seller chats retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example=null),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/ChatSchema")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
+     */
+    public function myChats()
+    {
+        $userId = auth()->id();
+        $chats = $this->chatService->getChatsWithUnseenCount($userId);
+
+        return $this->success(ChatResource::collection($chats));
+    }
 }

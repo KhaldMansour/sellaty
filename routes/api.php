@@ -79,6 +79,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::post('products/{product}', 'ChatController@getOrCreate');
             Route::get('buyer', 'ChatController@buyerChats');
             Route::get('seller', 'ChatController@sellerChats');
+            Route::get('my-chats', 'ChatController@myChats');
             Route::get('messages/{chatMessage}/media', 'ChatMessageController@getMedia')->name('chat-uploads');
             Route::post('{chat}/messages', 'ChatMessageController@send');
             Route::get('{chat}/messages', 'ChatMessageController@messages');

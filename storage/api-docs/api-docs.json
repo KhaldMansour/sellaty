@@ -871,6 +871,65 @@
                 ]
             }
         },
+        "/api/v1/chats/my-chats": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Get all chats of the current user",
+                "description": "Returns a list of chats of the authenticated .",
+                "operationId": "getAllChats",
+                "responses": {
+                    "200": {
+                        "description": "List of seller chats retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": null
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ChatSchema"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/chats/{chat}/messages": {
             "get": {
                 "tags": [
