@@ -3030,14 +3030,15 @@
                 "type": "object"
             },
             "ChatSchema": {
+                "title": "Chat Resource",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "example": 1
                     },
-                    "product_id": {
-                        "type": "integer",
-                        "example": 1
+                    "name": {
+                        "type": "string",
+                        "example": "Product Chat"
                     },
                     "buyer_id": {
                         "type": "integer",
@@ -3057,13 +3058,36 @@
                         "format": "date-time",
                         "example": "2025-05-03T22:45:43.000000Z"
                     },
+                    "product": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Product Name"
+                            },
+                            "image": {
+                                "type": "string",
+                                "example": "https://example.com/image.jpg"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "latestOffer": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/OfferSchema"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
                     "unseen_messages_count": {
                         "type": "integer",
                         "example": 12
-                    },
-                    "product_name": {
-                        "type": "string",
-                        "example": "doloremque"
                     },
                     "counterpart": {
                         "properties": {

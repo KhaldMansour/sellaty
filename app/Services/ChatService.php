@@ -24,10 +24,12 @@ class ChatService
             throw new HttpException(403, 'You cannot start a chat with yourself.');
         }
 
-        return Chat::firstOrCreate(
+        $chat = Chat::firstOrCreate(
             ['product_id' => $product->id, 'buyer_id' => $buyerId],
             ['seller_id' => $sellerId]
         );
+
+        return Chat::getChatsWithProductSummary($buyerId)->where('id', $chat->id)->first();
     }
 
     public function sendMessage(Chat $chat, User $user, array $data): ChatMessage
@@ -66,41 +68,23 @@ class ChatService
 
     public function getBuyerChatsWithUnseenCount(int $userId)
     {
-        return Chat::where('buyer_id', $userId)
-        ->with(['product', 'buyer', 'seller'])
-        ->withCount([
-                'messages as unseen_messages_count' => function ($query) use ($userId) {
-                    $query->where('sender_id', '!=', $userId)
-                          ->whereNull('seen_at');
-                }
-            ])
+        return Chat::getChatsWithProductSummary($userId)
+            ->where('buyer_id', $userId)
             ->get();
     }
 
     public function getSellerChatsWithUnseenCount(int $userId)
     {
-        return Chat::where('seller_id', $userId)
-        ->with(['product', 'buyer', 'seller'])
-        ->withCount([
-                'messages as unseen_messages_count' => function ($query) use ($userId) {
-                    $query->where('sender_id', '!=', $userId)
-                          ->whereNull('seen_at');
-                }
-            ])
+        return Chat::getChatsWithProductSummary($userId)
+            ->where('seller_id', $userId)
             ->get();
     }
 
     public function getChatsWithUnseenCount(int $userId)
     {
-        return Chat::where('buyer_id', $userId)
-        ->orWhere('seller_id', $userId)
-        ->with(['product', 'buyer', 'seller'])
-        ->withCount([
-                'messages as unseen_messages_count' => function ($query) use ($userId) {
-                    $query->where('sender_id', '!=', $userId)
-                          ->whereNull('seen_at');
-                }
-            ])
+        return Chat::getChatsWithProductSummary($userId)
+            ->where('buyer_id', $userId)
+            ->orWhere('seller_id', $userId)
             ->get();
     }
 

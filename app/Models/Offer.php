@@ -10,7 +10,7 @@ class Offer extends Model
     public const STATUS_ACCEPTED = 'accepted';
     public const STATUS_REJECTED = 'rejected';
 
-    protected $fillable = ['text' , 'price' , 'product_id' , 'user_id' , 'status'];
+    protected $fillable = ['text' , 'price' , 'product_id' , 'user_id' , 'status' , 'chat_id'];
     protected static function booted()
     {
         static::creating(function ($model) {

@@ -8,14 +8,32 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @OA\Schema(
  *     schema="ChatSchema",
  *     type="object",
+ *     title="Chat Resource",
  *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="product_id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Product Chat"),
  *     @OA\Property(property="buyer_id", type="integer", example=29),
  *     @OA\Property(property="seller_id", type="integer", example=23),
  *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-05-03T22:45:43.000000Z"),
  *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-05-03T22:45:43.000000Z"),
+ *
+ *     @OA\Property(
+ *         property="product",
+ *         type="object",
+ *         @OA\Property(property="id", type="integer", example=1),
+ *         @OA\Property(property="name", type="string", example="Product Name"),
+ *         @OA\Property(property="image", type="string", example="https://example.com/image.jpg")
+ *     ),
+ *
+ *     @OA\Property(
+ *         property="latestOffer",
+ *         oneOf={
+ *             @OA\Schema(ref="#/components/schemas/OfferSchema"),
+ *             @OA\Schema(type="null")
+ *         }
+ *     ),
+ *
  *     @OA\Property(property="unseen_messages_count", type="integer", example=12),
- *     @OA\Property(property="product_name", type="string", example="doloremque"),
+ *
  *     @OA\Property(
  *         property="counterpart",
  *         type="object",
@@ -35,13 +53,18 @@ class ChatResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'product_id' => $this->product_id,
+            'name' => $this->name,
             'buyer_id' => $this->buyer_id,
             'seller_id' => $this->seller_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'product' => [
+                'id' => $this->product_id,
+                'name' => $this->name,
+                'image' => $this->product->image
+            ],
+            'latestOffer' => new OfferResource($this->latestOffer),
             'unseen_messages_count' => $this->unseen_messages_count,
-            'product_name' => $this->name,
             'counterpart' => [
                 'id' => $counterpart->id,
                 'name' => $counterpart->name,
