@@ -33,7 +33,7 @@ class OfferResource extends JsonResource
         return [
             'id' => $this->id,
             'text' => $this->text,
-            'price' => $this->price,
+            'price' => (float) $this->price,
             'user' => new UserResource($this->user),
             'status' => $this->status,
             'product' => $this->product_id,
