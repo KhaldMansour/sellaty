@@ -6,6 +6,7 @@ use App\Models\Offer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateOfferRequest;
+use App\Http\Resources\ChatResource;
 use App\Http\Resources\OfferResource;
 use App\Models\Product;
 use App\Services\OfferService;
@@ -98,7 +99,7 @@ class OfferController extends Controller
         $user = auth()->user();
         $offerWithChat = $this->offerService->createOffer($request->validated(), $user, $product);
 
-        return $this->success(['offer' => new OfferResource($offerWithChat['offer']) , 'chat' => $offerWithChat['chat']]);
+        return $this->success(['offer' => new OfferResource($offerWithChat['offer']) , 'chat' => new ChatResource($offerWithChat['chat'])]);
     }
 
     /**
