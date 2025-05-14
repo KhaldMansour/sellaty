@@ -23,8 +23,6 @@ class OfferService
         $data['product_id'] = $product->id;
         $data['user_id'] = $user->id;
         $data['chat_id'] = $chat->id;
-
-        dd($data , $chat);
         
         $offer = $this->offerRepository->create($data)->load(['product', 'user']);
 
