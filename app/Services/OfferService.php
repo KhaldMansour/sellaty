@@ -17,12 +17,16 @@ class OfferService
         if ($product->seller->id === $user->id) {
             throw new HttpException(403, 'You cannot make an offer to a product you own.');
         }
+        
+        $chat = $this->chatService->getOrCreateChat($product, $user->id);
+
         $data['product_id'] = $product->id;
         $data['user_id'] = $user->id;
+        $data['chat_id'] = $chat->id;
 
+        dd($data , $chat);
+        
         $offer = $this->offerRepository->create($data)->load(['product', 'user']);
-
-        $chat = $this->chatService->getOrCreateChat($product, $user->id);
 
         $offerData = [
             'content' => $offer->text,
