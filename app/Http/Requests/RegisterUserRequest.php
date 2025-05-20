@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @OA\Schema(
@@ -45,5 +47,12 @@ class RegisterUserRequest extends FormRequest
             ],
             'phone_number' => 'required|string|regex:/^\+?[1-9]\d{1,14}$/|unique:users',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errorString = implode(' ', $validator->errors()->all());
+
+        throw new HttpException(422, $errorString);
     }
 }
