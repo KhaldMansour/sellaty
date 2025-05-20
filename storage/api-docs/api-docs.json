@@ -968,7 +968,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/ChatMessageResource"
+                                                "$ref": "#/components/schemas/ChatMessageSchema"
                                             }
                                         }
                                     },
@@ -1061,7 +1061,7 @@
                                             "example": "Message sent successfully"
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/ChatMessageResource"
+                                            "$ref": "#/components/schemas/ChatMessageSchema"
                                         }
                                     },
                                     "type": "object"
@@ -2982,7 +2982,7 @@
                 },
                 "type": "object"
             },
-            "ChatMessageResource": {
+            "ChatMessageSchema": {
                 "title": "Chat Message",
                 "description": "Chat message resource structure",
                 "properties": {
@@ -3079,6 +3079,16 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/OfferSchema"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "latest_message": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/ChatMessageSchema"
                             },
                             {
                                 "type": "null"

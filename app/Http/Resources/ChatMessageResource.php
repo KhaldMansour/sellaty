@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * @OA\Schema(
- *     schema="ChatMessageResource",
+ *     schema="ChatMessageSchema",
  *     type="object",
  *     title="Chat Message",
  *     description="Chat message resource structure",

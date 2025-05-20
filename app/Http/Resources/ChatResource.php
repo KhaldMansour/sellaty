@@ -31,7 +31,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *             @OA\Schema(type="null")
  *         }
  *     ),
- *
+  *     @OA\Property(
+ *         property="latest_message",
+ *         oneOf={
+ *             @OA\Schema(ref="#/components/schemas/ChatMessageSchema"),
+ *             @OA\Schema(type="null")
+ *         }
+ *     ),
  *     @OA\Property(property="unseen_messages_count", type="integer", example=12),
  *
  *     @OA\Property(
@@ -56,8 +62,6 @@ class ChatResource extends JsonResource
             'name' => $this->name,
             'buyer_id' => $this->buyer_id,
             'seller_id' => $this->seller_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
             'product' => [
                 'id' => $this->product_id,
                 'name' => $this->name,
@@ -69,6 +73,9 @@ class ChatResource extends JsonResource
                 'id' => $counterpart->id,
                 'name' => $counterpart->name,
             ],
+            'latest_message' => new ChatMessageResource($this->latestMessage),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }

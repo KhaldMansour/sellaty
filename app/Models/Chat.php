@@ -62,7 +62,7 @@ class Chat extends Model
                 },
                 'buyer',
                 'seller',
-                'latestOffer'
+                'latestMessage',
             ])
             ->withCount([
                 'messages as unseen_messages_count' => function ($query) use ($userId) {
@@ -80,5 +80,10 @@ class Chat extends Model
     public function latestOffer()
     {
         return $this->hasOne(Offer::class)->latestOfMany();
+    }
+
+    public function latestMessage()
+    {
+        return $this->hasOne(ChatMessage::class)->latestOfMany();
     }
 }

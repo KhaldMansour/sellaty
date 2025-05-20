@@ -47,7 +47,7 @@ class ChatMessageController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="message", type="string", example="Message sent successfully"),
-     *             @OA\Property(property="data", ref="#/components/schemas/ChatMessageResource")
+     *             @OA\Property(property="data", ref="#/components/schemas/ChatMessageSchema")
      *         )
      *     ),
      *
@@ -121,7 +121,7 @@ class ChatMessageController extends Controller
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/ChatMessageResource")
+     *                 @OA\Items(ref="#/components/schemas/ChatMessageSchema")
      *             )
      *         )
      *     ),
