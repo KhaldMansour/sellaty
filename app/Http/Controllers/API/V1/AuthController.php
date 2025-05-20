@@ -180,7 +180,7 @@ class AuthController extends Controller
         $this->otpService->setOtpSender($otpSender);
         $this->otpService->sendOtp($phoneNumber);
 
-        return $this->success(['message' => 'OTP has been sent.'], 200);
+        return $this->success(null ,['message' => 'OTP has been sent.'], 200);
     }
 
     public function me()
