@@ -170,6 +170,53 @@ class UserController extends Controller
         return $this->success(RecentSearchResource::collection($recentSearches));
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/v1/users/{user}/profile",
+     *     summary="Update user profile",
+     *     description="Allows an authenticated user to update their own profile information.",
+     *     tags={"User"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="user",
+     *         in="path",
+     *         required=true,
+     *         description="User ID",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(ref="#/components/schemas/UpdateUserRequestSchema")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profile updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Profile updated successfully"),
+     *             @OA\Property(property="data", ref="#/components/schemas/UserSchema")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden - User trying to update another profile",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="You do not have access to this action.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
+     *     )
+     * )
+     */
     public function updateProfile(UpdateUserRequest $request , User $user)
     {
         $currentUser = auth()->user();
