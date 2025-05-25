@@ -6,6 +6,7 @@ use App\Factories\OtpSenderFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\OtpService;
@@ -22,14 +23,18 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/v1/register",
      *     summary="Register a new user",
-     *     description="Registers a new user with the provided credentials",
+     *     description="Registers a new user with the provided information",
      *     tags={"Authentication"},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/RegisterUserRequestSchema")
+     *         description="User registration data",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(ref="#/components/schemas/RegisterUserRequestSchema")
+     *         )
      *     ),
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="User registered successfully",
      *         @OA\JsonContent(
      *             type="object",
@@ -38,19 +43,14 @@ class AuthController extends Controller
      *             @OA\Property(property="data", type="object",
      *                 @OA\Property(property="user", ref="#/components/schemas/UserSchema")
      *             ),
-     *             @OA\Property(property="errors", type="object", nullable=true),
-     *         ),
+     *             @OA\Property(property="errors", type="object", nullable=true)
+     *         )
      *     ),
      *     @OA\Response(
-     *         response=400,
-     *         description="Invalid input - Validation errors",
+     *         response=422,
+     *         description="Validation error",
      *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="User not found",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
-     *     ),
+     *     )
      * )
      */
 
@@ -58,17 +58,18 @@ class AuthController extends Controller
     {
         $user = User::create($request->validated());
 
-        return $this->success(['user' => $user], 'User registered successfully', 201);
+        return $this->success(new UserResource($user), 'User registered successfully', 201);
     }
 
     /**
      * @OA\Post(
      *     path="/api/v1/login",
      *     summary="Login with phone number and OTP",
-     *     description="Logs in a user with the provided phone number and OTP",
+     *     description="Logs in a user using phone number and one-time password (OTP)",
      *     tags={"Authentication"},
      *     @OA\RequestBody(
      *         required=true,
+     *         description="Phone number and OTP",
      *         @OA\JsonContent(ref="#/components/schemas/LoginRequestSchema")
      *     ),
      *     @OA\Response(
@@ -79,27 +80,10 @@ class AuthController extends Controller
      *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(property="message", type="string", example="Success"),
      *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ...")
+     *                 @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."),
+     *                 @OA\Property(property="user", ref="#/components/schemas/UserSchema")
      *             ),
      *             @OA\Property(property="errors", type="object", nullable=true)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid input - Bad request",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Invalid OTP or phone number")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized - Invalid credentials",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Unauthorized access")
      *         )
      *     )
      * )
@@ -122,7 +106,7 @@ class AuthController extends Controller
             return $this->failure('Could not create token', 500);
         }
 
-        return $this->success(['token' => $token]);
+        return $this->success(['token' => $token , 'user' => new UserResource($user)], 'Success', 200);
     }
 
     /**

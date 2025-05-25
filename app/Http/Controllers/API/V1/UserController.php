@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\RecentSearchResource;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\WantedProductResource;
+use App\Models\User;
 use App\Repositories\ProductRepository;
 use App\Repositories\RecentSearchRepository;
 use App\Repositories\WantedProductRepository;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserController extends Controller
 {
@@ -164,5 +168,18 @@ class UserController extends Controller
         $recentSearches = $this->recentSearchRepository->where('user_id', $user->id)->limit(10)->get();
 
         return $this->success(RecentSearchResource::collection($recentSearches));
+    }
+
+    public function updateProfile(UpdateUserRequest $request , User $user)
+    {
+        $currentUser = auth()->user();
+
+        if($user->id != $currentUser->id){
+            throw new HttpException(403, 'You do not have access to this action.');
+        }
+
+        $user->update($request->validated());
+
+        return $this->success(new UserResource($user) , 'Profile updated successfully');
     }
 }

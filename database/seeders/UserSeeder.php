@@ -19,8 +19,10 @@ class UserSeeder extends Seeder
 
         $users = collect(range(1, 10))->map(function () use ($faker) {
             return [
-                'name' => $faker->name,
+                'first_name' => $faker->firstName(),
+                'last_name' => $faker->lastName(),
                 'email' => $faker->unique()->safeEmail,
+                'profile_photo' => 'https://picsum.photos/200/300?',
                 'phone_number' => $faker->unique()->phoneNumber,
                 'password' => Hash::make('password'),
                 'is_verified' => $faker->boolean,

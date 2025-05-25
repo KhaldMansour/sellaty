@@ -8,39 +8,20 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @OA\Schema(
- *     schema="RegisterUserRequestSchema",
+ *     schema="UpdateUserRequestSchema",
  *     type="object",
- *     required={"first_name", "email", "password", "password_confirmation", "phone_number"},
- * 
  *     @OA\Property(property="first_name", type="string", example="John"),
  *     @OA\Property(property="last_name", type="string", example="Doe"),
- *     
  *     @OA\Property(
  *         property="profile_photo",
  *         type="string",
  *         format="binary",
- *         description="Profile photo image file (jpeg, png, jpg, gif, svg)"
+ *         description="Profile photo image file (jpeg, png, gif, etc.)"
  *     ),
- *     
  *     @OA\Property(property="location", type="string", example="Cairo, Egypt", nullable=true),
- *     
  *     @OA\Property(property="email", type="string", format="email", example="hello@gmail.com"),
- *     
- *     @OA\Property(
- *         property="password",
- *         type="string",
- *         format="password",
- *         example="StrongP@ss1",
- *         description="Min 6 characters, at least one uppercase, one lowercase, and one special character"
- *     ),
- *     
- *     @OA\Property(
- *         property="password_confirmation",
- *         type="string",
- *         format="password",
- *         example="StrongP@ss1"
- *     ),
- *     
+ *     @OA\Property(property="password", type="string", format="password", example="P@ssw0rd"),
+ *     @OA\Property(property="password_confirmation", type="string", format="password", example="P@ssw0rd"),
  *     @OA\Property(
  *         property="phone_number",
  *         type="string",
@@ -49,8 +30,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  *     )
  * )
  */
-
-class RegisterUserRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -68,19 +48,18 @@ class RegisterUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'required|string|max:255',
+            'first_name' => 'string|max:255',
             'last_name' => 'string|max:255',
             'profile_photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:12048',
             'location' => 'nullable|string|max:255',
-            'email' => 'string|email|unique:users',
+            'email' => 'unique:users,email,' . $this->route('user')->id,
             'password' => [
-                'required',
                 'string',
                 'min:6',
                 'confirmed',
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/',
             ],
-            'phone_number' => 'required|string|regex:/^\+?[1-9]\d{1,14}$/|unique:users',
+            'phone_number' => 'string|regex:/^\+?[1-9]\d{1,14}$/|unique:users,phone_number,' . $this->route('user')->id,
         ];
     }
 

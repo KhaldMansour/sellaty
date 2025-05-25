@@ -11,12 +11,13 @@
                     "Authentication"
                 ],
                 "summary": "Register a new user",
-                "description": "Registers a new user with the provided credentials",
+                "description": "Registers a new user with the provided information",
                 "operationId": "3ab1ff58e6d30faee19a7b6405b8a694",
                 "requestBody": {
+                    "description": "User registration data",
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/RegisterUserRequestSchema"
                             }
@@ -24,7 +25,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "User registered successfully",
                         "content": {
                             "application/json": {
@@ -56,18 +57,8 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "Invalid input - Validation errors",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponseSchema"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "User not found",
+                    "422": {
+                        "description": "Validation error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -85,9 +76,10 @@
                     "Authentication"
                 ],
                 "summary": "Login with phone number and OTP",
-                "description": "Logs in a user with the provided phone number and OTP",
+                "description": "Logs in a user using phone number and one-time password (OTP)",
                 "operationId": "72da9856cfaf0c9d012815b263d9f6eb",
                 "requestBody": {
+                    "description": "Phone number and OTP",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -116,7 +108,10 @@
                                             "properties": {
                                                 "token": {
                                                     "type": "string",
-                                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ..."
+                                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                                },
+                                                "user": {
+                                                    "$ref": "#/components/schemas/UserSchema"
                                                 }
                                             },
                                             "type": "object"
@@ -124,46 +119,6 @@
                                         "errors": {
                                             "type": "object",
                                             "nullable": true
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input - Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "error"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Invalid OTP or phone number"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized - Invalid credentials",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "error"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthorized access"
                                         }
                                     },
                                     "type": "object"
@@ -2920,25 +2875,50 @@
                 "type": "object"
             },
             "RegisterUserRequestSchema": {
+                "required": [
+                    "first_name",
+                    "email",
+                    "password",
+                    "password_confirmation",
+                    "phone_number"
+                ],
                 "properties": {
-                    "email": {
+                    "first_name": {
                         "type": "string",
-                        "example": "hello@gmail.com",
+                        "example": "John"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Doe"
+                    },
+                    "profile_photo": {
+                        "description": "Profile photo image file (jpeg, png, jpg, gif, svg)",
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "location": {
+                        "type": "string",
+                        "example": "Cairo, Egypt",
                         "nullable": true
                     },
-                    "password": {
+                    "email": {
                         "type": "string",
-                        "example": "123456"
+                        "format": "email",
+                        "example": "hello@gmail.com"
+                    },
+                    "password": {
+                        "description": "Min 6 characters, at least one uppercase, one lowercase, and one special character",
+                        "type": "string",
+                        "format": "password",
+                        "example": "StrongP@ss1"
                     },
                     "password_confirmation": {
                         "type": "string",
-                        "example": "123456"
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "test"
+                        "format": "password",
+                        "example": "StrongP@ss1"
                     },
                     "phone_number": {
+                        "description": "E.164 international format",
                         "type": "string",
                         "example": "+201000000000"
                     }
@@ -3073,6 +3053,49 @@
                         "description": "The order in which the splash screen is displayed relative to others",
                         "type": "integer",
                         "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUserRequestSchema": {
+                "properties": {
+                    "first_name": {
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Doe"
+                    },
+                    "profile_photo": {
+                        "description": "Profile photo image file (jpeg, png, gif, etc.)",
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "location": {
+                        "type": "string",
+                        "example": "Cairo, Egypt",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "hello@gmail.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "P@ssw0rd"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "P@ssw0rd"
+                    },
+                    "phone_number": {
+                        "description": "E.164 international format",
+                        "type": "string",
+                        "example": "+201000000000"
                     }
                 },
                 "type": "object"
@@ -3573,24 +3596,44 @@
                         "type": "integer",
                         "example": 8
                     },
-                    "name": {
+                    "first_name": {
                         "type": "string",
-                        "example": "test"
+                        "example": "John"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Doe"
+                    },
+                    "full_name": {
+                        "type": "string",
+                        "example": "John Doe"
                     },
                     "email": {
                         "type": "string",
-                        "example": "he@gmail.com"
+                        "format": "email",
+                        "example": "john.doe@example.com"
+                    },
+                    "profile_photo": {
+                        "type": "string",
+                        "format": "url",
+                        "example": "http://yourdomain.com/storage/users/profile.jpg",
+                        "nullable": true
                     },
                     "phone_number": {
                         "type": "string",
                         "example": "+201005594752"
                     },
-                    "updated_at": {
+                    "location": {
+                        "type": "string",
+                        "example": "Cairo, Egypt",
+                        "nullable": true
+                    },
+                    "created_at": {
                         "type": "string",
                         "format": "date-time",
                         "example": "2025-03-09T10:52:17.000000Z"
                     },
-                    "created_at": {
+                    "updated_at": {
                         "type": "string",
                         "format": "date-time",
                         "example": "2025-03-09T10:52:17.000000Z"
