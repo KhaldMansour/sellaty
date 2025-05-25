@@ -32,7 +32,8 @@ class Product extends Model
         'deliverable',
         'user_id',
         'featured',
-        'currency'
+        'currency',
+        'status'
     ];
 
     protected $casts = [
