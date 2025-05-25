@@ -2360,7 +2360,7 @@
         "/api/v1/users/{user}/profile": {
             "post": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "summary": "Update user profile",
                 "description": "Allows an authenticated user to update their own profile information.",
@@ -3904,10 +3904,6 @@
         {
             "name": "SplashScreens",
             "description": "SplashScreens"
-        },
-        {
-            "name": "User",
-            "description": "User"
         },
         {
             "name": "Wanted Products",

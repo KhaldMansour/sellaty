@@ -175,7 +175,7 @@ class UserController extends Controller
      *     path="/api/v1/users/{user}/profile",
      *     summary="Update user profile",
      *     description="Allows an authenticated user to update their own profile information.",
-     *     tags={"User"},
+     *     tags={"Users"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="user",
