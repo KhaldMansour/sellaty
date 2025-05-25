@@ -14,6 +14,15 @@ return [
     |
     */
 
+    'appsender' => [
+        'appkey' => env('APPSENDER_APPKEY'),
+        'authkey' => env('APPSENDER_AUTHKEY'),
+    ],
+
+    'otp' => [
+        'driver' => env('OTP_SENDER_DRIVER', 'appsenders'),
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

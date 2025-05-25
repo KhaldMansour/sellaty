@@ -160,7 +160,8 @@ class AuthController extends Controller
             return $this->failure('OTP has already been sent. Please wait.', 400);
         }
 
-        $otpSender = OtpSenderFactory::create('whatsapp');
+        $otpDriver = config('services.otp.driver', 'appsenders');
+        $otpSender = OtpSenderFactory::create($otpDriver);
         $this->otpService->setOtpSender($otpSender);
         $this->otpService->sendOtp($phoneNumber);
 
