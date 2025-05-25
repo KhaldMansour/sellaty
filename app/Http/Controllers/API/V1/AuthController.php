@@ -167,11 +167,6 @@ class AuthController extends Controller
         return $this->success(null, ['message' => 'OTP has been sent.'], 200);
     }
 
-    public function me()
-    {
-        return response()->json(auth()->user());
-    }
-
     public function logout()
     {
         auth()->logout();

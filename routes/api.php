@@ -59,7 +59,9 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
     Route::post('resend-otp', 'AuthController@resendOtp');
 
     Route::prefix('users')->group(function () {
-        Route::get('{user}/products', 'ProductController@sellerProducts');
+        Route::get('{user}', 'UserController@getUserData');
+        Route::get('{user}/products', 'ProductController@sellerActiveProducts');
+        Route::get('{user}/wanted-products', 'WantedProductController@buyerActiveWantedProducts');
     });
 
     Route::middleware([JwtMiddleware::class])->group(function () {
@@ -67,13 +69,10 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::post('/products', 'ProductController@create');
         Route::post('/wanted-products', 'WantedProductController@create');
 
-        Route::get('users/profile/wanted-products', 'UserController@myWantedProducts');
-        Route::get('users/profile/products', 'UserController@myProducts');
-        Route::get('users/profile/recent-search', 'UserController@myRecentSearches');
-
         Route::prefix('users')->group(function () {
             Route::get('profile/wanted-products', 'UserController@myWantedProducts');
             Route::get('profile/products', 'UserController@myProducts');
+            Route::get('profile/wanted-products', 'UserController@myWantedProducts');
             Route::get('profile/recent-search', 'UserController@myRecentSearches');
             Route::get('/profile', 'UserController@profile');
             Route::post('/profile/{user}', 'UserController@updateProfile');

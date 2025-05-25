@@ -264,4 +264,44 @@ class UserController extends Controller
 
         return $this->success(new UserResource($user) , 'Profile fetched successfully');
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/users/{user}",
+     *     summary="Get user profile data",
+     *     description="Retrieve the profile data of a specific user by their ID, excluding sensitive fields like password, created_at, and updated_at.",
+     *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="user",
+     *         in="path",
+     *         description="ID of the user to fetch",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User profile retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="User data fetched successfully"),
+     *             @OA\Property(property="data", ref="#/components/schemas/UserSchema")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="User not found")
+     *         )
+     *     )
+     * )
+     */
+    public function getUserData(User $user) {
+        $user->makeHidden(['password' , 'created_at' , 'updated_at']);
+
+        return $this->success(new UserResource($user) , 'User data fetched successfully');
+    }
 }

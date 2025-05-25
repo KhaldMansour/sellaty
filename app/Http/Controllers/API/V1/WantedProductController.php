@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateWantedProductRequest;
 use App\Http\Requests\ListResourceRequest;
 use App\Http\Resources\WantedProductResource;
+use App\Models\User;
 use App\Models\WantedProduct;
 use App\Services\WantedProductService;
 use Illuminate\Http\Request;
@@ -133,26 +134,56 @@ class WantedProductController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * @OA\Get(
+     *     path="/api/v1/users/{user}/wanted-products",
+     *     summary="Get active wanted products for a specific buyer",
+     *     tags={"Wanted Products"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="user",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the buyer user",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         required=false,
+     *         description="Number of results to return per page",
+     *         @OA\Schema(type="integer", default=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of active wanted products for the buyer",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Wanted products fetched successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/WantedProductSchema")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Buyer user not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="User not found")
+     *         )
+     *     )
+     * )
      */
-    public function edit(WantedProduct $wantedProduct)
+    public function buyerActiveWantedProducts(User $user, Request $request)
     {
-        //
-    }
+        $limit = $request->input('limit', 10);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, WantedProduct $wantedProduct)
-    {
-        //
-    }
+        $wantedProducts = $this->wantedProductService->getBuyerActiveWantedProducts($user, $limit);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(WantedProduct $wantedProduct)
-    {
-        //
+        return $this->success(WantedProductResource::collection($wantedProducts));  
     }
 }

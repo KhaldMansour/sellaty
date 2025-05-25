@@ -163,6 +163,8 @@ class WantedProductResource extends JsonResource
             'categories' => CategoryResource::collection($this->categories),
             'user' => new UserResource($this->user),
             'images' => WantedProductImageResource::collection($this->images),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }

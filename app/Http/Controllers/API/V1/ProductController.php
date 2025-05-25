@@ -156,7 +156,7 @@ class ProductController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/users/{user}/products",
-     *     summary="Get products by seller",
+     *     summary="Get Active products by seller",
      *     tags={"Users"},
      *     @OA\Parameter(
      *         name="user",
@@ -193,11 +193,11 @@ class ProductController extends Controller
      *     )
      * )
      */
-    public function sellerProducts(User $user, Request $request)
+    public function sellerActiveProducts(User $user, Request $request)
     {
         $limit = $request->input('limit', 10);
 
-        $products = $this->productService->getSellerProducts($user, $limit);
+        $products = $this->productService->getSellerActiveProducts($user, $limit);
 
         return $this->success(ProductResource::collection($products));
     }
