@@ -2357,26 +2357,14 @@
                 ]
             }
         },
-        "/api/v1/users/{user}/profile": {
+        "/api/v1/users/profile/update": {
             "post": {
                 "tags": [
                     "Users"
                 ],
-                "summary": "Update user profile",
-                "description": "Allows an authenticated user to update their own profile information.",
-                "operationId": "421f80eeb514a600e6d1e82c69751997",
-                "parameters": [
-                    {
-                        "name": "user",
-                        "in": "path",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
+                "summary": "Update authenticated user's profile",
+                "description": "Allows the currently authenticated user to update their profile details.",
+                "operationId": "ea95f299ce72341916a54770de4f9ab9",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -2404,26 +2392,6 @@
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/UserSchema"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - User trying to update another profile",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "error"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "You do not have access to this action."
                                         }
                                     },
                                     "type": "object"

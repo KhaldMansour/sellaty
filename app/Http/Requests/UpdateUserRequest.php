@@ -47,19 +47,21 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user = auth()->user(); 
+        
         return [
             'first_name' => 'string|max:255',
             'last_name' => 'string|max:255',
             'profile_photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:12048',
             'location' => 'nullable|string|max:255',
-            'email' => 'unique:users,email,' . $this->route('user')->id,
+            'email' => 'unique:users,email,' . $user->id,
             'password' => [
                 'string',
                 'min:6',
                 'confirmed',
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/',
             ],
-            'phone_number' => 'string|regex:/^\+?[1-9]\d{1,14}$/|unique:users,phone_number,' . $this->route('user')->id,
+            'phone_number' => 'string|regex:/^\+?[1-9]\d{1,14}$/|unique:users,phone_number,' . $user->id,
         ];
     }
 

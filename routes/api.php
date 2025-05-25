@@ -58,11 +58,6 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
     Route::post('login', 'AuthController@login');
     Route::post('resend-otp', 'AuthController@resendOtp');
 
-    Route::prefix('users')->group(function () {
-        Route::get('{user}', 'UserController@getUserData');
-        Route::get('{user}/products', 'ProductController@sellerActiveProducts');
-        Route::get('{user}/wanted-products', 'WantedProductController@buyerActiveWantedProducts');
-    });
 
     Route::middleware([JwtMiddleware::class])->group(function () {
         Route::post('verify-otp', 'AuthController@verifyOtp');
@@ -75,7 +70,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::get('profile/wanted-products', 'UserController@myWantedProducts');
             Route::get('profile/recent-search', 'UserController@myRecentSearches');
             Route::get('/profile', 'UserController@profile');
-            Route::post('/profile/{user}', 'UserController@updateProfile');
+            Route::post('/profile/update', 'UserController@updateProfile');
         });
 
         Route::prefix('chats')->group(function () {
@@ -102,5 +97,11 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
 
         Route::get('user', 'AuthController@me');
         Route::post('logout', 'AuthController@logout');
+    });
+
+    Route::prefix('users')->group(function () {
+        Route::get('{user}', 'UserController@getUserData');
+        Route::get('{user}/products', 'ProductController@sellerActiveProducts');
+        Route::get('{user}/wanted-products', 'WantedProductController@buyerActiveWantedProducts');
     });
 });
