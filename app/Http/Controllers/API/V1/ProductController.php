@@ -9,6 +9,7 @@ use App\Http\Requests\ListResourceRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -150,5 +151,54 @@ class ProductController extends Controller
         $this->productService->detachCategoriesFromProduct($product, $request->category_ids);
 
         return $this->success(new ProductResource($product), 'Categories deattached successfully');
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/users/{user}/products",
+     *     summary="Get products by seller",
+     *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="user",
+     *         in="path",
+     *         description="ID of the user (seller)",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=5)
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="Limit the number of products returned",
+     *         required=false,
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of products for the given seller",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Seller products fetched successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/ProductSchema")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
+     *     )
+     * )
+     */
+    public function sellerProducts(User $user, Request $request)
+    {
+        $limit = $request->input('limit', 10);
+
+        $products = $this->productService->getSellerProducts($user, $limit);
+
+        return $this->success(ProductResource::collection($products));
     }
 }

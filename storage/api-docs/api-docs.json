@@ -1793,6 +1793,75 @@
                 }
             }
         },
+        "/api/v1/users/{user}/products": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get products by seller",
+                "operationId": "b615333e417a1306779db97fc36d37bc",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the user (seller)",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit the number of products returned",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of products for the given seller",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Seller products fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ProductSchema"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/splash-screens": {
             "get": {
                 "tags": [
@@ -3694,12 +3763,12 @@
             "description": "Products"
         },
         {
-            "name": "SplashScreens",
-            "description": "SplashScreens"
-        },
-        {
             "name": "Users",
             "description": "Users"
+        },
+        {
+            "name": "SplashScreens",
+            "description": "SplashScreens"
         },
         {
             "name": "Wanted Products",

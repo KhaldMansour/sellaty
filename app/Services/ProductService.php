@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\User;
 use App\Repositories\RecentSearchRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\Storage;
@@ -88,5 +89,12 @@ class ProductService
                 );
             }
         }
+    }
+
+    public function getSellerProducts(User $user, $limit = 10)
+    {
+        $products = $this->productRepository->where('user_id', $user->id)->paginate($limit);
+     
+        return $products;
     }
 }

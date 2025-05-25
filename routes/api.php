@@ -58,6 +58,9 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
     Route::post('login', 'AuthController@login');
     Route::post('resend-otp', 'AuthController@resendOtp');
 
+    Route::prefix('users')->group(function () {
+        Route::get('{user}/products', 'ProductController@sellerProducts');
+    });
 
     Route::middleware([JwtMiddleware::class])->group(function () {
         Route::post('verify-otp', 'AuthController@verifyOtp');
