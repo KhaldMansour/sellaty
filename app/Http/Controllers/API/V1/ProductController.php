@@ -60,6 +60,40 @@ class ProductController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/v1/products/{product}",
+     *     summary="Get a single product by ID",
+     *     tags={"Products"},
+     *     @OA\Parameter(
+     *         name="product",
+     *         in="path",
+     *         description="ID of the product to retrieve",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Product fetched successfully"),
+     *             @OA\Property(property="data", ref="#/components/schemas/ProductSchema")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
+     *     )
+     * )
+     */
+    public function show(Product $product)
+    {
+        return $this->success(new ProductResource($product), 'Product fetched successfully');
+    }
+
+    /**
      * @OA\Post(
      *     path="/api/v1/products",
      *     summary="Create a new product",
