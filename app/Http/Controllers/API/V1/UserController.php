@@ -229,4 +229,39 @@ class UserController extends Controller
 
         return $this->success(new UserResource($user) , 'Profile updated successfully');
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/users/profile",
+     *     summary="Get authenticated user profile",
+     *     description="Returns the currently authenticated user's profile information.",
+     *     tags={"Users"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profile fetched successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Profile fetched successfully"),
+     *             @OA\Property(property="data", ref="#/components/schemas/UserSchema")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
+     */
+    public function profile()
+    {
+        $user = auth()->user();
+
+        return $this->success(new UserResource($user) , 'Profile fetched successfully');
+    }
 }

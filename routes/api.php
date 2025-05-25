@@ -75,7 +75,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::get('profile/wanted-products', 'UserController@myWantedProducts');
             Route::get('profile/products', 'UserController@myProducts');
             Route::get('profile/recent-search', 'UserController@myRecentSearches');
-            Route::get('/profile', 'AuthController@me');
+            Route::get('/profile', 'UserController@profile');
             Route::post('/profile/{user}', 'UserController@updateProfile');
         });
 
