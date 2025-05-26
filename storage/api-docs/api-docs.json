@@ -1828,6 +1828,172 @@
                 ]
             }
         },
+        "/api/v1/pages": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "summary": "Get a list of all pages",
+                "description": "Returns a list of all pages",
+                "operationId": "getPages",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The number of items to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PageSchema"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/pages/": {
+            "post": {
+                "tags": [
+                    "Pages"
+                ],
+                "summary": "Store a newly created page",
+                "description": "Store a newly created page",
+                "operationId": "storePage",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePageRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Page created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageSchema"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/pages/{page}": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "summary": "Get a single page by its slug",
+                "description": "Retrieve a single page by its slug",
+                "operationId": "getPageBySlug",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "path",
+                        "description": "Slug of the page",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "about-us"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Page retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageSchema"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Pages"
+                ],
+                "summary": "Delete a page",
+                "description": "Deletes the page identified by the given ID.",
+                "operationId": "96b68a551c5a09eca4d399a8b4bd3e16",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "path",
+                        "description": "ID of the page to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Page deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Page deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/products": {
             "get": {
                 "tags": [
@@ -3456,6 +3622,39 @@
                 },
                 "type": "object"
             },
+            "StorePageRequest": {
+                "title": "Store Page Request",
+                "description": "Request schema for creating a new static page.",
+                "required": [
+                    "title",
+                    "slug",
+                    "content"
+                ],
+                "properties": {
+                    "title": {
+                        "description": "The title of the page",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "About Us"
+                    },
+                    "slug": {
+                        "description": "Unique slug for the page URL",
+                        "type": "string",
+                        "example": "about-us"
+                    },
+                    "content": {
+                        "description": "HTML content of the page",
+                        "type": "string",
+                        "example": "<p>This is the about us page content.</p>"
+                    },
+                    "published": {
+                        "description": "Whether the page is published",
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
             "StoreSplashScreenRequest": {
                 "properties": {
                     "image": {
@@ -3863,6 +4062,43 @@
                         "type": "string",
                         "format": "date-time",
                         "example": "2025-05-04T12:01:11Z"
+                    }
+                },
+                "type": "object"
+            },
+            "PageSchema": {
+                "title": "Page",
+                "description": "A static page resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "About Us"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "about-us"
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "<p>This is about us content</p>"
+                    },
+                    "published": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-26T14:20:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-05-27T14:20:00Z"
                     }
                 },
                 "type": "object"
@@ -4336,6 +4572,10 @@
         {
             "name": "Offers",
             "description": "Offers"
+        },
+        {
+            "name": "Pages",
+            "description": "Pages"
         },
         {
             "name": "Products",

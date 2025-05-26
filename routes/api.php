@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\V1\PageController;
 use App\Http\Middleware\JwtMiddleware;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
@@ -95,6 +96,15 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::get('liked-products', 'LikeController@getLikedProducts');
         });
 
+        Route::prefix('pages')->controller(PageController::class)->group(function () {
+            Route::get('/', 'index')->name('pages.index');
+            Route::post('/', 'store')->name('pages.store');
+            Route::get('/create', 'create')->name('pages.create');
+            Route::delete('/{page}', 'destroy')->name('pages.destroy');
+            Route::get('/{page}/edit', 'edit')->name('pages.edit');
+            Route::put('/{page}', 'update')->name('pages.update');
+        });
+
         Route::get('user', 'AuthController@me');
         Route::post('logout', 'AuthController@logout');
     });
@@ -104,4 +114,6 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::get('{user}/products', 'ProductController@sellerActiveProducts');
         Route::get('{user}/wanted-products', 'WantedProductController@buyerActiveWantedProducts');
     });
+
+    Route::get('/pages/{page}', 'PageController@show')->name('pages.show');
 });
