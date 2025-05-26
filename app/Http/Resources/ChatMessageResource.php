@@ -38,7 +38,7 @@ class ChatMessageResource extends JsonResource
             'id' => $this->id,
             'chat_id' => $this->chat_id,
             'sender_id' => $this->sender_id,
-            'sender_name' => $this->sender->name,
+            'sender_name' => $this->sender->first_name . ' ' . $this->sender->last_name,
             'content' => $isText ? $this->content : '',
             'type' => $this->type,
             'seen_at' => $this->seen_at,

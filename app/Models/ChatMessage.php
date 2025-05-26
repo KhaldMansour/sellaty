@@ -44,6 +44,6 @@ class ChatMessage extends Model
 
     public function getSenderNameAttribute()
     {
-        return $this->sender?->name;
+        return $this->sender?->full_name;
     }
 }

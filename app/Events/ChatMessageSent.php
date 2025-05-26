@@ -30,7 +30,16 @@ class ChatMessageSent implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return (new ChatMessageResource($this->chatMessage))->toArray(request());
+        return [
+            'id' => $this->chatMessage->id,
+            'content' => $this->chatMessage->content,
+            'type' => $this->chatMessage->type,
+            'sender_id' => $this->chatMessage->sender->id,
+            'sender_name' => $this->chatMessage->sender->full_name,
+            'chat_id' => $this->chatMessage->chat_id,
+            'seen_at' => $this->chatMessage->seen_at,
+            'created_at' => $this->chatMessage->created_at,
+        ];
     }
 
     public function broadcastAs()

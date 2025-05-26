@@ -71,7 +71,7 @@ class ChatResource extends JsonResource
             'unseen_messages_count' => $this->unseen_messages_count,
             'counterpart' => [
                 'id' => $counterpart->id,
-                'name' => $counterpart->name,
+                'name' => $counterpart->full_name,
             ],
             'latest_message' => new ChatMessageResource($this->latestMessage),
             'created_at' => $this->created_at,
