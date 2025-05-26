@@ -52,7 +52,7 @@ class User extends Authenticatable implements JWTSubject
                     $oldPath = str_replace(asset('storage/'), '', $user->getOriginal('profile_photo'));
                     Storage::disk('public')->delete($oldPath);
                 }
-    
+
                 $imagePath = request()->file('profile_photo')->store('users', 'public');
                 $imageUrl = asset('storage/' . $imagePath);
                 $user->profile_photo = $imageUrl;
@@ -100,6 +100,45 @@ class User extends Authenticatable implements JWTSubject
     public function getFullNameAttribute()
     {
         return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function likedUsers()
+    {
+        return $this->morphedByMany(User::class, 'likeable', 'likes');
+    }
+
+    public function likedProducts()
+    {
+        return $this->morphedByMany(Product::class, 'likeable', 'likes');
+    }
+
+    public function like($likeable)
+    {
+        return $this->likes()->firstOrCreate([
+            'likeable_id' => $likeable->id,
+            'likeable_type' => get_class($likeable),
+        ]);
+    }
+
+    public function unlike($likeable)
+    {
+        return $this->likes()
+            ->where('likeable_id', $likeable->id)
+            ->where('likeable_type', get_class($likeable))
+            ->delete();
+    }
+
+    public function hasLiked($likeable)
+    {
+        return $this->likes()
+            ->where('likeable_id', $likeable->id)
+            ->where('likeable_type', get_class($likeable))
+            ->exists();
     }
 
     public function products()

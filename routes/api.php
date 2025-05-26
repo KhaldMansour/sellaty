@@ -87,12 +87,12 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::prefix('offers')->group(function () {
             Route::post('products/{product}', 'OfferController@create');
             Route::put('{offer}/status', 'OfferController@updateStatus');
+        });
 
-            // Route::get('buyer', 'ChatController@buyerChats');
-            // Route::get('seller', 'ChatController@sellerChats');
-            // Route::post('{chat}/messages', 'ChatMessageController@send');
-            // Route::get('{chat}/messages', 'ChatMessageController@messages');
-            // Route::post('{chat}/seen', 'ChatMessageController@markAsSeen');
+        Route::prefix('likes')->group(function () {
+            Route::post('toggle-like', 'LikeController@toggle');
+            Route::get('liked-users', 'LikeController@getLikedUsers');
+            Route::get('liked-products', 'LikeController@getLikedProducts');
         });
 
         Route::get('user', 'AuthController@me');

@@ -14,7 +14,7 @@ class Product extends Model
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
-    
+
     protected $fillable = [
         'name',
         'description',
@@ -149,5 +149,15 @@ class Product extends Model
     public function offers()
     {
         return $this->hasMany(Offer::class);
+    }
+
+    public function likes()
+    {
+        return $this->morphMany(Like::class, 'likeable');
+    }
+
+    public function likedByUsers()
+    {
+        return $this->morphToMany(User::class, 'likeable', 'likes');
     }
 }
