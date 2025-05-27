@@ -11,21 +11,21 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  *     schema="RegisterUserRequestSchema",
  *     type="object",
  *     required={"first_name", "email", "password", "password_confirmation", "phone_number"},
- * 
+ *
  *     @OA\Property(property="first_name", type="string", example="John"),
  *     @OA\Property(property="last_name", type="string", example="Doe"),
- *     
+ *
  *     @OA\Property(
  *         property="profile_photo",
  *         type="string",
  *         format="binary",
  *         description="Profile photo image file (jpeg, png, jpg, gif, svg)"
  *     ),
- *     
+ *
  *     @OA\Property(property="location", type="string", example="Cairo, Egypt", nullable=true),
- *     
+ *
  *     @OA\Property(property="email", type="string", format="email", example="hello@gmail.com"),
- *     
+ *
  *     @OA\Property(
  *         property="password",
  *         type="string",
@@ -33,14 +33,14 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  *         example="StrongP@ss1",
  *         description="Min 6 characters, at least one uppercase, one lowercase, and one special character"
  *     ),
- *     
+ *
  *     @OA\Property(
  *         property="password_confirmation",
  *         type="string",
  *         format="password",
  *         example="StrongP@ss1"
  *     ),
- *     
+ *
  *     @OA\Property(
  *         property="phone_number",
  *         type="string",

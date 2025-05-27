@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Http\Resources\ChatMessageResource;
 use App\Models\ChatMessage;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;

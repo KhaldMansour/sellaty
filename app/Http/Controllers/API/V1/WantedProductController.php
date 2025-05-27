@@ -184,6 +184,6 @@ class WantedProductController extends Controller
 
         $wantedProducts = $this->wantedProductService->getBuyerActiveWantedProducts($user, $limit);
 
-        return $this->success(WantedProductResource::collection($wantedProducts));  
+        return $this->success(WantedProductResource::collection($wantedProducts));
     }
 }

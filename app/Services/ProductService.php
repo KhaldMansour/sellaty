@@ -94,14 +94,14 @@ class ProductService
     public function getSellerProducts(User $user, $limit = 10)
     {
         $products = $this->productRepository->where('user_id', $user->id)->paginate($limit);
-     
+
         return $products;
     }
 
     public function getSellerActiveProducts(User $user, $limit = 10)
     {
         $products = $this->productRepository->where('user_id', $user->id)->where('status', Product::STATUS_ACTIVE)->paginate($limit);
-     
+
         return $products;
     }
 }

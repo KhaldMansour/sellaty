@@ -31,7 +31,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *             @OA\Schema(type="null")
  *         }
  *     ),
-  *     @OA\Property(
+ *     @OA\Property(
  *         property="latest_message",
  *         oneOf={
  *             @OA\Schema(ref="#/components/schemas/ChatMessageSchema"),

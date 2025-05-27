@@ -13,7 +13,6 @@ use App\Repositories\ProductRepository;
 use App\Repositories\RecentSearchRepository;
 use App\Repositories\WantedProductRepository;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserController extends Controller
 {
@@ -201,13 +200,13 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function updateProfile(UpdateUserRequest $request , User $user)
+    public function updateProfile(UpdateUserRequest $request, User $user)
     {
         $user = auth()->user();
 
         $user->update($request->validated());
 
-        return $this->success(new UserResource($user) , 'Profile updated successfully');
+        return $this->success(new UserResource($user), 'Profile updated successfully');
     }
 
     /**
@@ -242,7 +241,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        return $this->success(new UserResource($user) , 'Profile fetched successfully');
+        return $this->success(new UserResource($user), 'Profile fetched successfully');
     }
 
     /**
@@ -279,9 +278,10 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function getUserData(User $user) {
+    public function getUserData(User $user)
+    {
         $user->makeHidden(['password' , 'created_at' , 'updated_at']);
 
-        return $this->success(new UserResource($user) , 'User data fetched successfully');
+        return $this->success(new UserResource($user), 'User data fetched successfully');
     }
 }

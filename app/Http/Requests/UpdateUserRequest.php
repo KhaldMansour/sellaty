@@ -47,8 +47,8 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $user = auth()->user(); 
-        
+        $user = auth()->user();
+
         return [
             'first_name' => 'string|max:255',
             'last_name' => 'string|max:255',

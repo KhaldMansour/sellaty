@@ -24,6 +24,7 @@ class AppSender implements OtpSenderStrategy
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
+
             return true;
         } else {
             return false;

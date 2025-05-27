@@ -21,8 +21,10 @@ class SearchByNameCriteria implements CriteriaInterface
             ->mapWithKeys(function ($pair) {
                 if (str_contains($pair, ':')) {
                     [$field, $op] = explode(':', $pair, 2);
+
                     return [$field => $op];
                 }
+
                 return [$pair => 'like'];
             });
 
@@ -36,6 +38,7 @@ class SearchByNameCriteria implements CriteriaInterface
             $searchPairs = collect(explode(';', $search))
                 ->mapWithKeys(function ($pair) {
                     [$field, $value] = explode(':', $pair, 2);
+
                     return [$field => $value];
                 });
 
@@ -43,9 +46,7 @@ class SearchByNameCriteria implements CriteriaInterface
                 $value = $searchPairs['name'];
                 $model = $model->where("name->{$locale}", $operator, $operator === 'like' ? "%{$value}%" : $value);
             }
-        }
-
-        else {
+        } else {
             $value = $search;
             $model = $model->where("name->{$locale}", $operator, $operator === 'like' ? "%{$value}%" : $value);
         }

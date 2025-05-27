@@ -19,7 +19,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
         'status',
         'name' => 'like'
     ];
-    
+
     public function model()
     {
         return Category::class;

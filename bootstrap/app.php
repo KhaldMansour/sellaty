@@ -1,6 +1,8 @@
 <?php
 
+use App\Console\Commands\DeactivateExpiredProducts;
 use App\Http\Middleware\JwtMiddleware;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,6 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
+    ->withCommands([
+        DeactivateExpiredProducts::class,
+    ])
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command('products:deactivate-expired')->everyMinute();
+    })
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'JwtMiddleware' => JwtMiddleware::class,
@@ -49,12 +57,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], $e->getStatusCode());
             }
 
-            // return response()->json([
-            //     'status' => 'error',
-            //     'data' => null,
-            //     'error' => 'Something went wrong.',
-            //     'message' => $e->getMessage()
-            // ], 500);
+            return response()->json([
+                'status' => 'error',
+                'data' => null,
+                'error' => 'Something went wrong.',
+                'message' => $e->getMessage()
+            ], 500);
         });
     })
     ->create();

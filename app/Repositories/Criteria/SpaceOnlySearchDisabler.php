@@ -10,7 +10,7 @@ class SpaceOnlySearchDisabler implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         if (request()->has('search')) {
-            $search = request('search'); 
+            $search = request('search');
             $pairs = explode(';', $search);
 
             foreach ($pairs as $pair) {
