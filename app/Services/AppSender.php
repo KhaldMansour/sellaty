@@ -4,10 +4,11 @@ namespace App\Services;
 
 use App\Contracts\OtpSenderStrategy;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AppSender implements OtpSenderStrategy
 {
-   public function sendOtp(string $phoneNumber, string $otp): bool
+    public function sendOtp(string $phoneNumber, string $otp): bool
     {
         $cleanedNumber = ltrim($phoneNumber, '+');
 
@@ -19,7 +20,11 @@ class AppSender implements OtpSenderStrategy
         ]);
 
         if ($response->successful()) {
-            return true; 
+            Log::info('AppSender OTP Response', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            return true;
         } else {
             return false;
         }
