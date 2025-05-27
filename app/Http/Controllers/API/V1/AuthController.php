@@ -163,7 +163,10 @@ class AuthController extends Controller
         $otpDriver = config('services.otp.driver', 'appsenders');
         $otpSender = OtpSenderFactory::create($otpDriver);
         $this->otpService->setOtpSender($otpSender);
-        $this->otpService->sendOtp($phoneNumber);
+        
+        if (!$this->otpService->sendOtp($phoneNumber)) {
+            return $this->failure('Failed to send OTP', 500);
+        };
 
         return $this->success(null, ['message' => 'OTP has been sent.'], 200);
     }
