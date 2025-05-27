@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Jobs\ProcessProductImages;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
@@ -91,17 +91,11 @@ class Product extends Model
             if (request()->has('images')) {
                 $productImages = request()->images;
                 foreach ($productImages as $image) {
-                    $imagePath = $image->store('products', 'public');
-                    $imageUrl = asset('storage/' . $imagePath);
+                    $tempPath = tempnam(sys_get_temp_dir(), 'img_');
+                    file_put_contents($tempPath, file_get_contents($image->getRealPath()));
 
-                    if (!Storage::disk('public')->exists($imagePath)) {
-                        Log::error('File storage failed', ['path' => $imagePath]);
-                    }
-
-                    $model->images()->create([
-                        'image_url' => $imageUrl,
-                        'product_id' => $model->id,
-                    ]);
+                    ProcessProductImages::dispatch($tempPath, $model)
+                        ->onQueue('images');
                 }
             }
 
