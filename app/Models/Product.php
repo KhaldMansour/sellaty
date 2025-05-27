@@ -91,10 +91,9 @@ class Product extends Model
             if (request()->has('images')) {
                 $productImages = request()->images;
                 foreach ($productImages as $image) {
-                    $tempPath = tempnam(sys_get_temp_dir(), 'img_');
-                    file_put_contents($tempPath, file_get_contents($image->getRealPath()));
+                    $tempPath = $image->store('products' , 'public');
 
-                    ProcessProductImages::dispatch($tempPath, $model)
+                    ProcessProductImages::dispatch( $tempPath, $model)
                         ->onQueue('images');
                 }
             }

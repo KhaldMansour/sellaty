@@ -33,7 +33,17 @@ class ProcessProductImages implements ShouldQueue
 
         $manager = new ImageManager( new Driver());
 
-        $image = $manager->read($this->imagePath)
+        $fullPath = $this->imagePath;
+
+        if (!file_exists($fullPath)) {
+            $fullPath = storage_path('app/public/' . ltrim($this->imagePath, '/'));
+        }
+    
+        if (!file_exists($fullPath)) {
+            throw new \Exception("File not found at path: {$fullPath}");
+        }
+
+        $image = $manager->read($fullPath)
             ->resize(1500, null, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize(); 
@@ -50,6 +60,6 @@ class ProcessProductImages implements ShouldQueue
             'product_id' => $this->product->id
         ]);
 
-        unlink($this->imagePath);
+        unlink($fullPath);
     }
 }
