@@ -33,7 +33,11 @@ class ProcessProductImages implements ShouldQueue
 
         $manager = new ImageManager( new Driver());
 
-        $image = $manager->read($this->imagePath);
+        $image = $manager->read($this->imagePath)
+            ->resize(1500, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize(); 
+            });
 
         $encodedImage = $image->encode(new JpegEncoder(quality: 50));
 
