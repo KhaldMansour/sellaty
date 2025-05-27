@@ -93,8 +93,7 @@ class Product extends Model
                 foreach ($productImages as $image) {
                     $tempPath = $image->store('products' , 'public');
 
-                    ProcessProductImages::dispatch( $tempPath, $model)
-                        ->onQueue('images');
+                    ProcessProductImages::dispatch( $tempPath, $model);
                 }
             }
 
