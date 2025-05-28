@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @OA\Schema(
@@ -144,5 +146,12 @@ class CreateProductRequest extends FormRequest
         return [
             'category_ids.*.exists' => 'The category ID :input is invalid. Please select a valid category.',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errorString = implode(' ', $validator->errors()->all());
+
+        throw new HttpException(422, $errorString);
     }
 }
