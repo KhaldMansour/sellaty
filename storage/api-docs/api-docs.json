@@ -1469,7 +1469,7 @@
                     "Likes"
                 ],
                 "summary": "Get users liked by the authenticated user",
-                "description": "Retrieves a paginated list of users that the authenticated user has liked.",
+                "description": "Retrieves a list of users that the authenticated user has liked.",
                 "operationId": "getLikedUsers",
                 "parameters": [
                     {
@@ -1499,15 +1499,15 @@
                                             "example": "Liked users fetched successfully"
                                         },
                                         "data": {
-                                            "properties": {
-                                                "data": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/UserSchema"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserSchema"
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": null,
+                                            "nullable": true
                                         }
                                     },
                                     "type": "object"
@@ -1545,7 +1545,7 @@
                     "Likes"
                 ],
                 "summary": "Get products liked by the authenticated user",
-                "description": "Retrieves a paginated list of products that the authenticated user has liked.",
+                "description": "Retrieves a list of products that the authenticated user has liked.",
                 "operationId": "getLikedProducts",
                 "parameters": [
                     {
@@ -1575,15 +1575,15 @@
                                             "example": "Liked products fetched successfully"
                                         },
                                         "data": {
-                                            "properties": {
-                                                "data": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/ProductSchema"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ProductSchema"
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": null,
+                                            "nullable": true
                                         }
                                     },
                                     "type": "object"

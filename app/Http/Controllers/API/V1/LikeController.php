@@ -71,7 +71,7 @@ class LikeController extends Controller
      * @OA\Get(
      *     path="/api/v1/likes/liked-users",
      *     summary="Get users liked by the authenticated user",
-     *     description="Retrieves a paginated list of users that the authenticated user has liked.",
+     *     description="Retrieves a list of users that the authenticated user has liked.",
      *     operationId="getLikedUsers",
      *     tags={"Likes"},
      *     security={{"bearerAuth":{}}},
@@ -91,13 +91,10 @@ class LikeController extends Controller
      *             @OA\Property(property="message", type="string", example="Liked users fetched successfully"),
      *             @OA\Property(
      *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="data",
-     *                     type="array",
-     *                     @OA\Items(ref="#/components/schemas/UserSchema")
-     *                 )
-     *             )
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/UserSchema")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true, example=null)
      *         )
      *     ),
      *     @OA\Response(
@@ -123,7 +120,7 @@ class LikeController extends Controller
      * @OA\Get(
      *     path="/api/v1/likes/liked-products",
      *     summary="Get products liked by the authenticated user",
-     *     description="Retrieves a paginated list of products that the authenticated user has liked.",
+     *     description="Retrieves a list of products that the authenticated user has liked.",
      *     operationId="getLikedProducts",
      *     tags={"Likes"},
      *     security={{"bearerAuth":{}}},
@@ -143,13 +140,10 @@ class LikeController extends Controller
      *             @OA\Property(property="message", type="string", example="Liked products fetched successfully"),
      *             @OA\Property(
      *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="data",
-     *                     type="array",
-     *                     @OA\Items(ref="#/components/schemas/ProductSchema")
-     *                 )
-     *             )
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/ProductSchema")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true, example=null)
      *         )
      *     ),
      *     @OA\Response(
