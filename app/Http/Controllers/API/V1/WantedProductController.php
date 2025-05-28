@@ -137,7 +137,7 @@ class WantedProductController extends Controller
      * @OA\Get(
      *     path="/api/v1/users/{user}/wanted-products",
      *     summary="Get active wanted products for a specific buyer",
-     *     tags={"Wanted Products"},
+     *     tags={"Users"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="user",

@@ -3083,7 +3083,7 @@
         "/api/v1/users/{user}/wanted-products": {
             "get": {
                 "tags": [
-                    "Wanted Products"
+                    "Users"
                 ],
                 "summary": "Get active wanted products for a specific buyer",
                 "operationId": "36b6a570a7c766130ccaa76a7d279d63",
