@@ -62,11 +62,7 @@ class ChatResource extends JsonResource
             'name' => $this->name,
             'buyer_id' => $this->buyer_id,
             'seller_id' => $this->seller_id,
-            'product' => [
-                'id' => $this->product_id,
-                'name' => $this->name,
-                'image' => $this->product_image
-            ],
+            'product' => new ProductResource($this->product),
             'latestOffer' => new OfferResource($this->latestOffer),
             'unseen_messages_count' => $this->unseen_messages_count,
             'counterpart' => [

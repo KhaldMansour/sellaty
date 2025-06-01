@@ -53,8 +53,7 @@ class Chat extends Model
     {
         return self::with([
                 'product' => function ($query) {
-                    $query->select('id', 'name')
-                        ->with([
+                    $query->with([
                             'images' => function ($q) {
                                 $q->limit(1);
                             },
