@@ -22,9 +22,6 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  *         format="binary",
  *         description="Profile photo image file (jpeg, png, jpg, gif, svg)"
  *     ),
- *
- *     @OA\Property(property="location", type="string", example="Cairo, Egypt", nullable=true),
- *
  *     @OA\Property(property="email", type="string", format="email", example="hello@gmail.com"),
  *
  *     @OA\Property(
@@ -73,7 +70,6 @@ class RegisterUserRequest extends FormRequest
             'last_name' => 'string|max:255',
             'username' => 'required|string|max:255',
             'profile_photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:12048',
-            'location' => 'nullable|string|max:255',
             'email' => 'string|email|unique:users',
             'password' => [
                 'required',
