@@ -206,6 +206,8 @@ class UserController extends Controller
 
         $user->update($request->validated());
 
+        $user->loadCount(['followers', 'followings']);
+
         return $this->success(new UserResource($user), 'Profile updated successfully');
     }
 
@@ -240,6 +242,8 @@ class UserController extends Controller
     public function profile()
     {
         $user = auth()->user();
+
+        $user->loadCount(['followers', 'followings']);
 
         return $this->success(new UserResource($user), 'Profile fetched successfully');
     }
@@ -278,10 +282,108 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function getUserData(User $user)
+    public function getUserData($userId)
     {
+        $user = User::withCount(['followers', 'followings'])->findOrFail($userId);
+
         $user->makeHidden(['password' , 'created_at' , 'updated_at']);
 
         return $this->success(new UserResource($user), 'User data fetched successfully');
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/users/profile/my-followers",
+     *     summary="Get followers of the authenticated user",
+     *     description="Retrieves a paginated list of users who follow the authenticated user.",
+     *     tags={"Users"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         required=false,
+     *         description="Number of items to return per page",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Followers fetched successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Followers fetched successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/UserSchema")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true, example=null)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     */
+    public function myFollowers()
+    {
+        $limit = request()->input('limit', 10);
+
+        $user = auth()->user();
+
+        return $this->success(UserResource::collection($user->followers()->paginate($limit)), 'Followers fetched successfully');
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/users/profile/my-followings",
+     *     summary="Get users followed by the authenticated user",
+     *     description="Retrieves a paginated list of users the authenticated user is following.",
+     *     tags={"Users"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         required=false,
+     *         description="Number of items to return per page",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Followings fetched successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Followings fetched successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/UserSchema")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true, example=null)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     */
+    public function myFollowings()
+    {
+        $limit = request()->input('limit', 10);
+
+        $user = auth()->user();
+
+        return $this->success(UserResource::collection($user->followings()->paginate($limit)), 'Followings fetched successfully');
     }
 }

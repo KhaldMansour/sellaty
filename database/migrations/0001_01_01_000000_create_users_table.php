@@ -21,6 +21,7 @@ return new class () extends Migration {
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('phone_number')->unique();
+            $table->boolean('locked')->default(false);
             $table->boolean('is_verified')->default(false);
             $table->rememberToken();
             $table->timestamps();

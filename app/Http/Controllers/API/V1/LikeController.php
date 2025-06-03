@@ -8,6 +8,7 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\UserResource;
 use App\Models\Product;
 use App\Models\User;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class LikeController extends Controller
 {
@@ -163,5 +164,135 @@ class LikeController extends Controller
         $likedUsers = $user->likedProducts()->paginate();
 
         return $this->success(ProductResource::collection($likedUsers), 'Liked products fetched successfully');
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/users/{user}/followers",
+     *     summary="Get followers of a specific user",
+     *     description="Returns a paginated list of users who follow the given user. Will return 403 if the user is locked.",
+     *     operationId="getUserFollowers",
+     *     tags={"Likes"},
+     *     @OA\Parameter(
+     *         name="user",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the user whose followers are being fetched",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         required=false,
+     *         description="Limit number for pagination",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Followers list fetched successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Followers fetched successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/UserSchema")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true, example=null)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="User is locked",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="User is locked")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     */
+    public function getUserFollowers(User $user)
+    {
+        $limit = request('limit') ?? 10;
+
+        if ($user->locked) {
+            throw new HttpException(403, 'User is locked');
+        }
+
+        return $this->success(UserResource::collection($user->followers()->paginate($limit)), 'Followers fetched successfully');
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/users/{user_id}/followings",
+     *     summary="Get users followed by the specified user",
+     *     description="Retrieves a paginated list of users that the specified user is following. Returns 403 if the user is locked.",
+     *     operationId="getUserFollowing",
+     *     tags={"Likes"},
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the user whose followings are being fetched",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         required=false,
+     *         description="Limit number for pagination",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of followings",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Followers fetched successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/UserSchema")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true, example=null)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="User is locked",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="User is locked")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     */
+    public function getUserFollowing(User $user)
+    {
+        $limit = request('limit') ?? 10;
+
+        if ($user->locked) {
+            throw new HttpException(403, 'User is locked');
+        }
+
+        return $this->success(UserResource::collection($user->followings()->paginate($limit)), 'Followers fetched successfully');
     }
 }

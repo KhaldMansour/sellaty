@@ -24,7 +24,14 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  *         type="string",
  *         example="+201000000000",
  *         description="E.164 international format"
- *     )
+ *     ),
+ *   @OA\Property(
+ *     property="locked",
+ *     type="integer",
+ *     enum={0, 1},
+ *     example=0,
+ *     description="Whether the user account is locked. 0 = unlocked, 1 = locked"
+ *   ),
  * )
  */
 class UpdateUserRequest extends FormRequest
@@ -56,6 +63,7 @@ class UpdateUserRequest extends FormRequest
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/',
             ],
             'phone_number' => 'string|regex:/^\+?[1-9]\d{1,14}$/|unique:users,phone_number,' . $user->id,
+            'locked' => 'boolean',
         ];
     }
 

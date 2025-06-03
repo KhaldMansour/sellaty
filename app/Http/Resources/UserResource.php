@@ -23,6 +23,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *         example="http://yourdomain.com/storage/users/profile.jpg"
  *     ),
  *     @OA\Property(property="phone_number", type="string", example="+201005594752"),
+ *     @OA\Property(property="locked", type="boolean", example=false, description="Indicates if the user account is locked"),
+ *     @OA\Property(property="followers_count", type="integer", example=150, description="Number of followers"),
+ *     @OA\Property(property="followings_count", type="integer", example=75, description="Number of followings"),
  *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-03-09T10:52:17.000000Z"),
  *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-03-09T10:52:17.000000Z")
  * )
@@ -45,6 +48,9 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'profile_photo' => $this->profile_photo,
             'phone_number' => $this->phone_number,
+            'locked' => $this->locked,
+            'followers_count' => $this->followers_count,
+            'followings_count' => $this->followings_count,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

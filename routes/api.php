@@ -72,6 +72,8 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::get('profile/recent-search', 'UserController@myRecentSearches');
             Route::get('/profile', 'UserController@profile');
             Route::post('/profile/update', 'UserController@updateProfile');
+            Route::get('/profile/my-followers', 'UserController@myFollowers');
+            Route::get('/profile/my-followings', 'UserController@myFollowings');
         });
 
         Route::prefix('chats')->group(function () {
@@ -113,6 +115,8 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::get('{user}', 'UserController@getUserData');
         Route::get('{user}/products', 'ProductController@sellerActiveProducts');
         Route::get('{user}/wanted-products', 'WantedProductController@buyerActiveWantedProducts');
+        Route::get('{user}/followings', 'LikeController@getUserFollowing');
+        Route::get('{user}/followers', 'LikeController@getUserFollowers');
     });
 
     Route::get('/pages/{page}', 'PageController@show')->name('pages.show');

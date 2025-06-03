@@ -32,7 +32,8 @@ class User extends Authenticatable implements JWTSubject
         'phone_number',
         'location',
         'is_verified',
-        'username'
+        'username',
+        'locked',
     ];
 
     /**
@@ -44,6 +45,16 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'remember_token',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'is_verified' => 'boolean',
+            'locked' => 'boolean',
+        ];
+    }
 
     protected static function booted()
     {
@@ -67,20 +78,6 @@ class User extends Authenticatable implements JWTSubject
                 $model->profile_photo = $imageUrl;
             }
         });
-    }
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_verified' => 'boolean'
-        ];
     }
 
     public function getJWTIdentifier()
@@ -116,6 +113,28 @@ class User extends Authenticatable implements JWTSubject
     public function likedProducts()
     {
         return $this->morphedByMany(Product::class, 'likeable', 'likes');
+    }
+
+    public function followings()
+    {
+        return $this->morphToMany(
+            User::class,
+            'likeable',
+            'likes',
+            'user_id',
+            'likeable_id'
+        )->wherePivot('likeable_type', self::class);
+    }
+
+    public function followers()
+    {
+        return $this->morphToMany(
+            User::class,
+            'likeable',
+            'likes',
+            'likeable_id',
+            'user_id'
+        )->wherePivot('likeable_type', self::class);
     }
 
     public function like($likeable)
