@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
                 'first_name' => $faker->firstName(),
                 'last_name' => $faker->lastName(),
                 'email' => $faker->unique()->safeEmail,
+                'username' => $faker->unique()->userName,
                 'profile_photo' => 'https://picsum.photos/200/300?',
                 'phone_number' => $faker->unique()->phoneNumber,
                 'password' => Hash::make('password'),

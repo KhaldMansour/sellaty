@@ -10,10 +10,11 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  * @OA\Schema(
  *     schema="RegisterUserRequestSchema",
  *     type="object",
- *     required={"first_name", "email", "password", "password_confirmation", "phone_number"},
+ *     required={"first_name", "email", "password", "password_confirmation", "phone_number" , "username"},
  *
  *     @OA\Property(property="first_name", type="string", example="John"),
  *     @OA\Property(property="last_name", type="string", example="Doe"),
+ *     @OA\Property(property="username", type="string", example="JohnDoe"),
  *
  *     @OA\Property(
  *         property="profile_photo",
@@ -70,6 +71,7 @@ class RegisterUserRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'string|max:255',
+            'username' => 'required|string|max:255',
             'profile_photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:12048',
             'location' => 'nullable|string|max:255',
             'email' => 'string|email|unique:users',
