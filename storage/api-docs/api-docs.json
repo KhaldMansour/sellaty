@@ -3024,7 +3024,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/wanted-products/{id}": {
@@ -3072,12 +3077,7 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/v1/users/{user}/wanted-products": {
@@ -3306,7 +3306,7 @@
                             "type": "string"
                         },
                         "example": [
-                            "pickup"
+                            "Pickup"
                         ]
                     },
                     "images[]": {
@@ -3409,7 +3409,11 @@
                     "country",
                     "state",
                     "city",
-                    "postal_code"
+                    "postal_code",
+                    "city_lat",
+                    "city_long",
+                    "category_ids[]",
+                    "currency"
                 ],
                 "properties": {
                     "name": {
@@ -3436,9 +3440,9 @@
                         "nullable": true
                     },
                     "duration": {
-                        "description": "Duration for the wanted product (e.g., '2 weeks')",
+                        "description": "Product duration/availability",
                         "type": "string",
-                        "pattern": "^\\d+\\s(?:week|weeks|day|days)$"
+                        "example": "30 days"
                     },
                     "min_price": {
                         "description": "Minimum price for the wanted product",
@@ -3452,21 +3456,38 @@
                         "format": "float",
                         "minimum": 0
                     },
+                    "currency": {
+                        "description": "Currency code (e.g., USD, SAR)",
+                        "type": "string",
+                        "maxLength": 3,
+                        "example": "SAR"
+                    },
+                    "category_ids[]": {
+                        "description": "Array of category IDs",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1
+                        ]
+                    },
                     "condition[]": {
                         "description": "Condition of the wanted product (e.g., new, used)",
                         "type": "array",
                         "items": {
                             "type": "string",
-                            "example": "new"
+                            "example": "New"
                         }
                     },
                     "delivery_options[]": {
-                        "description": "Delivery options for the wanted product",
                         "type": "array",
                         "items": {
-                            "type": "string",
-                            "example": "shipping"
-                        }
+                            "type": "string"
+                        },
+                        "example": [
+                            "Pickup"
+                        ]
                     },
                     "address": {
                         "description": "The address of the buyer",
@@ -3488,10 +3509,31 @@
                         "type": "string",
                         "maxLength": 255
                     },
+                    "city_lat": {
+                        "description": "Latitude coordinate of the city",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "city_long": {
+                        "description": "Longitude coordinate of the city",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "latitude": {
+                        "description": "Latitude coordinate of the specific location",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "longitude": {
+                        "description": "Longitude coordinate of the specific location",
+                        "type": "number",
+                        "format": "float"
+                    },
                     "postal_code": {
                         "description": "Postal code of the buyer's address",
                         "type": "string",
-                        "maxLength": 6
+                        "maxLength": 6,
+                        "example": "12345"
                     },
                     "images[]": {
                         "description": "Product images (array of files)",
@@ -3836,6 +3878,15 @@
                         "description": "E.164 international format",
                         "type": "string",
                         "example": "+201000000000"
+                    },
+                    "locked": {
+                        "description": "Whether the user account is locked. 0 = unlocked, 1 = locked",
+                        "type": "integer",
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "example": 0
                     }
                 },
                 "type": "object"
@@ -4412,6 +4463,21 @@
                         "type": "string",
                         "example": "+201005594752"
                     },
+                    "locked": {
+                        "description": "Indicates if the user account is locked",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "followers_count": {
+                        "description": "Number of followers",
+                        "type": "integer",
+                        "example": 150
+                    },
+                    "followings_count": {
+                        "description": "Number of followings",
+                        "type": "integer",
+                        "example": 75
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -4538,6 +4604,16 @@
                     "active": {
                         "description": "The active status of the wanted product",
                         "type": "boolean"
+                    },
+                    "longitude": {
+                        "description": "Longitude coordinate of the product location",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "latitude": {
+                        "description": "Latitude coordinate of the product location",
+                        "type": "number",
+                        "format": "float"
                     },
                     "user": {
                         "$ref": "#/components/schemas/UserSchema"

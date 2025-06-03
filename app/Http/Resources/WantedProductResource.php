@@ -114,6 +114,18 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *         description="The active status of the wanted product"
  *     ),
  *     @OA\Property(
+ *         property="longitude",
+ *         type="number",
+ *         format="float",
+ *         description="Longitude coordinate of the product location"
+ *     ),
+ *     @OA\Property(
+ *         property="latitude",
+ *         type="number",
+ *         format="float",
+ *         description="Latitude coordinate of the product location"
+ *     ),
+ *     @OA\Property(
  *         property="user",
  *         description="The user who created the wanted product",
  *         ref="#/components/schemas/UserSchema"
@@ -157,6 +169,8 @@ class WantedProductResource extends JsonResource
             'country' => $this->country,
             'state' => $this->state,
             'city' => $this->city,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
             'postal_code' => $this->postal_code,
             'listed_until' => $this->listed_until,
             'status' => $this->status,

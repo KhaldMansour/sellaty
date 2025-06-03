@@ -37,7 +37,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  *         property="delivery_options[]",
  *         type="array",
  *         @OA\Items(type="string"),
- *         example={"pickup"}
+ *         example={"Pickup"}
  *     ),
  *     @OA\Property(
  *         property="images[]",
@@ -110,7 +110,8 @@ class CreateProductRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'max:255'],
+                'max:255'
+            ],
             'description' => 'nullable|string',
             'brand' => 'nullable|string|max:255',
             'model' => 'nullable|string|max:255',

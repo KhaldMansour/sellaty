@@ -63,6 +63,7 @@ class WantedProductController extends Controller
      *     path="/api/v1/wanted-products",
      *     summary="Create a new wanted product",
      *     tags={"Wanted Products"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         description="Create a new wanted product",
@@ -93,7 +94,6 @@ class WantedProductController extends Controller
      *     path="/api/v1/wanted-products/{id}",
      *     summary="Get the details of a wanted product",
      *     tags={"Wanted Products"},
-     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

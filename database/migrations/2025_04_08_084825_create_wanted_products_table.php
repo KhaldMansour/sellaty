@@ -27,6 +27,8 @@ return new class () extends Migration {
             $table->string('country');
             $table->string('state');
             $table->string('city');
+            $table->string('longitude')->nullable();
+            $table->string('latitude')->nullable();
             $table->string('postal_code');
             $table->date('listed_until');
             $table->string('status')->default('active');

@@ -30,7 +30,9 @@ class WantedProduct extends Model
         'city',
         'postal_code',
         'listed_until',
-        'currency'
+        'currency',
+        'longitude',
+        'latitude',
     ];
 
     public $translatable = ['name' , 'description'];
@@ -41,6 +43,8 @@ class WantedProduct extends Model
         'condition' => 'array',
         'delivery_options' => 'array',
         'listed_until' => 'date',
+        'latitude' => 'float',
+        'longitude' => 'float',
     ];
 
 
