@@ -10,15 +10,12 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  * @OA\Schema(
  *     schema="UpdateUserRequestSchema",
  *     type="object",
- *     @OA\Property(property="first_name", type="string", example="John"),
- *     @OA\Property(property="last_name", type="string", example="Doe"),
  *     @OA\Property(
  *         property="profile_photo",
  *         type="string",
  *         format="binary",
  *         description="Profile photo image file (jpeg, png, gif, etc.)"
  *     ),
- *     @OA\Property(property="location", type="string", example="Cairo, Egypt", nullable=true),
  *     @OA\Property(property="email", type="string", format="email", example="hello@gmail.com"),
  *     @OA\Property(property="password", type="string", format="password", example="P@ssw0rd"),
  *     @OA\Property(property="password_confirmation", type="string", format="password", example="P@ssw0rd"),
@@ -50,10 +47,7 @@ class UpdateUserRequest extends FormRequest
         $user = auth()->user();
 
         return [
-            'first_name' => 'string|max:255',
-            'last_name' => 'string|max:255',
             'profile_photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:12048',
-            'location' => 'nullable|string|max:255',
             'email' => 'unique:users,email,' . $user->id,
             'password' => [
                 'string',

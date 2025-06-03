@@ -3546,7 +3546,8 @@
                     "email",
                     "password",
                     "password_confirmation",
-                    "phone_number"
+                    "phone_number",
+                    "username"
                 ],
                 "properties": {
                     "first_name": {
@@ -3557,15 +3558,14 @@
                         "type": "string",
                         "example": "Doe"
                     },
+                    "username": {
+                        "type": "string",
+                        "example": "JohnDoe"
+                    },
                     "profile_photo": {
                         "description": "Profile photo image file (jpeg, png, jpg, gif, svg)",
                         "type": "string",
                         "format": "binary"
-                    },
-                    "location": {
-                        "type": "string",
-                        "example": "Cairo, Egypt",
-                        "nullable": true
                     },
                     "email": {
                         "type": "string",
@@ -3790,23 +3790,10 @@
             },
             "UpdateUserRequestSchema": {
                 "properties": {
-                    "first_name": {
-                        "type": "string",
-                        "example": "John"
-                    },
-                    "last_name": {
-                        "type": "string",
-                        "example": "Doe"
-                    },
                     "profile_photo": {
                         "description": "Profile photo image file (jpeg, png, gif, etc.)",
                         "type": "string",
                         "format": "binary"
-                    },
-                    "location": {
-                        "type": "string",
-                        "example": "Cairo, Egypt",
-                        "nullable": true
                     },
                     "email": {
                         "type": "string",
@@ -4372,6 +4359,10 @@
                         "type": "string",
                         "example": "Doe"
                     },
+                    "username": {
+                        "type": "string",
+                        "example": "JohnDoe"
+                    },
                     "full_name": {
                         "type": "string",
                         "example": "John Doe"
@@ -4390,11 +4381,6 @@
                     "phone_number": {
                         "type": "string",
                         "example": "+201005594752"
-                    },
-                    "location": {
-                        "type": "string",
-                        "example": "Cairo, Egypt",
-                        "nullable": true
                     },
                     "created_at": {
                         "type": "string",
