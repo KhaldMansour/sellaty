@@ -3253,7 +3253,9 @@
                     "category_ids[]",
                     "delivery_options[]",
                     "images[]",
-                    "duration"
+                    "duration",
+                    "city_lat",
+                    "city_long"
                 ],
                 "properties": {
                     "name": {
@@ -3331,6 +3333,26 @@
                     "city": {
                         "type": "string",
                         "example": "Los Angeles"
+                    },
+                    "city_lat": {
+                        "type": "number",
+                        "format": "float",
+                        "example": -59.9984268
+                    },
+                    "city_long": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 38.958749
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "float",
+                        "example": -59.9984268
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 38.958749
                     },
                     "postal_code": {
                         "type": "string",
@@ -4242,6 +4264,14 @@
                     "city": {
                         "type": "string",
                         "example": "Los Angeles"
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "example": "50.36577"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "example": "38.25478"
                     },
                     "postal_code": {
                         "type": "string",

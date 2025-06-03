@@ -20,6 +20,7 @@ class ProductSeeder extends Seeder
         $faker = Faker::create();
 
         $productCount = 2;
+        $productNames = ['Laptop', 'Sneakers', 'Headphones', 'Desk Lamp', 'Camera'];
 
         if (!Storage::disk('public')->exists('products')) {
             Storage::disk('public')->makeDirectory('products');
@@ -50,7 +51,7 @@ class ProductSeeder extends Seeder
             $deliveryOptions = ['pickup', 'shipping', 'local_delivery'];
 
             $product = Product::create([
-                'name' => $faker->word(),
+                'name' => $faker->randomElement($productNames),
                 'description' => $faker->sentence(),
                 'price' => $faker->randomFloat(2, 5, 100),
                 'quantity' => $faker->numberBetween(1, 50),
@@ -78,6 +79,8 @@ class ProductSeeder extends Seeder
                 'negotiable' => $faker->boolean(50),
                 'deliverable' => $faker->boolean(50),
                 'currency' => $faker->randomElement(['USD', 'SAR', 'EGP']),
+                'longitude' => $faker->longitude(),
+                'latitude' => $faker->latitude(),
             ]);
 
             $product->categories()->attach($categoryId);

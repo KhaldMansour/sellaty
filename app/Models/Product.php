@@ -36,7 +36,9 @@ class Product extends Model
         'user_id',
         'featured',
         'currency',
-        'status'
+        'status',
+        'latitude',
+        'longitude',
     ];
 
     protected $casts = [
@@ -49,6 +51,8 @@ class Product extends Model
         'featured' => 'boolean',
         'listed_until' => 'date',
         'price' => 'decimal:2',
+        'latitude' => 'float',
+        'longitude' => 'float',
     ];
 
     public $translatable = ['name' , 'description'];
@@ -91,9 +95,9 @@ class Product extends Model
             if (request()->has('images')) {
                 $productImages = request()->images;
                 foreach ($productImages as $image) {
-                    $tempPath = $image->store('products' , 'public');
+                    $tempPath = $image->store('products', 'public');
 
-                    ProcessProductImages::dispatch( $tempPath, $model);
+                    ProcessProductImages::dispatch($tempPath, $model);
                 }
             }
 
@@ -127,7 +131,6 @@ class Product extends Model
             $amount = (int) $matches[1];
             $unit = $matches[2];
 
-
             if (in_array($unit, ['week', 'weeks'])) {
                 return Carbon::now()->addWeeks($amount);
             } elseif (in_array($unit, ['day', 'days'])) {
@@ -151,5 +154,29 @@ class Product extends Model
     public function likedByUsers()
     {
         return $this->morphToMany(User::class, 'likeable', 'likes');
+    }
+
+    public function scopeWithinRadius($query, $lat, $lng, $radius = 10)
+    {
+        return $query->select('*')
+            ->selectRaw("(
+                6371 * acos(
+                    cos(radians(?)) *
+                    cos(radians(latitude)) *
+                    cos(radians(longitude) - radians(?)) +
+                    sin(radians(?)) *
+                    sin(radians(latitude))
+                )
+            ) AS distance", [$lat, $lng, $lat])
+            ->whereRaw("(
+                6371 * acos(
+                    cos(radians(?)) *
+                    cos(radians(latitude)) *
+                    cos(radians(longitude) - radians(?)) +
+                    sin(radians(?)) *
+                    sin(radians(latitude))
+                )
+            ) <= ?", [$lat, $lng, $lat, $radius])
+            ->orderBy('distance');
     }
 }

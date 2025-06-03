@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  * @OA\Schema(
  *     schema="CreateProductRequestSchema",
  *     type="object",
- *     required={"name", "price", "quantity", "condition[]" , "address", "country", "state", "city", "postal_code" , "category_ids[]" , "delivery_options[]" , "images[]" , "duration"},
+ *     required={"name", "price", "quantity", "condition[]" , "address", "country", "state", "city", "postal_code" , "category_ids[]" , "delivery_options[]" , "images[]" , "duration" , "city_lat" , "city_long"},
  *     @OA\Property(
  *         property="name",
  *         type="string",
@@ -52,6 +52,10 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  *     @OA\Property(property="country", type="string", example="United States"),
  *     @OA\Property(property="state", type="string", example="California"),
  *     @OA\Property(property="city", type="string", example="Los Angeles"),
+ *     @OA\Property(property="city_lat", type="number", format="float", example=-59.9984268),
+ *     @OA\Property(property="city_long", type="number", format="float", example=38.958749),
+ *     @OA\Property(property="latitude", type="number", format="float", example=-59.9984268),
+ *     @OA\Property(property="longitude", type="number", format="float", example=38.958749),
  *     @OA\Property(property="postal_code", type="string", example="90001"),
  *     @OA\Property(
  *         property="active",
@@ -106,16 +110,7 @@ class CreateProductRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'max:255',
-                function ($attribute, $value, $fail) use ($locale) {
-                    $productExists = Product::where('name->' . $locale, '=', $value)
-                        ->exists();
-
-                    if ($productExists) {
-                        $fail("The product name for this locale is already taken.");
-                    }
-                }
-            ],
+                'max:255'],
             'description' => 'nullable|string',
             'brand' => 'nullable|string|max:255',
             'model' => 'nullable|string|max:255',
@@ -138,6 +133,10 @@ class CreateProductRequest extends FormRequest
             'category_ids' => 'required|array',
             'category_ids.*' => 'numeric|exists:categories,id',
             'currency' => 'required|string|max:3',
+            'city_lat' => 'required|numeric',
+            'city_long' => 'required|numeric',
+            'longitude' => 'numeric',
+            'latitude' => 'numeric',
         ];
     }
 
@@ -153,5 +152,23 @@ class CreateProductRequest extends FormRequest
         $errorString = implode(' ', $validator->errors()->all());
 
         throw new HttpException(422, $errorString);
+    }
+
+    protected function prepareForValidation()
+    {
+        $latitude = $this->input('latitude');
+        $longitude = $this->input('longitude');
+
+        if (is_null($latitude)) {
+            $this->merge([
+                'latitude' => $this->input('city_lat'),
+            ]);
+        }
+
+        if (is_null($longitude)) {
+            $this->merge([
+                'longitude' => $this->input('city_long'),
+            ]);
+        }
     }
 }
