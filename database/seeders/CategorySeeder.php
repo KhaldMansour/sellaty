@@ -31,6 +31,7 @@ class CategorySeeder extends Seeder
         }
 
         $categoryCount = 10;
+        $categoryNames = ['Electronics', 'Clothing', 'Home', 'Books', 'Toys'];
 
         foreach (range(1, $categoryCount) as $index) {
             $imageUrl = $this->handleCategoryImage($imageFolder, $index);
@@ -38,8 +39,8 @@ class CategorySeeder extends Seeder
             if ($imageUrl) {
                 $categoryData = [
                     'name' => json_encode([
-                        'en' => $faker->word,
-                        'ar' => $faker->word,
+                        'en' => $faker->randomElement($categoryNames),
+                        'ar' => $faker->randomElement($categoryNames),
                     ]),
                     'description' => json_encode([
                         'en' => $faker->sentence,
