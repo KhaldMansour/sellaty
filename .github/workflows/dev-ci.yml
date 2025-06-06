@@ -110,6 +110,7 @@ jobs:
           TWILIO_PHONE_NUMBER: ${{ vars.TWILIO_PHONE_NUMBER }}
 
           REVERB_SERVER_HOST: ${{ vars.REVERB_SERVER_HOST }}
+          REVERB_SERVER_PORT: ${{ vars.REVERB_SERVER_PORT }}
 
           REVERB_APP_ID: ${{ vars.REVERB_APP_ID }}
           REVERB_APP_KEY: ${{ vars.REVERB_APP_KEY }}
@@ -123,6 +124,10 @@ jobs:
           VITE_REVERB_HOST: ${{ vars.VITE_REVERB_HOST }}
           VITE_REVERB_PORT: ${{ vars.VITE_REVERB_PORT }}
           VITE_REVERB_SCHEME: ${{ vars.VITE_REVERB_SCHEME }}
+
+          APPSENDER_APPKEY: ${{ vars.APPSENDER_APPKEY }}
+          APPSENDER_AUTHKEY: ${{ vars.APPSENDER_AUTHKEY }}
+          OTP_SENDER_DRIVER: ${{ vars.OTP_SENDER_DRIVER }}
         run: |
           envsubst < .env.ci > .env.ci.tmp || true
           mv .env.ci.tmp .env || true
