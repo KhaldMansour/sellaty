@@ -42,6 +42,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::put('{product}/toggle-featured', 'ProductController@toggleFeatured');
         Route::post('{product}/categories/attach', 'ProductController@attachCategories');
         Route::post('{product}/categories/detach', 'ProductController@detachCategories');
+        Route::post('filter', 'ProductController@filter');
     });
 
     Route::prefix('wanted-products')->group(function () {

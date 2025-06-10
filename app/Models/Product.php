@@ -15,6 +15,14 @@ class Product extends Model
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
 
+    public static function getStatuses(): array
+    {
+        return [
+            self::STATUS_ACTIVE,
+            self::STATUS_INACTIVE,
+        ];
+    }
+
     protected $fillable = [
         'name',
         'description',

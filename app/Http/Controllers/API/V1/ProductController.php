@@ -21,7 +21,7 @@ class ProductController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/products",
-     *     summary="Get a list of products with optional filters.",
+     *     summary="Get a list of products.",
      *     tags={"Products"},
      *     @OA\Parameter(
      *         name="filters",
@@ -198,6 +198,49 @@ class ProductController extends Controller
         $limit = $request->input('limit', 10);
 
         $products = $this->productService->getSellerActiveProducts($user, $limit);
+
+        return $this->success(ProductResource::collection($products));
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/products/filter",
+     *     summary="Get a list of products with optional filters.",
+     *     tags={"Products"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Create a new product",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(ref="#/components/schemas/FilterProductRequest")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="A list of products.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Products fetched successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/ProductSchema")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
+     *     )
+     * )
+     */
+    public function filter(ListResourceRequest $request)
+    {
+        $limit = $request->input('limit', 10);
+
+        $products = $this->productService->getAll($limit, $request->validated());
 
         return $this->success(ProductResource::collection($products));
     }

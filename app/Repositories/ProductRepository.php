@@ -7,6 +7,7 @@ use App\Repositories\Criteria\SearchByCategoryCriteria;
 use App\Repositories\Criteria\SearchByConditionCriteria;
 use App\Repositories\Criteria\SearchByDistanceCriteria;
 use App\Repositories\Criteria\SearchByNameCriteria;
+use App\Repositories\Criteria\SearchByPriceCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 
@@ -20,8 +21,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     protected $searchJoin = 'and';
 
     protected $fieldSearchable = [
-        'status',
-        'price'
+        'status'
     ];
 
     public function model()
@@ -41,6 +41,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         $this->pushCriteria(new SearchByDistanceCriteria());
 
         $this->pushCriteria(new SearchByConditionCriteria());
+
+        $this->pushCriteria(new SearchByPriceCriteria());
 
         $this->pushCriteria(app(RequestCriteria::class));
     }

@@ -2193,7 +2193,7 @@
                 "tags": [
                     "Products"
                 ],
-                "summary": "Get a list of products with optional filters.",
+                "summary": "Get a list of products.",
                 "operationId": "8b21ed56c46801538b7accb805b61f37",
                 "parameters": [
                     {
@@ -2395,6 +2395,64 @@
                     },
                     "404": {
                         "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/products/filter": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get a list of products with optional filters.",
+                "operationId": "e2b3e6b23260c17b94b3842d78fb730b",
+                "requestBody": {
+                    "description": "Create a new product",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterProductRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "A list of products.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Products fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ProductSchema"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3897,6 +3955,61 @@
                             1
                         ],
                         "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "FilterProductRequest": {
+                "properties": {
+                    "status": {
+                        "description": "status",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "category": {
+                        "description": "category",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "condition": {
+                        "description": "condition",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "min_price": {
+                        "description": "min_price",
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "max_price": {
+                        "description": "max_price",
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "price_order": {
+                        "description": "price_order",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "creation_order": {
+                        "description": "creation_order",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "longitude": {
+                        "description": "longitude",
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "latitude": {
+                        "description": "latitude",
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "radius": {
+                        "description": "radius",
+                        "type": "number",
+                        "nullable": true
                     }
                 },
                 "type": "object"
