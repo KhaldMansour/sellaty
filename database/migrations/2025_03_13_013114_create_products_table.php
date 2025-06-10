@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration {
@@ -35,8 +36,20 @@ return new class () extends Migration {
             $table->boolean('deliverable')->default(true);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->boolean('featured')->default(false);
+            $table->string('name_en')
+              ->virtualAs('JSON_UNQUOTE(name->"$.en")')
+              ->collation('utf8mb4_0900_ai_ci')
+              ->index();
+
+            $table->string('name_ar')
+              ->virtualAs('JSON_UNQUOTE(name->"$.ar")')
+              ->collation('utf8mb4_0900_ai_ci')
+              ->index();
             $table->timestamps();
         });
+
+        DB::statement('CREATE INDEX idx_name_en ON products (name_en)');
+        DB::statement('CREATE INDEX idx_name_ar ON products (name_ar)');
     }
 
     /**
@@ -45,9 +58,11 @@ return new class () extends Migration {
     public function down(): void
     {
         Schema::dropIfExists('product_images');
-        // Schema::table('product_images', function (Blueprint $table) {
-        //     $table->dropForeign(['product_id']);
+
+        // Schema::table('products', function (Blueprint $table) {
+        //     $table->dropColumn(['name_en', 'name_ar']);
         // });
+
         Schema::dropIfExists('category_product');
         Schema::dropIfExists('products');
     }

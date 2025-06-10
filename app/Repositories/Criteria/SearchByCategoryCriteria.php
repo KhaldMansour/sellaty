@@ -9,17 +9,15 @@ class SearchByCategoryCriteria implements CriteriaInterface
 {
     public function apply($model, RepositoryInterface $repository)
     {
-        if (request()->has('find') && strpos(request('find'), 'categories.id') !== false) {
-            $searchValue = request('find');
-            $parts = explode(':', $searchValue);
+        if (request()->has('category')) {
+            $searchValue = request('category');
 
-            if (count($parts) === 2 && $parts[0] === 'categories.id') {
-                $categoryId = $parts[1];
+            $parts = explode(',', $searchValue);
+            $categoryId = $parts[0];
 
-                return $model->whereHas('categories', function ($query) use ($categoryId) {
-                    $query->where('categories.id', '=', $categoryId);
-                });
-            }
+            return $model->whereHas('categories', function ($query) use ($categoryId) {
+                $query->where('categories.id', '=', $categoryId);
+            });
         }
 
         return $model;

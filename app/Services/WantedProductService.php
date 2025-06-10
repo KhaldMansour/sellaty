@@ -40,27 +40,34 @@ class WantedProductService
 
     private function saveSearchValue($data, $user)
     {
-        if (is_null($user) || empty($data['searchFields']) || empty($data['search'])) {
+        if (is_null($user) || empty($data['search'])) {
             return;
         }
 
-        $fields = explode(';', $data['searchFields']);
-
+        $searchQuery = $data['search'];
         $allowedFields = ['name', 'description'];
 
-        foreach ($fields as $field) {
-            [$fieldName] = explode(':', $field);
+        $conditions = explode(';', $searchQuery);
 
-            if (in_array(trim($fieldName), $allowedFields)) {
-                $this->recentSearchRepository->save(
-                    $user->id,
-                    $fieldName,
-                    $data['search'],
-                    new WantedProduct()
-                );
+        foreach ($conditions as $condition) {
+            if (strpos($condition, ':') !== false) {
+                [$fieldName, $searchValue] = explode(':', $condition, 2);
+
+                $fieldName = trim($fieldName);
+                $searchValue = trim($searchValue);
+
+                if (in_array($fieldName, $allowedFields) && !empty($searchValue)) {
+                    $this->recentSearchRepository->save(
+                        $user->id,
+                        $fieldName,
+                        $searchValue,
+                        new WantedProduct()
+                    );
+                }
             }
         }
     }
+
 
     public function getBuyerActiveWantedProducts(User $user, $limit = 10)
     {

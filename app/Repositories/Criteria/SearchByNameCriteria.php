@@ -9,46 +9,37 @@ class SearchByNameCriteria implements CriteriaInterface
 {
     public function apply($model, RepositoryInterface $repository)
     {
-        $locale = app()->getLocale();
         $search = request('search');
-        $searchFields = request('searchFields');
 
-        if (!$search || !$searchFields) {
+        if (empty($search)) {
             return $model;
         }
 
-        $fieldOperators = collect(explode(';', $searchFields))
-            ->mapWithKeys(function ($pair) {
-                if (str_contains($pair, ':')) {
-                    [$field, $op] = explode(':', $pair, 2);
+        $conditions = explode(';', $search);
+        $name = null;
 
-                    return [$field => $op];
+        foreach ($conditions as $condition) {
+            if (strpos($condition, ':') !== false) {
+                list($key, $value) = explode(':', $condition, 2);
+                if ($key === 'name') {
+                    if (trim($value) === '') {
+                        return $model->whereRaw('0 = 1');
+                    }
+                    $name = $value;
+                    break;
                 }
-
-                return [$pair => 'like'];
-            });
-
-        if (!array_key_exists('name', $fieldOperators->toArray())) {
-            return $model;
+            }
         }
 
-        $operator = $fieldOperators['name'];
+        if (!empty($name)) {
+            $locales = config('app.supported_locales');
 
-        if (str_contains($search, ':')) {
-            $searchPairs = collect(explode(';', $search))
-                ->mapWithKeys(function ($pair) {
-                    [$field, $value] = explode(':', $pair, 2);
-
-                    return [$field => $value];
-                });
-
-            if (isset($searchPairs['name'])) {
-                $value = $searchPairs['name'];
-                $model = $model->where("name->{$locale}", $operator, $operator === 'like' ? "%{$value}%" : $value);
-            }
-        } else {
-            $value = $search;
-            $model = $model->where("name->{$locale}", $operator, $operator === 'like' ? "%{$value}%" : $value);
+            $model = $model->where(function ($query) use ($locales, $name) {
+                foreach ($locales as $index => $locale) {
+                    $method = $index === 0 ? 'where' : 'orWhere';
+                    $query->{$method}('name_'.$locale, 'like', $name.'%');
+                }
+            });
         }
 
         return $model;
