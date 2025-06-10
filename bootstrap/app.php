@@ -29,6 +29,18 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->shouldRenderJsonWhen(function (\Illuminate\Http\Request $request, Throwable $e) {
+            if ($request->is('api/*')) {
+                return true;
+            }
+
+            if ($request->ajax()) {
+                return true;
+            }
+
+            return false;
+        });
+
         $exceptions->renderable(function (Throwable $e, $request) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
                 return response()->json([
