@@ -244,4 +244,59 @@ class ProductController extends Controller
 
         return $this->success(ProductResource::collection($products));
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/products/search",
+     *     summary="Search products by name.",
+     *     tags={"Products"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         required=false,
+     *         description="Number of items to return per page",
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=15
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search filter, e.g. name:one",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="name:one"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="A list of products.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Products fetched successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/ProductSchema")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
+     *     )
+     * )
+     */
+    public function searchByName(ListResourceRequest $request)
+    {
+        $limit = $request->input('limit', 10);
+
+        $products = $this->productService->getAll($limit, $request->validated());
+
+        return $this->success(ProductResource::collection($products));
+    }
 }

@@ -17,7 +17,7 @@ class ProductService
     public function getAll(int $limit = 10, $data = null)
     {
         $limit = is_null($limit) ? config('repository.pagination.limit', 15) : $limit;
-        
+
         $this->saveSearchValue($data, auth()->user());
 
         return $this->productRepository->with('categories')->orderBy('created_at', 'desc')->paginate($limit);

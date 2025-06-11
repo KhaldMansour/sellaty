@@ -36,6 +36,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
 
     Route::prefix('products')->group(function () {
         Route::get('/', 'ProductController@index');
+        Route::get('search', 'ProductController@searchByName');
         Route::get('{product}', 'ProductController@show');
         Route::put('{product}', 'ProductController@update');
         Route::delete('{product}', 'ProductController@destroy');
