@@ -168,7 +168,7 @@ class AuthController extends Controller
             return $this->failure('Failed to send OTP', 500);
         };
 
-        return $this->success(null, ['message' => 'OTP has been sent.'], 200);
+        return $this->success(null, 'OTP has been sent.', 200);
     }
 
     public function logout()
