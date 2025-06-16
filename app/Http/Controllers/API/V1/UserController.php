@@ -386,4 +386,61 @@ class UserController extends Controller
 
         return $this->success(UserResource::collection($user->followings()->paginate($limit)), 'Followings fetched successfully');
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/users/profile/update-fcm-token",
+     *     summary="Update the authenticated user's FCM token",
+     *     description="Allows the currently authenticated user to update their Firebase Cloud Messaging (FCM) token.",
+     *     tags={"Users"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"fcm_token"},
+     *                 @OA\Property(
+     *                     property="fcm_token",
+     *                     type="string",
+     *                     example="fcm_token_example_123456"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="FCM token updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="FCM token updated successfully"),
+     *             @OA\Property(property="data", ref="#/components/schemas/UserSchema")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - No valid token provided",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     )
+     * )
+     */
+    public function updateFcmToken(Request $request)
+    {
+        $request->validate([
+            'fcm_token' => 'required|string',
+        ]);
+
+        $user = auth()->user();
+
+        if ($user->fcm_token !== $request->input('fcm_token')) {
+            $user->update(['fcm_token' => $request->input('fcm_token')]);
+        }
+
+        return $this->success(new UserResource($user), 'FCM token updated successfully');
+    }
 }

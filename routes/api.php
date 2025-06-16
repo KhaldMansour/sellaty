@@ -76,6 +76,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::post('/profile/update', 'UserController@updateProfile');
             Route::get('/profile/my-followers', 'UserController@myFollowers');
             Route::get('/profile/my-followings', 'UserController@myFollowings');
+            Route::post('/profile/update-fcm-token', 'UserController@updateFcmToken');
         });
 
         Route::prefix('chats')->group(function () {

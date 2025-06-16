@@ -3412,6 +3412,81 @@
                 ]
             }
         },
+        "/api/v1/users/profile/update-fcm-token": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update the authenticated user's FCM token",
+                "description": "Allows the currently authenticated user to update their Firebase Cloud Messaging (FCM) token.",
+                "operationId": "f9a1a12cb0613e92a7fc7ca11306f8a6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "fcm_token"
+                                ],
+                                "properties": {
+                                    "fcm_token": {
+                                        "type": "string",
+                                        "example": "fcm_token_example_123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "FCM token updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "FCM token updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - No valid token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/wanted-products": {
             "get": {
                 "tags": [
