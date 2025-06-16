@@ -33,6 +33,7 @@ class LoginRequest extends FormRequest
         return [
             'phone_number' => 'required|string|exists:users,phone_number',
             'otp' => 'required|numeric|digits:6',
+            'fcm_token' => 'nullable|string',
         ];
     }
 
