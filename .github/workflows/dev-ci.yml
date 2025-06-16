@@ -23,13 +23,19 @@ jobs:
 
       - name: Checkout Repository
         id: checkout_repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
     # - name: Install envsubst
     #   run: sudo apt-get update && sudo apt-get install -y gettext
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
@@ -128,15 +134,21 @@ jobs:
           APPSENDER_APPKEY: ${{ vars.APPSENDER_APPKEY }}
           APPSENDER_AUTHKEY: ${{ vars.APPSENDER_AUTHKEY }}
           OTP_SENDER_DRIVER: ${{ vars.OTP_SENDER_DRIVER }}
+
+          #Firebase credentials
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_PRIVATE_KEY_ID: ${{ secrets.FIREBASE_PRIVATE_KEY_ID }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          FIREBASE_CLIENT_ID: ${{ secrets.FIREBASE_CLIENT_ID }}
+          FIREBASE_CLIENT_X509_CERT_URL: ${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}
         run: |
           envsubst < .env.ci > .env.ci.tmp || true
+          rm -rf .env || true
           mv .env.ci.tmp .env || true
 
-      - name: Prune Docker build cache
-        run: docker builder prune --filter until=24h --force
-
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v6
         env:
           DOCKER_CLIENT_TIMEOUT: 300
           COMPOSE_HTTP_TIMEOUT: 300
@@ -147,6 +159,8 @@ jobs:
           tags: |
             zeidexmac/stg-sellaty:latest
             zeidexmac/stg-sellaty:${{ github.run_number }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           # build-args: |
           #     NODE_ENV=development
 
@@ -175,7 +189,7 @@ jobs:
         run: echo "start_time=$(date +%s)" >> $GITHUB_OUTPUT
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Deploy to Staging Server using SSH and pass the TAG (SHORT_SHA)
       - name: Add SSH key and Deploy to Staging Server
