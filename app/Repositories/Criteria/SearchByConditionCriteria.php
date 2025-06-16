@@ -29,7 +29,7 @@ class SearchByConditionCriteria implements CriteriaInterface
         }
 
         if (! empty($condition) && $condition) {
-            $model = $model->whereJsonContains('condition', $condition);
+            $model = $model->whereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(`condition`, '$')) ) LIKE ?", ['%"' . strtolower($condition) . '"%']);
         }
 
         return $model;
