@@ -12,6 +12,8 @@
         "php": "^8.2",
         "darkaonline/l5-swagger": "^9.0",
         "intervention/image": "^3.11",
+        "kreait/firebase-php": "^7.10",
+        "laravel-notification-channels/fcm": "^4.5",
         "laravel/framework": "^11.31",
         "laravel/reverb": "^1.5",
         "laravel/sanctum": "^4.0",
