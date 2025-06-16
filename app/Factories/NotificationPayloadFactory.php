@@ -17,10 +17,11 @@ class NotificationPayloadFactory
             'data' => [
                 'type' => 'chat',
                 'chat_id' => $chatMessage->chat->id,
-                'sender' => [
+                'fromUser' => [
                     'id' => $sender->id,
                     'name' => $sender->full_name,
                     'profile_photo' => $sender->profile_photo,
+                    'date' => now()->toDateTimeString(),
                 ],
             ],
         ];
@@ -28,16 +29,20 @@ class NotificationPayloadFactory
 
     public static function offer(Offer $offer): array
     {
+        $fromUser = $offer->user;
+
         return [
             'title' => 'Special Offer!',
             'body' => 'You have a new offer waiting',
             'data' => [
                 'type' => 'offer',
                 'offer_id' => $offer->id,
-                'user' => [
-                    'id' => $offer->user->id,
-                    'name' => $offer->user->full_name,
-                    'profile_photo' => $offer->user->profile_photo,
+                'chat_id' => $offer->chat_id,
+                'fromUser' => [
+                    'id' => $fromUser->id,
+                    'name' => $fromUser->full_name,
+                    'profile_photo' => $fromUser->profile_photo,
+                    'date' => now()->toDateTimeString(),
                 ],
             ],
         ];
