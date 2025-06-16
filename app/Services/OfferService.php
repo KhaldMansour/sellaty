@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Factories\NotificationPayloadFactory;
 use App\Models\Chat;
 use App\Models\ChatMessage;
 use App\Repositories\OfferRepository;
@@ -9,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OfferService
 {
-    public function __construct(private readonly OfferRepository $offerRepository, private ChatService $chatService)
+    public function __construct(private readonly OfferRepository $offerRepository, private ChatService $chatService, private FirebaseNotificationService $firebaseNotificationService)
     {
     }
 
@@ -33,6 +34,13 @@ class OfferService
         ];
 
         $this->chatService->sendMessage($chat, $user, $offerData);
+
+        $notification = NotificationPayloadFactory::offer($offer);
+
+        $this->firebaseNotificationService->sendNotification(
+            $product->seller->fcm_token,
+            $notification
+        );
 
         $chat = Chat::getChatsWithProductSummary($user->id)->where('id', $chat->id)->first();
 

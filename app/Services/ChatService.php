@@ -7,12 +7,13 @@ use App\Models\Chat;
 use App\Models\ChatMessage;
 use App\Events\ChatMessageSent;
 use App\Events\MessagesSeen;
+use App\Factories\NotificationPayloadFactory;
 use App\Models\User;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ChatService
 {
-    public function __construct(private readonly ChatRepository $chatRepository)
+    public function __construct(private readonly ChatRepository $chatRepository, private readonly FirebaseNotificationService $firebaseNotificationService)
     {
     }
 
@@ -40,6 +41,9 @@ class ChatService
             $file = $data['file'];
             $content = $file->store('chat_uploads');
         }
+        $receiver = $chat->buyer_id === $user->id
+            ? $chat->seller
+            : $chat->buyer;
 
         $message = ChatMessage::create([
             'chat_id' => $chat->id,
@@ -50,21 +54,28 @@ class ChatService
 
         broadcast(new ChatMessageSent($message));
 
+        $notification = NotificationPayloadFactory::chat($message);
+
+        $this->firebaseNotificationService->sendNotification(
+            $receiver->fcm_token,
+            $notification
+        );
+
         return $message;
     }
 
-    public function sendMessageTest(string $text)
-    {
-        // $message = ChatMessage::create([
-        //     'chat_id' => $chat->id,
-        //     'sender_id' => $senderId,
-        //     'text' => $text,
-        // ]);
+    // public function sendMessageTest(string $text)
+    // {
+    //     // $message = ChatMessage::create([
+    //     //     'chat_id' => $chat->id,
+    //     //     'sender_id' => $senderId,
+    //     //     'text' => $text,
+    //     // ]);
 
-        broadcast(new ChatMessageSent($text));
+    //     broadcast(new ChatMessageSent($text));
 
-        return $text;
-    }
+    //     return $text;
+    // }
 
     public function getBuyerChatsWithUnseenCount(int $userId)
     {
