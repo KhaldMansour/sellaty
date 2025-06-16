@@ -106,6 +106,10 @@ class AuthController extends Controller
             return $this->failure('Could not create token', 500);
         }
 
+        if ($request->has('fcm_token') && $user->fcm_token !== $request->input('fcm_token')) {
+            $user->update(['fcm_token' => $request->input('fcm_token')]);
+        }
+
         return $this->success(['token' => $token , 'user' => new UserResource($user)], 'Success', 200);
     }
 
