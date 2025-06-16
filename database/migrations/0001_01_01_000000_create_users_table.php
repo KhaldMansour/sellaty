@@ -23,6 +23,7 @@ return new class () extends Migration {
             $table->string('phone_number')->unique();
             $table->boolean('locked')->default(false);
             $table->boolean('is_verified')->default(false);
+            $table->string('fcm_token')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

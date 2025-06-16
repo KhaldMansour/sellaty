@@ -34,6 +34,7 @@ class User extends Authenticatable implements JWTSubject
         'is_verified',
         'username',
         'locked',
+        'fcm_token'
     ];
 
     /**
