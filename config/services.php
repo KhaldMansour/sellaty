@@ -19,6 +19,10 @@ return [
         'authkey' => env('APPSENDER_AUTHKEY'),
     ],
 
+    'firebase' => [
+        'credentials' => env('FIREBASE_CREDENTIALS', 'app/firebase/sellity-production-credentials.json'),
+    ],
+
     'otp' => [
         'driver' => env('OTP_SENDER_DRIVER', 'appsenders'),
     ],
