@@ -104,9 +104,7 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->getTranslation('name', $locale),
-            'price' => ((float) $this->price == (int) $this->price)
-                ? (int) $this->price
-                : (float) $this->price,
+            'price' => ((float) $this->price),
             'description' => $this->getTranslation('description', $locale),
             'brand' => $this->brand,
             'model' => $this->model,
