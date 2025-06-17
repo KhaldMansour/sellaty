@@ -36,11 +36,11 @@ class NotificationPayloadFactory
         return [
             'title' => 'Special Offer!',
             'body' => 'You have a new offer waiting',
-            'product_id' => (int) $offer->product->id,
             'data' => [
                 'type' => 'offer',
                 'offer_id' => (int) $offer->id,
                 'chat_id' => (int) $offer->chat_id,
+                'product_id' => (int) $offer->product->id,
                 'fromUser' => [
                     'id' => (int) $fromUser->id,
                     'name' => $fromUser->full_name,
