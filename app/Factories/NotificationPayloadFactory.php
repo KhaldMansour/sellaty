@@ -37,16 +37,7 @@ class NotificationPayloadFactory
             'title' => 'Special Offer!',
             'body' => 'You have a new offer waiting',
             'data' => [
-                'type' => 'offer',
-                'offer_id' => (int) $offer->id,
-                'chat_id' => (int) $offer->chat_id,
-                'product_id' => (int) $offer->product->id ?? null,
-                'fromUser' => [
-                    'id' => (int) $fromUser->id,
-                    'name' => $fromUser->full_name,
-                    'profile_photo' => $fromUser->profile_photo,
-                    'date' => now()->toDateTimeString(),
-                ],
+                'type' => 'offer'
             ],
         ];
     }
