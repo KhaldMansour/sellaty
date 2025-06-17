@@ -32,14 +32,7 @@ class SearchByNameCriteria implements CriteriaInterface
         }
 
         if (!empty($name)) {
-            $locales = config('app.supported_locales');
-
-            $model = $model->where(function ($query) use ($locales, $name) {
-                foreach ($locales as $index => $locale) {
-                    $method = $index === 0 ? 'where' : 'orWhere';
-                    $query->{$method}('name_'.$locale, 'like', $name.'%');
-                }
-            });
+            $model = $model->whereRaw("MATCH(name_en, name_ar) AGAINST (? IN BOOLEAN MODE)", [$name . '*']);
         }
 
         return $model;

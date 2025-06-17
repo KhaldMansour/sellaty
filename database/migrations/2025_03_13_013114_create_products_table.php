@@ -37,19 +37,16 @@ return new class () extends Migration {
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->boolean('featured')->default(false);
             $table->string('name_en')
-              ->virtualAs('JSON_UNQUOTE(name->"$.en")')
-              ->collation('utf8mb4_0900_ai_ci')
-              ->index();
+              ->storedAs('JSON_UNQUOTE(name->"$.en")')
+              ->collation('utf8mb4_0900_ai_ci');
 
             $table->string('name_ar')
-              ->virtualAs('JSON_UNQUOTE(name->"$.ar")')
-              ->collation('utf8mb4_0900_ai_ci')
-              ->index();
+              ->storedAs('JSON_UNQUOTE(name->"$.ar")')
+              ->collation('utf8mb4_0900_ai_ci');
             $table->timestamps();
         });
 
-        DB::statement('CREATE INDEX idx_name_en ON products (name_en)');
-        DB::statement('CREATE INDEX idx_name_ar ON products (name_ar)');
+        DB::statement('ALTER TABLE products ADD FULLTEXT fulltext_name(name_en, name_ar)');
     }
 
     /**
