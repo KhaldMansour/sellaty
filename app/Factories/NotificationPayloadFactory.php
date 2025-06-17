@@ -10,13 +10,15 @@ class NotificationPayloadFactory
     public static function chat(ChatMessage $chatMessage): array
     {
         $sender = $chatMessage->sender;
+        $chat = $chatMessage->chat;
 
         return [
             'title' => 'New Message',
             'body' => 'Message from ' . $sender->first_name,
             'data' => [
                 'type' => 'chat',
-                'chat_id' => (int) $chatMessage->chat->id,
+                'chat_id' => (int) $chat->id,
+                'product_id' => (int) $chat->product_id,
                 'fromUser' => [
                     'id' => (int) $sender->id,
                     'name' => $sender->full_name,
@@ -34,6 +36,7 @@ class NotificationPayloadFactory
         return [
             'title' => 'Special Offer!',
             'body' => 'You have a new offer waiting',
+            'product_id' => (int) $offer->product->id,
             'data' => [
                 'type' => 'offer',
                 'offer_id' => (int) $offer->id,
