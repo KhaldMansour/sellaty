@@ -16,9 +16,9 @@ class NotificationPayloadFactory
             'body' => 'Message from ' . $sender->first_name,
             'data' => [
                 'type' => 'chat',
-                'chat_id' => $chatMessage->chat->id,
+                'chat_id' => (int) $chatMessage->chat->id,
                 'fromUser' => [
-                    'id' => $sender->id,
+                    'id' => (int) $sender->id,
                     'name' => $sender->full_name,
                     'profile_photo' => $sender->profile_photo,
                     'date' => now()->toDateTimeString(),
@@ -36,10 +36,10 @@ class NotificationPayloadFactory
             'body' => 'You have a new offer waiting',
             'data' => [
                 'type' => 'offer',
-                'offer_id' => $offer->id,
-                'chat_id' => $offer->chat_id,
+                'offer_id' => (int) $offer->id,
+                'chat_id' => (int) $offer->chat_id,
                 'fromUser' => [
-                    'id' => $fromUser->id,
+                    'id' => (int) $fromUser->id,
                     'name' => $fromUser->full_name,
                     'profile_photo' => $fromUser->profile_photo,
                     'date' => now()->toDateTimeString(),
