@@ -40,7 +40,7 @@ class NotificationPayloadFactory
                 'type' => 'offer',
                 'offer_id' => (int) $offer->id,
                 'chat_id' => (int) $offer->chat_id,
-                'product_id' => (int) $offer->product->id,
+                'product_id' => (int) $offer->product->id ?? null,
                 'fromUser' => [
                     'id' => (int) $fromUser->id,
                     'name' => $fromUser->full_name,
