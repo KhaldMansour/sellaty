@@ -17,20 +17,16 @@ class ChatService
     {
     }
 
-    public function getOrCreateChat($product, $buyerId): Chat
+    public function getOrCreateChat($product, $userId): Chat
     {
         $sellerId = $product->seller->id;
 
-        if ($buyerId === $sellerId) {
-            throw new HttpException(403, 'You cannot start a chat with yourself.');
-        }
-
         $chat = Chat::firstOrCreate(
-            ['product_id' => $product->id, 'buyer_id' => $buyerId],
+            ['product_id' => $product->id, 'buyer_id' => $userId],
             ['seller_id' => $sellerId]
         );
 
-        return Chat::getChatsWithProductSummary($buyerId)->where('id', $chat->id)->first();
+        return Chat::getChatsWithProductSummary($userId)->where('id', $chat->id)->first();
     }
 
     public function sendMessage(Chat $chat, User $user, array $data): ChatMessage
