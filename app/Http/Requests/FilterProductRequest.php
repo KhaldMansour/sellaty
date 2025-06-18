@@ -50,7 +50,7 @@ class FilterProductRequest extends FormRequest
             'creation_order' => 'nullable|string|in:asc,desc',
             'longitude' => 'nullable|numeric',
             'latitude' => 'nullable|numeric',
-            'radius' => 'nullable|numeric|min:0',
+            'radius' => 'nullable|numeric|min:1',
         ];
     }
 }
