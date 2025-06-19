@@ -17,11 +17,11 @@ class SearchByPriceCriteria implements CriteriaInterface
             $model = $model->where('price', '<=', request('max_price'));
         }
 
-        if (strtolower(request()->input('price_order')) === ('low to high')) {
-            $model = $model->orderBy('price', 'asc') ;
-        } else {
-            $model = $model->orderBy('price', 'desc') ;
-        }
+        // if (strtolower(request()->input('price_order')) === ('low to high')) {
+        //     $model = $model->orderBy('price', 'asc') ;
+        // } else {
+        //     $model = $model->orderBy('price', 'desc') ;
+        // }
 
         return $model;
     }

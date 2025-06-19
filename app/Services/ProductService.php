@@ -107,7 +107,9 @@ class ProductService
 
         $creation_order = isset($data['creation_order']) ? $data['creation_order'] : 'desc';
 
-        return $this->productRepository->with('categories')->orderBy('created_at', $creation_order)->paginate($limit);
+        $price_order = isset($data['price_order']) ? $data['price_order'] : 'desc';
+
+        return $this->productRepository->with('categories')->orderBy('price', $price_order)->orderBy('created_at', $creation_order)->paginate($limit);
     }
 
     public function getSellerProducts(User $user, $limit = 10)
