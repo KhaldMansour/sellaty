@@ -99,6 +99,17 @@ class ProductService
         }
     }
 
+    public function filterProducts(int $limit = 10, $data = null)
+    {
+        $limit = is_null($limit) ? config('repository.pagination.limit', 15) : $limit;
+
+        $this->saveSearchValue($data, auth()->user());
+
+        $creation_order = isset($data['creation_order']) ? $data['creation_order'] : 'desc';
+
+        return $this->productRepository->with('categories')->orderBy('created_at', $creation_order)->paginate($limit);
+    }
+
     public function getSellerProducts(User $user, $limit = 10)
     {
         $products = $this->productRepository->where('user_id', $user->id)->paginate($limit);

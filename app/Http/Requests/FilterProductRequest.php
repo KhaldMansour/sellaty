@@ -31,6 +31,28 @@ class FilterProductRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $creationOrder = $this->creation_order;
+        $priceOrder = $this->price_order;
+
+        $this->merge([
+            'creation_order' => match (strtolower($creationOrder)) {
+                'newest' => 'desc',
+                'oldest' => 'asc',
+                default => 'desc',
+            },
+            'price_order' => match (strtolower($priceOrder)) {
+                'high to low' => 'desc',
+                'low to high' => 'asc',
+                default => 'desc',
+            },
+        ]);
+
+        $creationOrder = $this->creation_order;
+        $priceOrder = $this->price_order;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -42,7 +64,7 @@ class FilterProductRequest extends FormRequest
 
         return [
             'status' => 'nullable|string|in:' . $statusTypes,
-            'category' => 'nullable|number|exists:categories,id',
+            'category' => 'nullable|numeric|exists:categories,id',
             'condition' => 'nullable|string|in:New,Used',
             'min_price' => 'nullable|numeric|min:0',
             'max_price' => 'nullable|numeric|min:0',

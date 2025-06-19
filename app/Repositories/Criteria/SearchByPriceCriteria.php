@@ -17,7 +17,7 @@ class SearchByPriceCriteria implements CriteriaInterface
             $model = $model->where('price', '<=', request('max_price'));
         }
 
-        if (request()->input('price_order') === 'asc') {
+        if (strtolower(request()->input('price_order')) === ('low to high')) {
             $model = $model->orderBy('price', 'asc') ;
         } else {
             $model = $model->orderBy('price', 'desc') ;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Services\ProductService;
 use App\Http\Requests\CreateProductRequest;
+use App\Http\Requests\FilterProductRequest;
 use App\Http\Requests\ListResourceRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
@@ -236,11 +237,11 @@ class ProductController extends Controller
      *     )
      * )
      */
-    public function filter(ListResourceRequest $request)
+    public function filter(FilterProductRequest $request)
     {
         $limit = $request->input('limit', 10);
 
-        $products = $this->productService->getAll($limit, $request->validated());
+        $products = $this->productService->filterProducts($limit, $request->validated());
 
         return $this->success(ProductResource::collection($products));
     }
