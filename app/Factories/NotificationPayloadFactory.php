@@ -32,10 +32,12 @@ class NotificationPayloadFactory
     public static function offer(Offer $offer): array
     {
         $fromUser = $offer->user;
+        $productName = $offer->product->name;
+        $price = $offer->price;
 
         return [
-            'title' => 'Special Offer!',
-            'body' => 'You have a new offer waiting',
+            'title' => 'New Offer!',
+            'body' => "{$fromUser->full_name} offered {$price} on your {$productName}",
             'data' => [
                 'type' => 'offer',
                 'offer_id' => (int) $offer->id,
