@@ -9,7 +9,6 @@ use App\Events\ChatMessageSent;
 use App\Events\MessagesSeen;
 use App\Factories\NotificationPayloadFactory;
 use App\Models\User;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ChatService
 {
@@ -25,6 +24,17 @@ class ChatService
             ['product_id' => $product->id, 'buyer_id' => $userId],
             ['seller_id' => $sellerId]
         );
+
+        return Chat::getChatsWithProductSummary($userId)->where('id', $chat->id)->first();
+    }
+
+    public function getChat(int $chatId, int $userId): Chat
+    {
+        $chat = Chat::with(['buyer', 'seller'])->find($chatId);
+
+        if (!$chat || !in_array($userId, $chat->users->pluck('id')->toArray())) {
+            abort(403, 'You are not authorized to access this chat.');
+        }
 
         return Chat::getChatsWithProductSummary($userId)->where('id', $chat->id)->first();
     }

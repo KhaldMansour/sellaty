@@ -641,6 +641,73 @@
                 }
             }
         },
+        "/api/v1/chats/{chatId}": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Get a specific chat",
+                "description": "Retrieve details of a specific chat by ID for the authenticated user.",
+                "operationId": "getChatById",
+                "parameters": [
+                    {
+                        "name": "chatId",
+                        "in": "path",
+                        "description": "ID of the chat to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chat retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": null
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ChatSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Chat not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Chat not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/chats/products/{productId}": {
             "post": {
                 "tags": [

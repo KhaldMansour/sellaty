@@ -26,6 +26,48 @@ class ChatController extends Controller
         return view('test-chat');
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/chats/{chatId}",
+     *     summary="Get a specific chat",
+     *     description="Retrieve details of a specific chat by ID for the authenticated user.",
+     *     operationId="getChatById",
+     *     tags={"Chats"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="chatId",
+     *         in="path",
+     *         description="ID of the chat to retrieve",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Chat retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example=null),
+     *             @OA\Property(property="data", ref="#/components/schemas/ChatSchema")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Chat not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Chat not found.")
+     *         )
+     *     )
+     * )
+     */
+    public function show(int $chatId)
+    {
+        $user = auth()->user();
+
+        $chat = $this->chatService->getChat($chatId, $user->id);
+
+        return $this->success(new ChatResource($chat));
+    }
+
 
     /**
      * @OA\Post(
