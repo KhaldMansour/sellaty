@@ -65,7 +65,7 @@ class FilterProductRequest extends FormRequest
         return [
             'status' => 'nullable|string|in:' . $statusTypes,
             'category' => 'nullable|numeric|exists:categories,id',
-            'condition' => 'nullable|string|in:New,Used',
+            'condition' => 'nullable|string',
             'min_price' => 'nullable|numeric|min:0',
             'max_price' => 'nullable|numeric|min:0',
             'price_order' => 'nullable|string|in:asc,desc',
