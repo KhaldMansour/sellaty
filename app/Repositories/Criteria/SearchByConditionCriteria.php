@@ -9,23 +9,10 @@ class SearchByConditionCriteria implements CriteriaInterface
 {
     public function apply($model, RepositoryInterface $repository)
     {
-        $search = request('search');
+        $condition = request('condition');
 
-        if (empty($search)) {
+        if (empty($condition)) {
             return $model;
-        }
-        $searchFields = explode(';', $search);
-
-
-        $condition = null;
-        foreach ($searchFields as $field) {
-            if (strpos($field, ':') !== false) {
-                list($key, $value) = explode(':', $field, 2);
-                if ($key === 'condition') {
-                    $condition = $value;
-                    break;
-                }
-            }
         }
 
         if (! empty($condition) && $condition) {
