@@ -61,7 +61,7 @@ class FilterProductRequest extends FormRequest
     public function rules(): array
     {
         $statusTypes = implode(',', Product::getStatuses());
-        
+
         return [
             'status' => 'nullable|string|in:' . $statusTypes,
             'category' => 'nullable|numeric|exists:categories,id',

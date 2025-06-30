@@ -63,7 +63,7 @@ class ChatService
         $notification = NotificationPayloadFactory::chat($message);
 
         $this->firebaseNotificationService->sendNotification(
-            $receiver->fcm_token,
+            $receiver,
             $notification
         );
 

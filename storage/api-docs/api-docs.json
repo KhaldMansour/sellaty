@@ -1876,6 +1876,52 @@
                 }
             }
         },
+        "/api/v1/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get notifications for the authenticated user",
+                "description": "Returns a list of notifications for the currently logged-in user.",
+                "operationId": "getNotifications",
+                "responses": {
+                    "200": {
+                        "description": "A list of products.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Products fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/NotificationSchema"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/offers/products/{product}": {
             "post": {
                 "tags": [
@@ -4755,6 +4801,41 @@
                 },
                 "type": "object"
             },
+            "NotificationSchema": {
+                "title": "Notification",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Order Shipped"
+                    },
+                    "body": {
+                        "type": "string",
+                        "example": "Your order #1234 has been shipped."
+                    },
+                    "data": {
+                        "type": "object"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-06-30T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-06-30T13:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
             "OfferSchema": {
                 "title": "Offer",
                 "description": "An offer made by a user on a product",
@@ -5330,6 +5411,10 @@
         {
             "name": "Likes",
             "description": "Likes"
+        },
+        {
+            "name": "Notifications",
+            "description": "Notifications"
         },
         {
             "name": "Offers",

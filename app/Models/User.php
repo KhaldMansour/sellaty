@@ -101,6 +101,11 @@ class User extends Authenticatable implements JWTSubject
         return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
     }
 
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
     public function likes()
     {
         return $this->hasMany(Like::class);

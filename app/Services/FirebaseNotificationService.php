@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -30,14 +31,22 @@ class FirebaseNotificationService
         $this->messaging = $factory->createMessaging();
     }
 
-    public function sendNotification(string $fcmToken, array $notification): bool
+    public function sendNotification(User $user, array $notification): bool
     {
+        $fcmToken = $user->fcm_token;
+
         $message = CloudMessage::withTarget('token', $fcmToken)
             ->withNotification(['title' => $notification['title'], 'body' => $notification['body']])
             ->withData($this->flattenData($notification['data']), );
 
         try {
             $this->messaging->send($message);
+
+            $user->notifications()->create([
+                'title' => $notification['title'],
+                'body' => $notification['body'],
+                'data' => $notification['data'],
+            ]);
 
             return true;
         } catch (\Exception $e) {

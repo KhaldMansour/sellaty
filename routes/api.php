@@ -79,6 +79,10 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::post('/profile/update-fcm-token', 'UserController@updateFcmToken');
         });
 
+        Route::prefix('notifications')->group(function () {
+            Route::get('', 'NotificationController@index');
+        });
+
         Route::prefix('chats')->group(function () {
             Route::post('products/{product}', 'ChatController@getOrCreate');
             Route::get('buyer', 'ChatController@buyerChats');

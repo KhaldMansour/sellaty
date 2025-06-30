@@ -114,9 +114,9 @@ class ProductService
         if (!is_null($price_order)) {
             $query = $query->orderBy('price', $price_order);
         }
-    
+
         $query = $query->orderBy('created_at', $creation_order);
-    
+
         return $query->paginate($limit);
     }
 

@@ -38,7 +38,7 @@ class OfferService
         $notification = NotificationPayloadFactory::offer($offer);
 
         $this->firebaseNotificationService->sendNotification(
-            $product->seller->fcm_token,
+            $product->seller,
             $notification
         );
 
