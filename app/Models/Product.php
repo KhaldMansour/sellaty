@@ -67,6 +67,9 @@ class Product extends Model
 
     protected $hidden = ['pivot'];
 
+    protected $with = ['images'];
+
+
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id');

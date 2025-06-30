@@ -107,9 +107,17 @@ class ProductService
 
         $creation_order = isset($data['creation_order']) ? $data['creation_order'] : 'desc';
 
-        $price_order = isset($data['price_order']) ? $data['price_order'] : 'desc';
+        $price_order = isset($data['price_order']) && !empty($data['price_order']) ? $data['price_order'] : null;
 
-        return $this->productRepository->with('categories')->orderBy('price', $price_order)->orderBy('created_at', $creation_order)->paginate($limit);
+        $query = $this->productRepository->with('categories');
+
+        if (!is_null($price_order)) {
+            $query = $query->orderBy('price', $price_order);
+        }
+    
+        $query = $query->orderBy('created_at', $creation_order);
+    
+        return $query->paginate($limit);
     }
 
     public function getSellerProducts(User $user, $limit = 10)

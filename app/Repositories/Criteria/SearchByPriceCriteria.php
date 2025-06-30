@@ -9,6 +9,14 @@ class SearchByPriceCriteria implements CriteriaInterface
 {
     public function apply($model, RepositoryInterface $repository)
     {
+        if ((request()->input('min_price') == 0) && request()->input('max_price') == 0) {
+            return $model;
+        }
+
+        if (! request()->input('price_order')) {
+            return $model;
+        }
+
         if (request()->has('min_price')) {
             $model = $model->where('price', '>=', request('min_price'));
         }
@@ -22,6 +30,7 @@ class SearchByPriceCriteria implements CriteriaInterface
         // } else {
         //     $model = $model->orderBy('price', 'desc') ;
         // }
+
 
         return $model;
     }

@@ -45,7 +45,7 @@ class FilterProductRequest extends FormRequest
             'price_order' => match (strtolower($priceOrder)) {
                 'high to low' => 'desc',
                 'low to high' => 'asc',
-                default => 'desc',
+                default => null,
             },
         ]);
 
@@ -61,7 +61,7 @@ class FilterProductRequest extends FormRequest
     public function rules(): array
     {
         $statusTypes = implode(',', Product::getStatuses());
-
+        
         return [
             'status' => 'nullable|string|in:' . $statusTypes,
             'category' => 'nullable|numeric|exists:categories,id',
