@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
 /**
  * @OA\Schema(
  *     schema="StorePageRequest",
@@ -37,7 +35,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *     )
  * )
  */
-class StorePageRequest extends FormRequest
+class StorePageRequest extends BaseFormRequest
 {
     public function authorize(): bool
     {

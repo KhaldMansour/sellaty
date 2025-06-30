@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
 /**
  * @OA\Schema(
  *     schema="StoreSplashScreenRequest",
@@ -15,7 +13,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *     @OA\Property(property="display_order", type="integer", nullable=true, description="Order to display the splash screen")
  * )
  */
-class StoreSplashScreenRequest extends FormRequest
+class StoreSplashScreenRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

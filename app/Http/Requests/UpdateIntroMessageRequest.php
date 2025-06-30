@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
 /**
  * @OA\Schema(
  *     schema="UpdateIntroScreenRequest",
@@ -14,7 +12,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * )
  */
 
-class UpdateIntroMessageRequest extends FormRequest
+class UpdateIntroMessageRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

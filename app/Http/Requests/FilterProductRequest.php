@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Product;
-use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @OA\Schema(
@@ -21,7 +20,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *     @OA\Property(property="radius", type="number", nullable=true, description="radius"),
  * )
  */
-class FilterProductRequest extends FormRequest
+class FilterProductRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

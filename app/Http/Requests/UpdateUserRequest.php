@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -34,7 +33,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  *   ),
  * )
  */
-class UpdateUserRequest extends FormRequest
+class UpdateUserRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

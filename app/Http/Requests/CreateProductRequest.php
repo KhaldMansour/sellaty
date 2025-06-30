@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Product;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -87,7 +86,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  *     )
  * )
  */
-class CreateProductRequest extends FormRequest
+class CreateProductRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -2,9 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\WantedProduct;
-use Illuminate\Foundation\Http\FormRequest;
-
 /**
  * @OA\Schema(
  *     schema="CreateWantedProductRequestSchema",
@@ -67,14 +64,14 @@ use Illuminate\Foundation\Http\FormRequest;
  *         format="float",
  *         minimum=0
  *     ),
-  *     @OA\Property(
+ *     @OA\Property(
  *         property="currency",
  *         type="string",
  *         description="Currency code (e.g., USD, SAR)",
  *         maxLength=3,
  *         example="SAR"
  *     ),
-  *     @OA\Property(
+ *     @OA\Property(
  *         property="category_ids[]",
  *         type="array",
  *         @OA\Items(type="integer"),
@@ -166,7 +163,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *     )
  * )
  */
-class CreateWantedProductRequest extends FormRequest
+class CreateWantedProductRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

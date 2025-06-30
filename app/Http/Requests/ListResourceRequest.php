@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
 /**
  * @OA\Schema(
  *     schema="ListResourceRequestSchema",
@@ -17,7 +15,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * )
  */
 
-class ListResourceRequest extends FormRequest
+class ListResourceRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

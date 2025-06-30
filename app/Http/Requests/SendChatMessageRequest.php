@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\ChatMessage;
-use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @OA\Schema(
@@ -18,7 +17,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *     )
  * )
  */
-class SendChatMessageRequest extends FormRequest
+class SendChatMessageRequest extends BaseFormRequest
 {
     public function authorize()
     {

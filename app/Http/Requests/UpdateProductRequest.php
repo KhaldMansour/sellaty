@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Models\Product;
-use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProductRequest extends FormRequest
+class UpdateProductRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

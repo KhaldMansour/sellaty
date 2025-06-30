@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Category;
-use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @OA\Schema(
@@ -14,7 +13,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *     @OA\Property(property="image", type="string", format="binary", description="The category image")
  * )
  */
-class CreateCategoryRequest extends FormRequest
+class CreateCategoryRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
