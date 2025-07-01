@@ -71,7 +71,10 @@ class WantedProductService
 
     public function getBuyerActiveWantedProducts(User $user, $limit = 10)
     {
-        $products = $this->wantedProductRepository->where('user_id', $user->id)->where('status', WantedProduct::STATUS_ACTIVE)->paginate($limit);
+        $products = $this->wantedProductRepository
+            ->where('user_id', $user->id)
+            ->where('status', WantedProduct::STATUS_ACTIVE)
+            ->paginate($limit);
 
         return $products;
     }

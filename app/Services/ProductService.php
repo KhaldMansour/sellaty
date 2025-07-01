@@ -20,7 +20,10 @@ class ProductService
 
         $this->saveSearchValue($data, auth()->user());
 
-        return $this->productRepository->with('categories')->orderBy('created_at', 'desc')->paginate($limit);
+        return $this->productRepository->with('categories')
+            ->where('status', Product::STATUS_ACTIVE)
+            ->orderBy('created_at', 'desc')
+            ->paginate($limit);
     }
 
     public function createProduct($data)
@@ -109,7 +112,8 @@ class ProductService
 
         $price_order = isset($data['price_order']) && !empty($data['price_order']) ? $data['price_order'] : null;
 
-        $query = $this->productRepository->with('categories');
+        $query = $this->productRepository->with('categories')
+            ->where('status', Product::STATUS_ACTIVE);
 
         if (!is_null($price_order)) {
             $query = $query->orderBy('price', $price_order);
@@ -122,7 +126,9 @@ class ProductService
 
     public function getSellerProducts(User $user, $limit = 10)
     {
-        $products = $this->productRepository->where('user_id', $user->id)->paginate($limit);
+        $products = $this->productRepository->where('user_id', $user->id)
+            ->where('status', Product::STATUS_ACTIVE)
+            ->paginate($limit);
 
         return $products;
     }
