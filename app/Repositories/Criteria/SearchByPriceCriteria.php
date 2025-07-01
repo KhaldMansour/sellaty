@@ -13,9 +13,9 @@ class SearchByPriceCriteria implements CriteriaInterface
             return $model;
         }
 
-        if (! request()->input('price_order')) {
-            return $model;
-        }
+        // if (! request()->input('price_order')) {
+        //     return $model;
+        // }
 
         if (request()->has('min_price')) {
             $model = $model->where('price', '>=', request('min_price'));
