@@ -148,12 +148,12 @@ class ChatMessageController extends Controller
         $user = auth()->user();
 
         if (!in_array($user->id, $chat->users->pluck('id')->toArray())) {
-            throw new HttpException(403, 'You do not have access to this chat.');
+            throw new HttpException(403, __('messages.no_chat_access'));
         }
 
         $messages = $this->chatMessageService->getPaginatedMessages($chat);
 
-        return $this->success(ChatMessageResource::collection($messages), 'Messages retrieved successfully');
+        return $this->success(ChatMessageResource::collection($messages), __('messages.messages_retrieved'));
     }
 
     public function markAsSeen(Chat $chat)
@@ -171,14 +171,14 @@ class ChatMessageController extends Controller
         $user = auth()->user();
 
         if (!$chat || !$user || !in_array($user?->id, $chat->users->pluck('id')->toArray())) {
-            abort(403, 'You are not authorized to access this chat.');
+            abort(403, __('messages.not_authorized_to_access_chat'));
         }
 
         $filePath = $chatMessage->content;
 
 
         if (!Storage::disk('local')->exists($filePath)) {
-            abort(404, 'File not found');
+            abort(404, __('messages.file_not_found'));
         }
 
         $mimeType = Storage::disk('local')->mimeType($filePath);

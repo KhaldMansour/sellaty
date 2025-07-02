@@ -58,7 +58,7 @@ class AuthController extends Controller
     {
         $user = User::create($request->validated());
 
-        return $this->success(new UserResource($user), 'User registered successfully', 201);
+        return $this->success(new UserResource($user), __('messages.user_registered'), 201);
     }
 
     /**
@@ -93,17 +93,17 @@ class AuthController extends Controller
         $isValid = $this->otpService->validateOtp($request->phone_number, $request->otp);
 
         if (!$isValid) {
-            return $this->failure('Invalid OTP or OTP expired.', 400);
+            return $this->failure(__('messages.otp_invalid_or_expired'), 400);
         }
 
         $user = User::where('phone_number', $request->phone_number)->first();
 
         try {
             if (!$token = JWTAuth::fromUser($user)) {
-                return $this->failure('Unauthorized', 401);
+                return $this->failure(__('messages.unauthorized'), 401);
             }
         } catch (JWTException $e) {
-            return $this->failure('Could not create token', 500);
+            return $this->failure(__('messages.token_creation_failed'), 500);
         }
 
         if ($request->has('fcm_token') && $user->fcm_token !== $request->input('fcm_token')) {
@@ -157,7 +157,7 @@ class AuthController extends Controller
         $phoneNumber = $request->input('phone_number');
 
         if (!$this->otpService->shouldSendOtp($phoneNumber)) {
-            return $this->failure('OTP has already been sent. Please wait.', 400);
+            return $this->failure(__('messages.otp_already_sent'), 400);
         }
 
         $otpDriver = config('services.otp.driver', 'appsenders');
@@ -165,16 +165,16 @@ class AuthController extends Controller
         $this->otpService->setOtpSender($otpSender);
 
         if (!$this->otpService->sendOtp($phoneNumber)) {
-            return $this->failure('Failed to send OTP', 500);
+            return $this->failure(__('messages.otp_send_failed'), 500);
         };
 
-        return $this->success(null, 'OTP has been sent.', 200);
+        return $this->success(null, __('messages.otp_sent'), 200);
     }
 
     public function logout()
     {
         auth()->logout();
 
-        return response()->json(['message' => 'User logged out']);
+        return response()->json(['message' => __('messages.user_logged_out')]);
     }
 }

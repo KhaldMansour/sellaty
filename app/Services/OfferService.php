@@ -17,7 +17,7 @@ class OfferService
     public function createOffer($data, $user, $product)
     {
         if ($product->seller->id === $user->id) {
-            throw new HttpException(403, 'You cannot make an offer to a product you own.');
+            throw new HttpException(403, __('messages.cannot_offer_own_product'));
         }
 
         $chat = $this->chatService->getOrCreateChat($product, $user->id);

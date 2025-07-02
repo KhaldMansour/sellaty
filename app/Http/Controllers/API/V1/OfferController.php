@@ -18,13 +18,6 @@ class OfferController extends Controller
     public function __construct(private readonly OfferService $offerService)
     {
     }
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
      * @OA\Post(
@@ -151,7 +144,7 @@ class OfferController extends Controller
         $user = auth()->user();
 
         if ($user->id !== $offer->product->seller->id) {
-            throw new HttpException(403, 'You are not authorized to update this offer.');
+            throw new HttpException(403, __('messages.unauthorized_update_offer'));
         }
 
         $validated = $request->validate([

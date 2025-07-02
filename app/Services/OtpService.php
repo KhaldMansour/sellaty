@@ -55,18 +55,18 @@ class OtpService
 
         if ($otpRecord) {
             if ($otpRecord->otp != $otp) {
-                throw new HttpException(422, 'OTP is invalid.');
+                throw new HttpException(422, __('messages.otp_invalid'));
             }
 
             if ($otpRecord->expires_at < Carbon::now()) {
-                throw new HttpException(422, 'OTP is expired.');
+                throw new HttpException(422, __('messages.otp_expired'));
             }
 
             Cache::forget($cacheKey);
 
             return true;
         }
-        throw new HttpException(422, 'OTP is invalid.');
+        throw new HttpException(422, __('messages.otp_invalid'));
     }
 
     public function shouldSendOtp(string $phoneNumber): bool

@@ -50,7 +50,7 @@ class FirebaseNotificationService
 
             return true;
         } catch (\Exception $e) {
-            throw new HttpException(400, 'Failed to send message: ' . $e->getMessage());
+            throw new HttpException(400, __('messages.failed_to_send_message', ['error' => $e->getMessage()]));
 
             logger()->error('FCM Notification Failed', ['error' => $e->getMessage()]);
 

@@ -63,7 +63,7 @@ class LikeController extends Controller
             ? $user->unlike($likeable)
             : $user->like($likeable);
 
-        $message = $alreadyLiked ? 'Unliked successfully' : 'Liked successfully';
+        $message = $alreadyLiked ? __('messages.unliked_successfully') : __('messages.liked_successfully');
 
         return $this->success('', $message);
     }
@@ -114,7 +114,7 @@ class LikeController extends Controller
 
         $likedUsers = $user->likedUsers()->paginate();
 
-        return $this->success(UserResource::collection($likedUsers), 'Liked users fetched successfully');
+        return $this->success(UserResource::collection($likedUsers), __('messages.liked_users_fetched'));
     }
 
     /**
@@ -161,9 +161,9 @@ class LikeController extends Controller
     {
         $user = auth()->user();
 
-        $likedUsers = $user->likedProducts()->paginate();
+        $likedProducts = $user->likedProducts()->paginate();
 
-        return $this->success(ProductResource::collection($likedUsers), 'Liked products fetched successfully');
+        return $this->success(ProductResource::collection($likedProducts), __('messages.liked_products_fetched'));
     }
 
     /**
@@ -225,10 +225,10 @@ class LikeController extends Controller
         $limit = request('limit') ?? 10;
 
         if ($user->locked) {
-            throw new HttpException(403, 'User is locked');
+            throw new HttpException(403, __('messages.user_is_locked'));
         }
 
-        return $this->success(UserResource::collection($user->followers()->paginate($limit)), 'Followers fetched successfully');
+        return $this->success(UserResource::collection($user->followers()->paginate($limit)), __('messages.followers_fetched'));
     }
 
     /**
@@ -290,9 +290,9 @@ class LikeController extends Controller
         $limit = request('limit') ?? 10;
 
         if ($user->locked) {
-            throw new HttpException(403, 'User is locked');
+            throw new HttpException(403, __('messages.user_is_locked'));
         }
 
-        return $this->success(UserResource::collection($user->followings()->paginate($limit)), 'Followers fetched successfully');
+        return $this->success(UserResource::collection($user->followings()->paginate($limit)), __('messages.followers_fetched'));
     }
 }

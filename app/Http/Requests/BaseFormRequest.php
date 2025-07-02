@@ -13,7 +13,7 @@ abstract class BaseFormRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
-        $errorString = implode(' ', $validator->errors()->all());
+        $errorString = implode(" | ", $validator->errors()->all());
 
         throw new HttpException(422, $errorString);
     }
