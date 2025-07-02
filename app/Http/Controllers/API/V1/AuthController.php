@@ -6,8 +6,8 @@ use App\Factories\OtpSenderFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\ResendOtpRequest;
 use App\Http\Resources\UserResource;
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\OtpService;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -152,12 +152,8 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function resendOtp(Request $request)
+    public function resendOtp(ResendOtpRequest $request)
     {
-        $request->validate([
-            'phone_number' => 'required|string|exists:users,phone_number',
-        ]);
-
         $phoneNumber = $request->input('phone_number');
 
         if (!$this->otpService->shouldSendOtp($phoneNumber)) {
