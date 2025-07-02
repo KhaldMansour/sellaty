@@ -43,7 +43,7 @@ class LoginRequest extends BaseFormRequest
     public function messages(): array
     {
         return [
-            'phone_number.exists' => 'Phone number is not registered.',
+            'phone_number.exists' => __('validation.phone_number_exists'),
         ];
     }
 }

@@ -33,5 +33,4 @@ return [
     'otp_send_failed' => 'Failed to send OTP.',
     'success' => 'Success',
     'user_logged_out' => 'User logged out.',
-
 ];
