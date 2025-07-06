@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Category;
 use App\Repositories\Criteria\SearchByNameCriteria;
-use App\Repositories\Criteria\SpaceOnlySearchDisabler;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 
@@ -17,7 +16,6 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 {
     protected $fieldSearchable = [
         'status',
-        'name' => 'like'
     ];
 
     public function model()
@@ -32,7 +30,6 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     {
         $this->pushCriteria(new SearchByNameCriteria());
 
-        // $this->pushCriteria(new SpaceOnlySearchDisabler());
 
         $this->pushCriteria(app(RequestCriteria::class));
     }

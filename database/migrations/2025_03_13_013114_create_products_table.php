@@ -54,12 +54,9 @@ return new class () extends Migration {
      */
     public function down(): void
     {
+        DB::statement('ALTER TABLE products DROP INDEX fulltext_name');
+
         Schema::dropIfExists('product_images');
-
-        // Schema::table('products', function (Blueprint $table) {
-        //     $table->dropColumn(['name_en', 'name_ar']);
-        // });
-
         Schema::dropIfExists('category_product');
         Schema::dropIfExists('products');
     }
