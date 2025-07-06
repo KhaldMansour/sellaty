@@ -34,7 +34,7 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        DB::statement('ALTER TABLE categories DROP INDEX fulltext_name');
+        // DB::statement('ALTER TABLE categories DROP INDEX fulltext_name');
 
         Schema::dropIfExists('category_product');
         Schema::dropIfExists('categories');
