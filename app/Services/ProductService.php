@@ -115,6 +115,10 @@ class ProductService
         $query = $this->productRepository->with('categories')
             ->where('status', Product::STATUS_ACTIVE);
 
+        if (isset($data['name']) && !empty($data['name'])) {
+            $query = $query->whereRaw("MATCH(name_en, name_ar) AGAINST (? IN BOOLEAN MODE)", [$data['name'] . '*']);
+        }
+
         if (!is_null($price_order)) {
             $query = $query->orderBy('price', $price_order);
         }

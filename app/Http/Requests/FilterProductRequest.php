@@ -8,6 +8,7 @@ use App\Models\Product;
  * @OA\Schema(
  *     schema="FilterProductRequest",
  *     type="object",
+ *     @OA\Property(property="name", type="string", nullable=true, description="name"),
  *     @OA\Property(property="status", type="string", nullable=true, description="status"),
  *     @OA\Property(property="category", type="integer", nullable=true, description="category"),
  *     @OA\Property(property="condition", type="string", nullable=true, description="condition"),
@@ -62,6 +63,7 @@ class FilterProductRequest extends BaseFormRequest
         $statusTypes = implode(',', Product::getStatuses());
 
         return [
+            'name' => 'nullable|string',
             'status' => 'nullable|string|in:' . $statusTypes,
             'category' => 'nullable|numeric|exists:categories,id',
             'condition' => 'nullable|string',
