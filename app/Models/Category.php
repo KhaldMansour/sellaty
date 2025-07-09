@@ -48,9 +48,9 @@ class Category extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
-            $imagePath = request()->file('image')->store('categories', 'public');
-            $imageUrl = asset('storage/' . $imagePath);
-            $model->image_url = $imageUrl;
+            // $imagePath = request()->file('image')->store('categories', 'public');
+            // $imageUrl = asset('storage/' . $imagePath);
+            // $model->image_url = $imageUrl;
 
             $model->handleTranslations();
         });
