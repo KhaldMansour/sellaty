@@ -14,8 +14,10 @@ class CarMakeAndModelSeeder extends Seeder
     {
         $carCategory = Category::firstOrCreate(
             ['name->en' => 'Cars'],
-            ['name->ar' => 'سيارات'],
-            ['image_url' => 'https://www.thedigitalbunch.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F109-thumbnail.ddd6d67e.jpg&w=1920&q=75']
+            [
+                'name->ar' => 'سيارات',
+                'image_url' => 'https://www.thedigitalbunch.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F109-thumbnail.ddd6d67e.jpg&w=1920&q=75'
+            ]
         );
 
         $response = Http::get('https://carapi.app/api/models/v2');
