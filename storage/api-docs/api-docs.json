@@ -1143,6 +1143,140 @@
                 ]
             }
         },
+        "/api/v1/custom-fields/{customFieldId}": {
+            "get": {
+                "tags": [
+                    "Custom Fields"
+                ],
+                "summary": "Get options for a given custom field",
+                "operationId": "4d8906f4d4524c43c7b51d02bd17d37a",
+                "parameters": [
+                    {
+                        "name": "customFieldId",
+                        "in": "path",
+                        "description": "ID of the custom field",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "parent_option": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "value": {
+                                                    "type": "string",
+                                                    "example": "Color"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "children": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "Red"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Custom Field not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/custom-fields/custom-field-options/{customFieldOptionId}": {
+            "get": {
+                "tags": [
+                    "Custom Fields"
+                ],
+                "summary": "Get child options for a given custom field option",
+                "operationId": "1c49eff22ffd64c16b6bf71598235ad1",
+                "parameters": [
+                    {
+                        "name": "customFieldOptionId",
+                        "in": "path",
+                        "description": "ID of the custom field option",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "parent_option": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "value": {
+                                                    "type": "string",
+                                                    "example": "Red"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "children": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 6
+                                                    },
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "Dark Red"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Custom Field Option not found"
+                    }
+                }
+            }
+        },
         "/api/v1/intro-messages": {
             "get": {
                 "tags": [
@@ -4218,6 +4352,11 @@
             },
             "FilterProductRequest": {
                 "properties": {
+                    "name": {
+                        "description": "name",
+                        "type": "string",
+                        "nullable": true
+                    },
                     "status": {
                         "description": "status",
                         "type": "string",
@@ -4766,6 +4905,48 @@
                             }
                         },
                         "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "CustomFieldSchema": {
+                "title": "Custom Field",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "category_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Color"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "text",
+                            "number",
+                            "boolean",
+                            "date"
+                        ],
+                        "example": "text"
+                    },
+                    "required": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-08T14:22:33Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-08T14:22:33Z"
                     }
                 },
                 "type": "object"
@@ -5403,6 +5584,10 @@
         {
             "name": "Chats",
             "description": "Chats"
+        },
+        {
+            "name": "Custom Fields",
+            "description": "Custom Fields"
         },
         {
             "name": "IntroMessages",

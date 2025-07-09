@@ -32,6 +32,12 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::post('/update/{category}', 'CategoryController@update');
         Route::delete('{category}', 'CategoryController@destroy');
         Route::get('{category}/products/stock', 'CategoryController@countStockByCategory');
+        Route::post('{category}/custom-fields', 'CategoryController@addCustomField');
+    });
+
+    Route::prefix('custom-fields')->group(function () {
+        Route::get('/{customField}', 'CustomFieldController@optionsByField');
+        Route::get('/custom-field-options/{customFieldOptionId}', 'CustomFieldController@childrenByOption');
     });
 
     Route::prefix('products')->group(function () {
