@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\CategoryRepository;
 use App\Models\Category;
+use App\Models\CustomField;
 use Illuminate\Support\Facades\Storage;
 
 class CategoryService
@@ -71,5 +72,10 @@ class CategoryService
                     'name' => $category->getTranslation('name', app()->getLocale()),
                 ];
             });
+    }
+
+    public function addCustomField(Category $category, array $data): CustomField
+    {
+        return $category->customFields()->create($data);
     }
 }

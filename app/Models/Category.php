@@ -18,6 +18,13 @@ class Category extends Model
 
     public $translatable = ['name' , 'description'];
 
+    public $with = ['customFields'];
+
+    public function customFields()
+    {
+        return $this->hasMany(CustomField::class);
+    }
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'category_product');

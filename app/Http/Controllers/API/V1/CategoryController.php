@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCategoryRequest;
+use App\Http\Requests\StoreCustomFieldRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\CustomFieldResource;
 use App\Http\Resources\ProductResource;
 use App\Services\CategoryService;
 use App\Models\Category;
@@ -322,5 +324,12 @@ class CategoryController extends Controller
         $categoryProducts = $this->categoryService->getProducts($category, $limit);
 
         return $this->success(['category' => new CategoryResource($category), 'products' => ProductResource::collection($categoryProducts)]);
+    }
+
+    public function addCustomField(Category $category, StoreCustomFieldRequest $request)
+    {
+        $customField = $this->categoryService->addCustomField($category, $request->validated());
+
+        return $this->success(new CustomFieldResource($customField), 'Custom field added successfully');
     }
 }

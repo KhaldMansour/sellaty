@@ -67,12 +67,17 @@ class Product extends Model
 
     protected $hidden = ['pivot'];
 
-    protected $with = ['images'];
+    protected $with = ['images' , 'customFieldValues' , 'categories' , 'seller'];
 
 
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id');
+    }
+
+    public function customFieldValues()
+    {
+        return $this->hasMany(ProductCustomFieldValue::class);
     }
 
     public function seller()

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\CustomField;
+use App\Models\CustomFieldOption;
 use App\Models\Product;
 
 /**
@@ -86,6 +88,17 @@ use App\Models\Product;
  */
 class CreateProductRequest extends BaseFormRequest
 {
+    protected $customFieldsMap = [];
+
+
+    protected function getCustomFields()
+    {
+        if (empty($this->customFieldsMap)) {
+            $this->customFieldsMap = CustomField::whereIn('category_id', $this->input('category_ids', []))->get();
+        }
+
+        return $this->customFieldsMap;
+    }
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -101,9 +114,7 @@ class CreateProductRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        $locale = app()->getLocale();
-
-        return [
+        $rules = [
             'name' => [
                 'required',
                 'string',
@@ -135,14 +146,66 @@ class CreateProductRequest extends BaseFormRequest
             'city_long' => 'required|numeric',
             'longitude' => 'numeric',
             'latitude' => 'numeric',
+            'custom_fields' => 'required|array',
         ];
+
+        if ($this->has('category_ids') && is_array($this->category_ids)) {
+            $customFields = $this->getCustomFields();
+
+
+            foreach ($customFields as $field) {
+                $key = "custom_fields.{$field->id}";
+                $baseRule = $field->required ? 'required' : 'nullable';
+
+                $fieldRule = match ($field->type) {
+                    'text' => [$baseRule, 'string'],
+                    'number' => [$baseRule, 'numeric'],
+                    'boolean' => [$baseRule, 'boolean'],
+                    'date' => [$baseRule, 'date'],
+                    'select' => [
+                        $baseRule,
+                        'string',
+                        function ($attribute, $value, $fail) use ($field) {
+                            $exists = CustomFieldOption::where('custom_field_id', $field->id)
+                                ->where('value', $value)
+                                ->exists();
+
+                            if (! $exists) {
+                                $fail("The selected option for '{$field->name}' is invalid.");
+                            }
+                        },
+                    ],
+                    default => ['nullable'],
+                };
+
+                $rules[$key] = $fieldRule;
+            }
+        }
+
+        return $rules;
     }
 
     public function messages()
     {
-        return [
+        $messages = [
             'category_ids.*.exists' => 'The category ID :input is invalid. Please select a valid category.',
         ];
+
+        if ($this->has('category_ids') && is_array($this->category_ids)) {
+            $customFields = $this->getCustomFields();
+
+            foreach ($customFields as $field) {
+                $keyBase = "custom_fields.{$field->id}";
+
+                $messages["{$keyBase}.required"] = "The ". $field->name ." field in custom fields is required.";
+                $messages["{$keyBase}.string"] = "The ". $field->name ." field must be a string.";
+                $messages["{$keyBase}.numeric"] = "The  ". $field->name ." field must be a number.";
+                $messages["{$keyBase}.boolean"] = "The  ". $field->name ."  field must be true or false.";
+                $messages["{$keyBase}.date"] = "The  ". $field->name ." field must be a valid date.";
+            }
+        }
+
+        return $messages;
     }
 
     protected function prepareForValidation()
@@ -150,13 +213,13 @@ class CreateProductRequest extends BaseFormRequest
         $latitude = $this->input('latitude');
         $longitude = $this->input('longitude');
 
-        if (is_null($latitude)) {
+        if (is_null($latitude) || $latitude == 0.0) {
             $this->merge([
                 'latitude' => $this->input('city_lat'),
             ]);
         }
 
-        if (is_null($longitude)) {
+        if (is_null($longitude) || $longitude == 0.0) {
             $this->merge([
                 'longitude' => $this->input('city_long'),
             ]);

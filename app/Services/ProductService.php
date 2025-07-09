@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\ProductCustomFieldValue;
 use App\Models\User;
 use App\Repositories\RecentSearchRepository;
 use App\Repositories\ProductRepository;
@@ -32,6 +33,24 @@ class ProductService
         $data['user_id'] = $user->id;
         $product = $this->productRepository->create($data);
         $product->categories()->attach($data['category_ids']);
+
+        $customFields = $data['custom_fields'] ?? [];
+
+        if ($customFields !== [null]) {
+            $customFieldValues = [];
+
+            foreach ($customFields as $fieldId => $value) {
+                $customFieldValues[] = [
+                    'product_id' => $product->id,
+                    'custom_field_id' => $fieldId,
+                    'value' => $value,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            ProductCustomFieldValue::insert($customFieldValues);
+        }
 
         return $product;
     }

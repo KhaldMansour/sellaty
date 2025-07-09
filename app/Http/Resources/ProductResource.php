@@ -128,8 +128,25 @@ class ProductResource extends JsonResource
             'images' => ProductImageResource::collection($this->images),
             'seller' => new UserResource($this->seller),
             'categories' => CategoryResource::collection($this->categories),
+            'custom_fields' => $this->customFieldValues->map(function ($fieldValue) {
+                return [
+                    'id' => $fieldValue->custom_field_id,
+                    'name' => $fieldValue->customField->name,
+                    'type' => $fieldValue->customField->type,
+                    'value' => $this->castCustomFieldValue($fieldValue->value, $fieldValue->customField->type),
+                ];
+            })->values(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
+    }
+    protected function castCustomFieldValue($value, $type)
+    {
+        return match ($type) {
+            'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN),
+            'number' => is_numeric($value) ? (float) $value : null,
+            'date' => $value ? date('Y-m-d', strtotime($value)) : null,
+            default => $value,
+        };
     }
 }
