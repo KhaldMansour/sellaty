@@ -32,7 +32,7 @@ class ProductSeeder extends Seeder
             Storage::disk('public')->delete($file);
         }
 
-        $categoryIds = Category::where('name->en' != 'Cars')->take(10)->pluck('id')->toArray();
+        $categoryIds = Category::take(10)->where('name->en', '!=', 'Cars')->pluck('id')->toArray();
 
         $userIds = User::take(10)->pluck('id')->toArray();
 
