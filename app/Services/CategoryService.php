@@ -70,6 +70,7 @@ class CategoryService
                 return [
                     'id' => $category->id,
                     'name' => $category->getTranslation('name', app()->getLocale()),
+                    'custom_fields' => $category->customFields
                 ];
             });
     }
