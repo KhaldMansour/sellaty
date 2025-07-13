@@ -84,19 +84,19 @@ use App\Models\Product;
  *         example={1}
  *     ),
  *     @OA\Property(
-*         property="custom_fields",
-*         type="object",
-*         description="Key-value pairs of custom field IDs and their values. Keys are field IDs as strings.",
-*         example={
-*             "1": "Audi",
-*             "2": "ILX",
-*             "3": true
-*         },
-*         @OA\AdditionalProperties(
-*             type="string",
-*             description="Value for the custom field. Type depends on field configuration (text, number, boolean, etc.)."
-*         )
-*     ),
+ *         property="custom_fields",
+ *         type="object",
+ *         description="Key-value pairs of custom field IDs and their values. Keys are field IDs as strings.",
+ *         example={
+ *             "1": "Audi",
+ *             "2": "ILX",
+ *             "3": true
+ *         },
+ *         @OA\AdditionalProperties(
+ *             type="string",
+ *             description="Value for the custom field. Type depends on field configuration (text, number, boolean, etc.)."
+ *         )
+ *     ),
  * )
  */
 class CreateProductRequest extends BaseFormRequest
@@ -235,24 +235,36 @@ class CreateProductRequest extends BaseFormRequest
 
     protected function prepareForValidation()
     {
-        if ($this->input('custom_fields') && is_string($this->input('custom_fields'))) {
-            $decoded = json_decode($this->input('custom_fields'), true);
-            if (is_array($decoded)) {
-                $allowedFieldIds = collect($this->getCustomFields())
-                    ->pluck('id')
-                    ->map(fn ($id) => $id)
-                    ->toArray();
+        $customFields = $this->input('custom_fields');
 
-                $filtered = array_filter(
-                    $decoded,
-                    fn ($value) => in_array($value, $allowedFieldIds, true),
-                    ARRAY_FILTER_USE_KEY
-                );
+        $customFields = trim($customFields, '"');
 
-                $this->merge([
-                    'custom_fields' => $filtered,
-                ]);
+
+        if (is_string($customFields)) {
+            $decoded = json_decode($customFields, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $customFields = json_decode($customFields);
+                $decoded = json_decode($customFields, true);
+            } else {
+                $customFields = $decoded;
             }
+        }
+
+        if (is_array($customFields)) {
+            $allowedFieldIds = collect($this->getCustomFields())
+                ->pluck('id')
+                ->toArray();
+
+            $filtered = array_filter(
+                $customFields,
+                fn ($value, $key) => in_array($key, $allowedFieldIds, true),
+                ARRAY_FILTER_USE_BOTH
+            );
+
+            $this->merge([
+                'custom_fields' => $filtered,
+            ]);
         }
 
         $latitude = $this->input('latitude');
