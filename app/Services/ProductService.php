@@ -36,7 +36,8 @@ class ProductService
 
         $customFields = $data['custom_fields'] ?? [];
 
-        if ($customFields !== [null]) {
+
+        if (count($customFields) > 0) {
             $customFieldValues = [];
 
             foreach ($customFields as $fieldId => $value) {

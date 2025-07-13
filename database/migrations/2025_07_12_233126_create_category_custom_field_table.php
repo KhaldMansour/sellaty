@@ -10,11 +10,10 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('custom_fields', function (Blueprint $table) {
+        Schema::create('category_custom_field', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->enum('type', ['text', 'number', 'date', 'boolean' , 'select'])->default('text');
-            $table->boolean('required')->default(false);
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('custom_field_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -24,6 +23,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('custom_fields');
+        Schema::dropIfExists('category_custom_field');
     }
 };

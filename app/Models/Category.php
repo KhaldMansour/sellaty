@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Support\Str;
 
 class Category extends Model
 {
@@ -14,6 +15,7 @@ class Category extends Model
         'name',
         'description',
         'image_url',
+        'slug'
     ];
 
     public $translatable = ['name' , 'description'];
@@ -22,7 +24,7 @@ class Category extends Model
 
     public function customFields()
     {
-        return $this->hasMany(CustomField::class);
+        return $this->belongsToMany(CustomField::class);
     }
 
     public function products()
@@ -52,7 +54,19 @@ class Category extends Model
             // $imageUrl = asset('storage/' . $imagePath);
             // $model->image_url = $imageUrl;
 
+            $englishName = $model->getTranslation('name', 'en');
+
             $model->handleTranslations();
+
+            if ($englishName) {
+                $slug = Str::of($englishName)
+                            ->lower()
+                            ->replaceMatches('/[^a-z0-9]+/', '_')
+                            ->trim('_');
+                $model->slug = $slug;
+            } else {
+                $model->slug = Str::random(10);
+            }
         });
 
         static::updating(function ($model) {

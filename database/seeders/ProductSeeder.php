@@ -13,10 +13,6 @@ class ProductSeeder extends Seeder
 {
     public function run()
     {
-        if (Product::count() > 0) {
-            return;
-        }
-
         $faker = Faker::create();
 
         $productCount = 2;

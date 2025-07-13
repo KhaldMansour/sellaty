@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class CustomField extends Model
 {
-    protected $fillable = ['category_id', 'name', 'type', 'is_required'];
+    protected $fillable = ['name', 'type', 'is_required'];
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class);
     }
 
     public function options()

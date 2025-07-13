@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
-use App\Models\CustomField;
 use App\Models\CustomFieldOption;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
@@ -15,16 +14,12 @@ class CarProductSeeder extends Seeder
 {
     public function run()
     {
-        // if (Product::count() > 0) {
-        //     return;
-        // }
-
         $faker = Faker::create();
 
         $productCount = 10; // how many car products to create
 
         // Get the Cars category (make sure it exists)
-        $carCategory = Category::where('name->en', 'Cars')->first();
+        $carCategory = Category::where('slug', 'cars')->first();
         if (!$carCategory) {
             $this->command->error('Cars category not found. Please seed categories first.');
 
@@ -40,23 +35,26 @@ class CarProductSeeder extends Seeder
         }
 
         // Get Car Make and Car Model custom fields
-        $carMakeField = CustomField::where('category_id', $carCategory->id)->where('name', 'Car Brand')->first();
-        $carModelField = CustomField::where('category_id', $carCategory->id)->where('name', 'Car Model')->first();
+        $carMakeField = $carCategory->customFields()->where('name', 'make')->first();
+        $carModelField = $carCategory->customFields()->where('name', 'model')->first();
+
+        // dd($carMakeField , $carModelField);
 
 
         if (!$carMakeField || !$carModelField) {
-            $this->command->error('Car Brand or Car Model custom fields not found.');
+            $this->command->error('Car Make or Car Model custom fields not found.');
 
             return;
         }
-
         // Get Car Makes options (parent options, i.e., parent_option_id == null)
         $carMakes = CustomFieldOption::where('custom_field_id', $carMakeField->id)
             ->whereNull('parent_option_id')
             ->get();
 
+        // dd($carMakes);
+
         if ($carMakes->isEmpty()) {
-            $this->command->error('No Car Brand options found.');
+            $this->command->error('No Car Make options found.');
 
             return;
         }
@@ -81,7 +79,7 @@ class CarProductSeeder extends Seeder
         foreach (range(1, $productCount) as $index) {
             $userId = $userIds[array_rand($userIds)];
 
-            // Pick a random Car Brand
+            // Pick a random Car Make
             $makeOption = $carMakes->random();
 
             // Get Car Models for this Make (child options of Car Model with parent_option_id = $makeOption->id)

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CategorySeeder extends Seeder
 {
@@ -31,21 +32,30 @@ class CategorySeeder extends Seeder
         }
 
         $categoryCount = 10;
-        $categoryNames = ['Electronics', 'Clothing', 'Home', 'Books', 'Toys'];
+        $categoryEnglishNames = ['Electronics', 'Clothing', 'Home', 'Books', 'Toys'];
+        $categoryArabicNames = ['لكترونيات', 'ملابس', 'الرئيسيه', 'كتب', 'ألعاب'];
 
         foreach (range(1, $categoryCount) as $index) {
             $imageUrl = $this->handleCategoryImage($imageFolder, $index);
+            $enName = $faker->randomElement($categoryEnglishNames);
+            $arName = $faker->randomElement($categoryArabicNames);
+            $slug = Str::of($enName)
+                ->lower()
+                ->replaceMatches('/[^a-z0-9]+/', '_')
+                ->trim('_');
+
 
             if ($imageUrl) {
                 $categoryData = [
                     'name' => json_encode([
-                        'en' => $faker->randomElement($categoryNames),
-                        'ar' => $faker->randomElement($categoryNames),
+                        'en' => $enName,
+                        'ar' => $arName,
                     ]),
                     'description' => json_encode([
                         'en' => $faker->sentence,
                         'ar' => $faker->sentence,
                     ]),
+                    'slug' => $slug,
                     'image_url' => $imageUrl,
                     'created_at' => now()->format('Y-m-d H:i:s'),
                     'updated_at' => now()->format('Y-m-d H:i:s'),

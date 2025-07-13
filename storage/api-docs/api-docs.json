@@ -4050,7 +4050,8 @@
                     "images[]",
                     "duration",
                     "city_lat",
-                    "city_long"
+                    "city_long",
+                    "custom_fields"
                 ],
                 "properties": {
                     "name": {
@@ -4189,6 +4190,19 @@
                         "example": [
                             1
                         ]
+                    },
+                    "custom_fields": {
+                        "description": "Key-value pairs of custom field IDs and their values. Keys are field IDs as strings.",
+                        "type": "object",
+                        "example": {
+                            "1": "Audi",
+                            "2": "ILX",
+                            "3": true
+                        },
+                        "additionalProperties": {
+                            "description": "Value for the custom field. Type depends on field configuration (text, number, boolean, etc.).",
+                            "type": "string"
+                        }
                     }
                 },
                 "type": "object"
@@ -4754,14 +4768,51 @@
                     },
                     "name": {
                         "type": "string",
-                        "example": "test"
+                        "example": "Cars"
                     },
                     "description": {
                         "type": "string",
-                        "example": "hello"
+                        "example": "All car listings"
                     },
-                    "imgae_url": {
-                        "type": "string"
+                    "image_url": {
+                        "type": "string",
+                        "example": "https://example.com/storage/categories/car.jpg"
+                    },
+                    "products_count": {
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "custom_fields": {
+                        "description": "List of custom fields for this category",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "Car Make"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "example": "select"
+                                },
+                                "required": {
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "options": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "example": "Toyota"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
                     },
                     "created_at": {
                         "type": "string",

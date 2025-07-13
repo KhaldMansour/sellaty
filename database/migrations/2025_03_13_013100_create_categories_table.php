@@ -15,14 +15,14 @@ return new class () extends Migration {
             $table->id();
             $table->json('name')->nullable();
             $table->json('description')->nullable();
+            $table->string('slug')->unique();
             $table->string('image_url');
             $table->string('name_en')
-            ->storedAs('JSON_UNQUOTE(name->"$.en")')
-            ->collation('utf8mb4_0900_ai_ci');
-
+                ->storedAs('JSON_UNQUOTE(name->"$.en")')
+                ->collation('utf8mb4_0900_ai_ci');
             $table->string('name_ar')
-              ->storedAs('JSON_UNQUOTE(name->"$.ar")')
-              ->collation('utf8mb4_0900_ai_ci');
+                ->storedAs('JSON_UNQUOTE(name->"$.ar")')
+                ->collation('utf8mb4_0900_ai_ci');
             $table->timestamps();
         });
 
@@ -34,8 +34,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        // DB::statement('ALTER TABLE categories DROP INDEX fulltext_name');
-
         Schema::dropIfExists('category_product');
         Schema::dropIfExists('categories');
     }

@@ -3,14 +3,13 @@
 namespace App\Http\Requests;
 
 use App\Models\CustomField;
-use App\Models\CustomFieldOption;
 use App\Models\Product;
 
 /**
  * @OA\Schema(
  *     schema="CreateProductRequestSchema",
  *     type="object",
- *     required={"name", "price", "quantity", "condition[]" , "address", "country", "state", "city", "postal_code" , "category_ids[]" , "delivery_options[]" , "images[]" , "duration" , "city_lat" , "city_long"},
+ *     required={"name", "price", "quantity", "condition[]" , "address", "country", "state", "city", "postal_code" , "category_ids[]" , "delivery_options[]" , "images[]" , "duration" , "city_lat" , "city_long" , "custom_fields"},
  *     @OA\Property(
  *         property="name",
  *         type="string",
@@ -83,7 +82,21 @@ use App\Models\Product;
  *         @OA\Items(type="integer"),
  *         description="Array of category IDs",
  *         example={1}
- *     )
+ *     ),
+ *     @OA\Property(
+*         property="custom_fields",
+*         type="object",
+*         description="Key-value pairs of custom field IDs and their values. Keys are field IDs as strings.",
+*         example={
+*             "1": "Audi",
+*             "2": "ILX",
+*             "3": true
+*         },
+*         @OA\AdditionalProperties(
+*             type="string",
+*             description="Value for the custom field. Type depends on field configuration (text, number, boolean, etc.)."
+*         )
+*     ),
  * )
  */
 class CreateProductRequest extends BaseFormRequest
@@ -94,7 +107,11 @@ class CreateProductRequest extends BaseFormRequest
     protected function getCustomFields()
     {
         if (empty($this->customFieldsMap)) {
-            $this->customFieldsMap = CustomField::whereIn('category_id', $this->input('category_ids', []))->get();
+            $categoryIds = $this->input('category_ids', []);
+
+            $this->customFieldsMap = CustomField::whereHas('categories', function ($query) use ($categoryIds) {
+                $query->whereIn('categories.id', $categoryIds);
+            })->get();
         }
 
         return $this->customFieldsMap;
@@ -146,44 +163,66 @@ class CreateProductRequest extends BaseFormRequest
             'city_long' => 'required|numeric',
             'longitude' => 'numeric',
             'latitude' => 'numeric',
-            'custom_fields' => 'required|array',
+            'custom_fields' => 'present|array',
         ];
-
-        if ($this->has('category_ids') && is_array($this->category_ids)) {
-            $customFields = $this->getCustomFields();
-
-
-            foreach ($customFields as $field) {
-                $key = "custom_fields.{$field->id}";
-                $baseRule = $field->required ? 'required' : 'nullable';
-
-                $fieldRule = match ($field->type) {
-                    'text' => [$baseRule, 'string'],
-                    'number' => [$baseRule, 'numeric'],
-                    'boolean' => [$baseRule, 'boolean'],
-                    'date' => [$baseRule, 'date'],
-                    'select' => [
-                        $baseRule,
-                        'string',
-                        function ($attribute, $value, $fail) use ($field) {
-                            $exists = CustomFieldOption::where('custom_field_id', $field->id)
-                                ->where('value', $value)
-                                ->exists();
-
-                            if (! $exists) {
-                                $fail("The selected option for '{$field->name}' is invalid.");
-                            }
-                        },
-                    ],
-                    default => ['nullable'],
-                };
-
-                $rules[$key] = $fieldRule;
-            }
-        }
 
         return $rules;
     }
+
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $customFieldsInput = $this->input('custom_fields', []);
+            $customFieldsMap = $this->getCustomFields();
+            foreach ($customFieldsMap as $field) {
+                $key = $field->id;
+                $value = $customFieldsInput[$key] ?? null;
+
+
+                if ($field->required && is_null($value)) {
+                    $validator->errors()->add("custom_fields.$key", "custom field {$field->name} is required.");
+                    continue;
+                }
+
+                if (is_null($value)) {
+                    continue;
+                }
+
+                switch ($field->type) {
+                    case 'text':
+                        if (!is_string($value)) {
+                            $validator->errors()->add("custom_fields.$key", "custom field {$field->name} must be a string.");
+                        }
+                        break;
+
+                    case 'number':
+                        if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                            $validator->errors()->add("custom_fields.$key", "custom field {$field->name} must be a number.");
+                        }
+                        break;
+
+                    case 'boolean':
+                        if (!in_array($value, [true, false, 0, 1, '0', '1'], true)) {
+                            $validator->errors()->add("custom_fields.$key", "{$field->name} must be boolean.");
+                        }
+                        break;
+
+                    case 'select':
+                        $validOptions = $field->options->pluck('value')->toArray();
+                        if (!in_array($value, $validOptions)) {
+                            $validator->errors()->add("custom_fields.$key", "custom field {$field->name} must be one of: " . implode(', ', $validOptions));
+                        }
+                        break;
+
+                    default:
+                        $validator->errors()->add("custom_fields.$key", "Unknown type for {$field->name}.");
+                }
+            }
+        });
+    }
+
+
 
     public function messages()
     {
@@ -191,25 +230,31 @@ class CreateProductRequest extends BaseFormRequest
             'category_ids.*.exists' => 'The category ID :input is invalid. Please select a valid category.',
         ];
 
-        if ($this->has('category_ids') && is_array($this->category_ids)) {
-            $customFields = $this->getCustomFields();
-
-            foreach ($customFields as $field) {
-                $keyBase = "custom_fields.{$field->id}";
-
-                $messages["{$keyBase}.required"] = "The ". $field->name ." field in custom fields is required.";
-                $messages["{$keyBase}.string"] = "The ". $field->name ." field must be a string.";
-                $messages["{$keyBase}.numeric"] = "The  ". $field->name ." field must be a number.";
-                $messages["{$keyBase}.boolean"] = "The  ". $field->name ."  field must be true or false.";
-                $messages["{$keyBase}.date"] = "The  ". $field->name ." field must be a valid date.";
-            }
-        }
-
         return $messages;
     }
 
     protected function prepareForValidation()
     {
+        if ($this->input('custom_fields') && is_string($this->input('custom_fields'))) {
+            $decoded = json_decode($this->input('custom_fields'), true);
+            if (is_array($decoded)) {
+                $allowedFieldIds = collect($this->getCustomFields())
+                    ->pluck('id')
+                    ->map(fn ($id) => $id)
+                    ->toArray();
+
+                $filtered = array_filter(
+                    $decoded,
+                    fn ($value) => in_array($value, $allowedFieldIds, true),
+                    ARRAY_FILTER_USE_KEY
+                );
+
+                $this->merge([
+                    'custom_fields' => $filtered,
+                ]);
+            }
+        }
+
         $latitude = $this->input('latitude');
         $longitude = $this->input('longitude');
 

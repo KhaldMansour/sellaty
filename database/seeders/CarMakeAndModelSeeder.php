@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\CustomField;
 use App\Models\CustomFieldOption;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Http;
@@ -30,27 +29,18 @@ class CarMakeAndModelSeeder extends Seeder
 
         $models = collect($response->json('data'));
 
-        $makeField = CustomField::updateOrCreate(
-            [
-                'category_id' => $carCategory->id,
-                'name' => 'Car Brand',
-            ],
-            [
-                'type' => 'select',
-                'required' => true,
-            ]
-        );
+        $makeField = $carCategory->customFields()->create([
+            'name' => 'make',
+            'type' => 'select',
+            'required' => true,
+        ]);
 
-        $modelField = CustomField::updateOrCreate(
-            [
-                'category_id' => $carCategory->id,
-                'name' => 'Car Model',
-            ],
-            [
-                'type' => 'select',
-                'required' => true,
-            ]
-        );
+        $modelField = $carCategory->customFields()->create([
+            'name' => 'model',
+            'type' => 'select',
+            'required' => true,
+        ]);
+
 
         $grouped = $models->groupBy('make');
 
@@ -69,6 +59,6 @@ class CarMakeAndModelSeeder extends Seeder
             }
         }
 
-        $this->command->info('Car Brand and Model fields and options seeded successfully.');
+        $this->command->info('Car Makes and Model fields and options seeded successfully.');
     }
 }
