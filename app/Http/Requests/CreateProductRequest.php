@@ -239,32 +239,37 @@ class CreateProductRequest extends BaseFormRequest
 
         $customFields = trim($customFields, '"');
 
-
-        if (is_string($customFields)) {
-            $decoded = json_decode($customFields, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $customFields = json_decode($customFields);
-                $decoded = json_decode($customFields, true);
-            } else {
-                $customFields = $decoded;
-            }
-        }
-
-        if (is_array($customFields)) {
-            $allowedFieldIds = collect($this->getCustomFields())
-                ->pluck('id')
-                ->toArray();
-
-            $filtered = array_filter(
-                $customFields,
-                fn ($value, $key) => in_array($key, $allowedFieldIds, true),
-                ARRAY_FILTER_USE_BOTH
-            );
-
+        if (empty($customFields)) {
             $this->merge([
-                'custom_fields' => $filtered,
+                'custom_fields' => [],
             ]);
+        } else {
+            if (is_string($customFields)) {
+                $decoded = json_decode($customFields, true);
+
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $customFields = json_decode($customFields);
+                    $decoded = json_decode($customFields, true);
+                } else {
+                    $customFields = $decoded;
+                }
+            }
+
+            if (is_array($customFields)) {
+                $allowedFieldIds = collect($this->getCustomFields())
+                    ->pluck('id')
+                    ->toArray();
+
+                $filtered = array_filter(
+                    $customFields,
+                    fn ($value, $key) => in_array($key, $allowedFieldIds, true),
+                    ARRAY_FILTER_USE_BOTH
+                );
+
+                $this->merge([
+                    'custom_fields' => $filtered,
+                ]);
+            }
         }
 
         $latitude = $this->input('latitude');
