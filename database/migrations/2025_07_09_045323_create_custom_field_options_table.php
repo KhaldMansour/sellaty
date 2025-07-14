@@ -14,6 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->foreignId('custom_field_id')->constrained()->onDelete('cascade');
             $table->string('value');
+            $table->string('image_url')->nullable();
             $table->foreignId('parent_option_id')
                   ->nullable()
                   ->constrained('custom_field_options')

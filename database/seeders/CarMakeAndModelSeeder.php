@@ -11,6 +11,8 @@ class CarMakeAndModelSeeder extends Seeder
 {
     public function run(): void
     {
+        $carMakes = require database_path('seeders/seeded_data/cars/CarMakes.php');
+
         $carCategory = Category::firstOrCreate(
             ['name->en' => 'Cars'],
             [
@@ -48,6 +50,7 @@ class CarMakeAndModelSeeder extends Seeder
             $makeOption = CustomFieldOption::firstOrCreate([
                 'custom_field_id' => $makeField->id,
                 'value' => $make,
+                'image_url' => $carMakes[strtoupper($make)] ?? null,
             ]);
 
             foreach ($modelsList->pluck('name')->unique() as $modelName) {

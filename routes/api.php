@@ -38,6 +38,12 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
     Route::prefix('custom-fields')->group(function () {
         Route::get('/{customField}', 'CustomFieldController@optionsByField');
         Route::get('/custom-field-options/{customFieldOptionId}', 'CustomFieldController@childrenByOption');
+        Route::get('/{customField}/options-with-product-count', 'CustomFieldController@fieldWithProductCounts');
+    });
+
+    Route::prefix('options')->group(function () {
+        Route::get('/{optionValue}/product-count', 'CustomFieldController@getOptionWithProductCount');
+        Route::get('/{optionValue}/products', 'CustomFieldController@getProductsByOptionValue');
     });
 
     Route::prefix('products')->group(function () {

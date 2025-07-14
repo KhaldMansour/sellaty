@@ -1277,6 +1277,179 @@
                 }
             }
         },
+        "/api/v1/custom-fields/{customField}/options-with-product-count": {
+            "get": {
+                "tags": [
+                    "Custom Fields"
+                ],
+                "summary": "Get all options of a custom field with product counts",
+                "operationId": "3d06ac50a7dadff625d975f2a1524dfe",
+                "parameters": [
+                    {
+                        "name": "customField",
+                        "in": "path",
+                        "description": "The ID of the custom field (e.g., make or model)",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "example": "Acura"
+                                            },
+                                            "image_url": {
+                                                "type": "string",
+                                                "format": "url",
+                                                "example": "https://example.com/image.jpg"
+                                            },
+                                            "product_count": {
+                                                "type": "integer",
+                                                "example": 5
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Custom field not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/options/{optionValue}/product-count": {
+            "get": {
+                "tags": [
+                    "Custom Field Options"
+                ],
+                "summary": "Get product count for a specific custom field option",
+                "description": "Returns the product count for a given custom field option value, such as 'C200' or 'Acura'.",
+                "operationId": "6a17bef01a07b802c8e6e703339bee01",
+                "parameters": [
+                    {
+                        "name": "optionValue",
+                        "in": "path",
+                        "description": "The value of the custom field option",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "C200"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with product count",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 123
+                                        },
+                                        "value": {
+                                            "type": "string",
+                                            "example": "C200"
+                                        },
+                                        "image_url": {
+                                            "type": "string",
+                                            "format": "url",
+                                            "example": "https://example.com/image.jpg"
+                                        },
+                                        "product_count": {
+                                            "type": "integer",
+                                            "example": 5
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Option not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/options/{optionValue}/products": {
+            "get": {
+                "tags": [
+                    "Custom Field Options"
+                ],
+                "summary": "Get products by custom field option value",
+                "description": "Returns a paginated list of products that match the given custom field option value (e.g., C200).",
+                "operationId": "a8cb4bf542de403acf09a5a9ca05ad5c",
+                "parameters": [
+                    {
+                        "name": "optionValue",
+                        "in": "path",
+                        "description": "The value of the custom field option (e.g., C200, Acura)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "C200"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Products fetched successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProductSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Option not found"
+                    }
+                }
+            }
+        },
         "/api/v1/intro-messages": {
             "get": {
                 "tags": [
@@ -5639,6 +5812,10 @@
         {
             "name": "Custom Fields",
             "description": "Custom Fields"
+        },
+        {
+            "name": "Custom Field Options",
+            "description": "Custom Field Options"
         },
         {
             "name": "IntroMessages",

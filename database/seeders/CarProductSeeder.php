@@ -38,9 +38,6 @@ class CarProductSeeder extends Seeder
         $carMakeField = $carCategory->customFields()->where('name', 'make')->first();
         $carModelField = $carCategory->customFields()->where('name', 'model')->first();
 
-        // dd($carMakeField , $carModelField);
-
-
         if (!$carMakeField || !$carModelField) {
             $this->command->error('Car Make or Car Model custom fields not found.');
 
@@ -51,14 +48,11 @@ class CarProductSeeder extends Seeder
             ->whereNull('parent_option_id')
             ->get();
 
-        // dd($carMakes);
-
         if ($carMakes->isEmpty()) {
             $this->command->error('No Car Make options found.');
 
             return;
         }
-
 
         // Prepare images folder & clear existing product images in storage
         if (!Storage::disk('public')->exists('products')) {
