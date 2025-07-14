@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
 use App\Models\CustomField;
 use App\Models\CustomFieldOption;
 use App\Models\Product;
@@ -267,6 +268,6 @@ class CustomFieldController extends Controller
                   ->where('value', $option->value);
         })->paginate(15);
 
-        return $this->success($products);
+        return $this->success(ProductResource::collection($products));
     }
 }
