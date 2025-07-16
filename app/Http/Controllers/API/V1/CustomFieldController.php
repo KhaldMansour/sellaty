@@ -308,7 +308,6 @@ class CustomFieldController extends Controller
                   ->where('value', $option->value);
         })->paginate(15);
 
-        dd($products);
 
         return $this->success(ProductResource::collection($products));
     }
