@@ -7,7 +7,6 @@ use App\Http\Resources\ProductResource;
 use App\Models\CustomField;
 use App\Models\CustomFieldOption;
 use App\Models\Product;
-use App\Models\ProductCustomFieldValue;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -31,12 +30,12 @@ class CustomFieldController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="parent_option", type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="value", type="string", example="Color")
+     *                 @OA\Property(property="value", type="string", example="BMW")
      *             ),
      *             @OA\Property(property="children", type="array",
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=10),
-     *                     @OA\Property(property="value", type="string", example="Red")
+     *                     @OA\Property(property="value", type="string", example="X6")
      *                 )
      *             )
      *         )
@@ -82,12 +81,14 @@ class CustomFieldController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="parent_option", type="object",
      *                 @OA\Property(property="id", type="integer", example=5),
-     *                 @OA\Property(property="value", type="string", example="Red")
+     *                 @OA\Property(property="value", type="string", example="BMW"),
+     *                 @OA\Property(property="product_count", type="integer", example=5),
      *             ),
      *             @OA\Property(property="children", type="array",
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=6),
-     *                     @OA\Property(property="value", type="string", example="Dark Red")
+     *                     @OA\Property(property="value", type="string", example="X6"),
+     *                     @OA\Property(property="product_count", type="integer", example=5),
      *                 )
      *             )
      *         )
@@ -98,71 +99,60 @@ class CustomFieldController extends Controller
     public function childrenByOption($customFieldOptionid)
     {
         $option = CustomFieldOption::with('children')->findOrFail($customFieldOptionid);
+        $children = $option->children;
 
+        $childKeyPairs = $children->map(function ($child) {
+            return [
+                'custom_field_id' => $child->custom_field_id,
+                'value' => $child->value,
+            ];
+        });
+
+        $allKeyPairs = $childKeyPairs->push([
+            'custom_field_id' => $option->custom_field_id,
+            'value' => $option->value,
+        ])->toArray();
+
+        $productCounts = DB::table('product_custom_field_values')
+            ->select('custom_field_id', 'value', DB::raw('COUNT(*) as count'))
+            ->where(function ($query) use ($allKeyPairs) {
+                foreach ($allKeyPairs as $pair) {
+                    $query->orWhere(function ($q) use ($pair) {
+                        $q->where('custom_field_id', $pair['custom_field_id'])
+                          ->where('value', $pair['value']);
+                    });
+                }
+            })
+            ->groupBy('custom_field_id', 'value')
+            ->get()
+            ->keyBy(function ($item) {
+                return $item->custom_field_id . '|' . $item->value;
+            });
+
+        $parentKey = $option->custom_field_id . '|' . $option->value;
+        $parentCount = $productCounts[$parentKey]->count ?? 0;
+
+        $childrenWithCounts = $children->map(function ($child) use ($productCounts) {
+            $key = $child->custom_field_id . '|' . $child->value;
+
+            return [
+                'id' => $child->id,
+                'value' => $child->value,
+                'product_count' => $productCounts[$key]->count ?? 0,
+            ];
+        });
 
         return $this->success([
             'parent_option' => [
                 'id' => $option->id,
                 'value' => $option->value,
                 'image_url' => $option->image_url,
+                'product_count' => $parentCount,
             ],
-            'children' => $option->children->map(function ($child) {
-                return [
-                    'id' => $child->id,
-                    'value' => $child->value,
-                ];
-            }),
+            'children' => $childrenWithCounts,
         ]);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/v1/custom-fields/{customField}/options-with-product-count",
-     *     summary="Get all options of a custom field with product counts",
-     *     tags={"Custom Fields"},
-     *     @OA\Parameter(
-     *         name="customField",
-     *         in="path",
-     *         description="The ID of the custom field (e.g., make or model)",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Successful response",
-     *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(
-     *                 type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="value", type="string", example="Acura"),
-     *                 @OA\Property(property="image_url", type="string", format="url", example="https://example.com/image.jpg"),
-     *                 @OA\Property(property="product_count", type="integer", example=5)
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Custom field not found"
-     *     )
-     * )
-     */
-    public function fieldWithProductCounts(CustomField $customField)
-    {
-        $makes = CustomFieldOption::where('custom_field_id', $customField->id)
-        ->get(['id', 'value' , 'image_url'])
-        ->map(function ($option) use ($customField) {
-            $count = ProductCustomFieldValue::where('custom_field_id', $customField->id)
-                ->where('value', $option->value)
-                ->count();
-
-            $option->product_count = $count;
-
-            return $option;
-        });
-
-        return $this->success($makes);
-    }
 
     /**
      * @OA\Get(
