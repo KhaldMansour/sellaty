@@ -7,6 +7,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\CustomField;
 use App\Models\CustomFieldOption;
 use App\Models\Product;
+use App\Models\ProductCustomFieldValue;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -202,7 +203,6 @@ class CustomFieldController extends Controller
         return $this->success($makes);
     }
 
-
     /**
      * @OA\Get(
      *     path="/api/v1/options/{optionValue}/product-count",
@@ -298,6 +298,7 @@ class CustomFieldController extends Controller
     {
         $option = CustomFieldOption::where('value', $optionValue)->first();
 
+
         if (!$option) {
             throw new HttpException(404, 'Wrong value');
         }
@@ -306,6 +307,8 @@ class CustomFieldController extends Controller
             $query->where('custom_field_id', $option->custom_field_id)
                   ->where('value', $option->value);
         })->paginate(15);
+
+        dd($products);
 
         return $this->success(ProductResource::collection($products));
     }
