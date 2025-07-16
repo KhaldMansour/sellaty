@@ -1285,6 +1285,63 @@
                 }
             }
         },
+        "/api/v1/custom-fields/{customField}/options-with-product-count": {
+            "get": {
+                "tags": [
+                    "Custom Fields"
+                ],
+                "summary": "Get all options of a custom field with product counts",
+                "operationId": "3d06ac50a7dadff625d975f2a1524dfe",
+                "parameters": [
+                    {
+                        "name": "customField",
+                        "in": "path",
+                        "description": "The ID of the custom field (e.g., make or model)",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "example": "Acura"
+                                            },
+                                            "image_url": {
+                                                "type": "string",
+                                                "format": "url",
+                                                "example": "https://example.com/image.jpg"
+                                            },
+                                            "product_count": {
+                                                "type": "integer",
+                                                "example": 5
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Custom field not found"
+                    }
+                }
+            }
+        },
         "/api/v1/options/{optionValue}/product-count": {
             "get": {
                 "tags": [

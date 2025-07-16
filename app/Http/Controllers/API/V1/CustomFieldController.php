@@ -153,6 +153,55 @@ class CustomFieldController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/custom-fields/{customField}/options-with-product-count",
+     *     summary="Get all options of a custom field with product counts",
+     *     tags={"Custom Fields"},
+     *     @OA\Parameter(
+     *         name="customField",
+     *         in="path",
+     *         description="The ID of the custom field (e.g., make or model)",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="value", type="string", example="Acura"),
+     *                 @OA\Property(property="image_url", type="string", format="url", example="https://example.com/image.jpg"),
+     *                 @OA\Property(property="product_count", type="integer", example=5)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Custom field not found"
+     *     )
+     * )
+     */
+    public function fieldWithProductCounts(CustomField $customField)
+    {
+        $makes = CustomFieldOption::where('custom_field_id', $customField->id)
+        ->get(['id', 'value' , 'image_url'])
+        ->map(function ($option) use ($customField) {
+            $count = ProductCustomFieldValue::where('custom_field_id', $customField->id)
+                ->where('value', $option->value)
+                ->count();
+
+            $option->product_count = $count;
+
+            return $option;
+        });
+
+        return $this->success($makes);
+    }
+
 
     /**
      * @OA\Get(
