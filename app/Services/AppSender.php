@@ -20,13 +20,13 @@ class AppSender implements OtpSenderStrategy
         ]);
 
         if ($response->successful()) {
+            return true;
+        } else {
             Log::info('AppSender OTP Response', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
 
-            return true;
-        } else {
             return false;
         }
     }

@@ -31,15 +31,16 @@ class CategorySeeder extends Seeder
             Storage::disk('public')->delete($file);
         }
 
-        $categoryCount = 10;
-        $categoryEnglishNames = ['Electronics', 'Clothing', 'Home', 'Books', 'Toys'];
-        $categoryArabicNames = ['لكترونيات', 'ملابس', 'الرئيسيه', 'كتب', 'ألعاب'];
+        $categoryNames = [
+            ['en' => 'Home', 'ar' => 'الرئيسيه'],
+            ['en' => 'Electronics', 'ar' => 'الكترونيات'],
+        ];
+        $categoryCount = count($categoryNames);
 
         foreach (range(1, $categoryCount) as $index) {
-            $imageUrl = $this->handleCategoryImage($imageFolder, $index);
-            $enName = $faker->randomElement($categoryEnglishNames);
-            $arName = $faker->randomElement($categoryArabicNames);
-            $slug = Str::of($enName)
+            $name = $categoryNames[$index - 1];
+            $imageUrl = $this->handleCategoryImage($imageFolder, $name['en']);
+            $slug = Str::of($name['en'])
                 ->lower()
                 ->replaceMatches('/[^a-z0-9]+/', '_')
                 ->trim('_');
@@ -48,14 +49,14 @@ class CategorySeeder extends Seeder
             if ($imageUrl) {
                 $categoryData = [
                     'name' => json_encode([
-                        'en' => $enName,
-                        'ar' => $arName,
+                        'en' => $name['en'],
+                        'ar' => $name['ar'],
                     ]),
                     'description' => json_encode([
                         'en' => $faker->sentence,
                         'ar' => $faker->sentence,
                     ]),
-                    'slug' => $slug,
+                    'slug' => $slug . '-' . $index,
                     'image_url' => $imageUrl,
                     'created_at' => now()->format('Y-m-d H:i:s'),
                     'updated_at' => now()->format('Y-m-d H:i:s'),
@@ -66,15 +67,25 @@ class CategorySeeder extends Seeder
         }
     }
 
-    protected function handleCategoryImage($imageFolder, $index)
+    protected function handleCategoryImage($imageFolder, $name)
     {
-        $imageName = 'category_' . $index . '.png';
-
+        $imageName = 'category_' . $name . '.png';
         $imagePath = $imageFolder . '/' . $imageName;
 
         if (file_exists($imagePath)) {
-            $imageStoragePath = 'categories/'. uniqid() . $imageName;
+            $imageStoragePath = 'categories/' . uniqid() . '_' . $imageName;
             Storage::disk('public')->put($imageStoragePath, file_get_contents($imagePath));
+
+            return asset('storage/' . $imageStoragePath);
+        }
+
+        $files = glob($imageFolder . '/*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
+
+        if (!empty($files)) {
+            $randomImagePath = $files[array_rand($files)];
+            $randomImageName = basename($randomImagePath);
+            $imageStoragePath = 'categories/' . uniqid() . '_' . $randomImageName;
+            Storage::disk('public')->put($imageStoragePath, file_get_contents($randomImagePath));
 
             return asset('storage/' . $imageStoragePath);
         }

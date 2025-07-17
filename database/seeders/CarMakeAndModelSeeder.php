@@ -6,18 +6,22 @@ use App\Models\Category;
 use App\Models\CustomFieldOption;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class CarMakeAndModelSeeder extends Seeder
 {
     public function run(): void
     {
         $carMakes = require database_path('seeders/seeded_data/cars/CarMakes.php');
+        $imageFolder = database_path('seeders/seeded_data/categories');
+
+        $imageUrl = $this->handleCategoryImage($imageFolder, 'cars');
 
         $carCategory = Category::firstOrCreate(
             ['name->en' => 'Cars'],
             [
                 'name->ar' => 'سيارات',
-                'image_url' => 'https://www.thedigitalbunch.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F109-thumbnail.ddd6d67e.jpg&w=1920&q=75'
+                'image_url' => $imageUrl,
             ]
         );
 
@@ -63,5 +67,31 @@ class CarMakeAndModelSeeder extends Seeder
         }
 
         $this->command->info('Car Makes and Model fields and options seeded successfully.');
+    }
+
+    protected function handleCategoryImage($imageFolder, $name)
+    {
+        $imageName = 'category_' . $name . '.png';
+        $imagePath = $imageFolder . '/' . $imageName;
+
+        if (file_exists($imagePath)) {
+            $imageStoragePath = 'categories/' . uniqid() . '_' . $imageName;
+            Storage::disk('public')->put($imageStoragePath, file_get_contents($imagePath));
+
+            return asset('storage/' . $imageStoragePath);
+        }
+
+        $files = glob($imageFolder . '/*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
+
+        if (!empty($files)) {
+            $randomImagePath = $files[array_rand($files)];
+            $randomImageName = basename($randomImagePath);
+            $imageStoragePath = 'categories/' . uniqid() . '_' . $randomImageName;
+            Storage::disk('public')->put($imageStoragePath, file_get_contents($randomImagePath));
+
+            return asset('storage/' . $imageStoragePath);
+        }
+
+        return null;
     }
 }
