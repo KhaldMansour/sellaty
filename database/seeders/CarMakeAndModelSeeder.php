@@ -47,6 +47,11 @@ class CarMakeAndModelSeeder extends Seeder
             'required' => true,
         ]);
 
+        $carCategory->customFields()->create([
+            'name' => 'year',
+            'type' => 'year',
+            'required' => true,
+        ]);
 
         $grouped = $models->groupBy('make');
 

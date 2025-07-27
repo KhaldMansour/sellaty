@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\CustomField;
-use App\Models\Product;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * @OA\Schema(
@@ -169,19 +169,18 @@ class CreateProductRequest extends BaseFormRequest
         return $rules;
     }
 
-
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
             $customFieldsInput = $this->input('custom_fields', []);
             $customFieldsMap = $this->getCustomFields();
+
             foreach ($customFieldsMap as $field) {
                 $key = $field->id;
                 $value = $customFieldsInput[$key] ?? null;
 
-
                 if ($field->required && is_null($value)) {
-                    $validator->errors()->add("custom_fields.$key", "custom field {$field->name} is required.");
+                    $validator->errors()->add("custom_fields.$key", "Custom field '{$field->name}' is required.");
                     continue;
                 }
 
@@ -189,40 +188,45 @@ class CreateProductRequest extends BaseFormRequest
                     continue;
                 }
 
-                switch ($field->type) {
-                    case 'text':
-                        if (!is_string($value)) {
-                            $validator->errors()->add("custom_fields.$key", "custom field {$field->name} must be a string.");
-                        }
-                        break;
+                $rules = match ($field->type) {
+                    'text' => ['string'],
+                    'number' => ['integer'],
+                    'boolean' => ['boolean'],
+                    'select' => ['in:' . implode(',', $field->options->pluck('value')->toArray())],
+                    'year' => [
+                        'string',
+                        'regex:/^\d{4}$/',
+                        function ($attribute, $value, $fail) {
+                            $year = (int) $value;
+                            $minYear = 1900;
+                            $maxYear = date('Y') + 1;
 
-                    case 'number':
-                        if (!filter_var($value, FILTER_VALIDATE_INT)) {
-                            $validator->errors()->add("custom_fields.$key", "custom field {$field->name} must be a number.");
+                            if ($year < $minYear || $year > $maxYear) {
+                                $fail("The $attribute must be between $minYear and $maxYear.");
+                            }
                         }
-                        break;
+                    ],
+                    default => ['nullable'],
+                };
 
-                    case 'boolean':
-                        if (!in_array($value, [true, false, 0, 1, '0', '1'], true)) {
-                            $validator->errors()->add("custom_fields.$key", "{$field->name} must be boolean.");
-                        }
-                        break;
+                if (!empty($field->validation_rules)) {
+                    $customRules = is_array($field->validation_rules)
+                        ? $field->validation_rules
+                        : json_decode($field->validation_rules, true);
 
-                    case 'select':
-                        $validOptions = $field->options->pluck('value')->toArray();
-                        if (!in_array($value, $validOptions)) {
-                            $validator->errors()->add("custom_fields.$key", "custom field {$field->name} must be one of: " . implode(', ', $validOptions));
-                        }
-                        break;
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($customRules)) {
+                        $rules = array_merge($rules, $customRules);
+                    }
+                }
 
-                    default:
-                        $validator->errors()->add("custom_fields.$key", "Unknown type for {$field->name}.");
+                $customFieldValidator = Validator::make(['value' => $value], ['value' => $rules]);
+
+                if ($customFieldValidator->fails()) {
+                    $validator->errors()->add("custom_fields.$key", $customFieldValidator->errors()->first('value'));
                 }
             }
         });
     }
-
-
 
     public function messages()
     {

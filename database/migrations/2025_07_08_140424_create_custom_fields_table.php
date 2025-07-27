@@ -13,7 +13,7 @@ return new class () extends Migration {
         Schema::create('custom_fields', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ['text', 'number', 'date', 'boolean' , 'select'])->default('text');
+            $table->string('type')->default('text');
             $table->boolean('required')->default(false);
             $table->timestamps();
         });
