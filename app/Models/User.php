@@ -9,14 +9,28 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+use Filament\Models\Contracts\HasName;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject , FilamentUser, HasName
 {
     use HasFactory;
     use Notifiable;
     use Authorizable;
     use HasFactory;
     use HasApiTokens;
+
+    public const ROLE_USER = 'user';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_SUPER_ADMIN = 'super_admin';
+
+    // Optionally, a list for easier mapping or validation
+    public const ROLES = [
+        self::ROLE_USER,
+        self::ROLE_ADMIN,
+        self::ROLE_SUPER_ADMIN,
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -54,6 +68,7 @@ class User extends Authenticatable implements JWTSubject
             'password' => 'hashed',
             'is_verified' => 'boolean',
             'locked' => 'boolean',
+            'roles' => 'array',
         ];
     }
 
@@ -99,6 +114,25 @@ class User extends Authenticatable implements JWTSubject
     public function getFullNameAttribute()
     {
         return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
+    }
+
+    public function getFilamentName(): string
+    {
+        return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
+
+    public function hasRole(string|array $role): bool
+    {
+        if (is_array($role)) {
+            return !empty(array_intersect($role, $this->roles ?? []));
+        }
+
+        return in_array($role, $this->roles ?? []);
     }
 
     public function notifications()

@@ -14,6 +14,15 @@ class Dashboard extends BasePage
     {
         return [
             UsersChart::class,
+            \App\Filament\Resources\UserResource\Widgets\TotalRegisteredUsers::class,
+        ];
+    }
+
+    public function getColumns(): int | array
+    {
+        return [
+            'md' => 2,
+            'xl' => 3,
         ];
     }
 }

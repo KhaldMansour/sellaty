@@ -11,7 +11,7 @@ class UsersChart extends ChartWidget
 {
     protected static ?string $heading = 'New Users per Month';
     protected static ?string $maxHeight = '200px';
-    protected int | string | array $columnSpan = 2;
+    protected int | string | array $columnSpan = 1;
 
     protected function getData(): array
     {
