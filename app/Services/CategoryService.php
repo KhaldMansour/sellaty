@@ -57,7 +57,7 @@ class CategoryService
     public function getProducts(Category $category, $limit = 10)
     {
         $categoryProducts = $category->products()
-            ->where('is_active', true)
+            ->where('active', true)
             ->orderBy('created_at', 'desc')
             ->paginate($limit);
 
