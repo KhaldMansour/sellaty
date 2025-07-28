@@ -82,7 +82,6 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::prefix('users')->group(function () {
             Route::get('profile/wanted-products', 'UserController@myWantedProducts');
             Route::get('profile/products', 'UserController@myProducts');
-            Route::get('profile/wanted-products', 'UserController@myWantedProducts');
             Route::get('profile/recent-search', 'UserController@myRecentSearches');
             Route::get('/profile', 'UserController@profile');
             Route::post('/profile/update', 'UserController@updateProfile');

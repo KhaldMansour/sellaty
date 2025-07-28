@@ -85,7 +85,10 @@ class UserController extends Controller
     {
         $limit = $request->input('limit', 10);
 
-        $wantedProducts = $this->wantedProductRepository->where('user_id', auth()->user()->id)->paginate($limit);
+        $wantedProducts = $this->wantedProductRepository
+            ->where('user_id', auth()->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate($limit);
 
         return $this->success(WantedProductResource::collection($wantedProducts));
     }
@@ -155,7 +158,10 @@ class UserController extends Controller
     {
         $limit = $request->input('limit', 10);
 
-        $products = $this->productRepository->where('user_id', auth()->user()->id)->paginate($limit);
+        $products = $this->productRepository
+            ->where('user_id', auth()->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate($limit);
 
         return $this->success(ProductResource::collection($products));
     }
