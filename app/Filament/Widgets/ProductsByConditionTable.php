@@ -3,7 +3,6 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Product;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -30,7 +29,7 @@ class ProductsByConditionTable extends BaseWidget
             ->paginated(false);
     }
 
-    public function getTableRecordKey($record) :string
+    public function getTableRecordKey($record): string
     {
         return (string) $record->condition_value;
     }

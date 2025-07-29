@@ -13,7 +13,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Filament\Models\Contracts\HasName;
 
-class User extends Authenticatable implements JWTSubject , FilamentUser, HasName
+class User extends Authenticatable implements JWTSubject, FilamentUser, HasName
 {
     use HasFactory;
     use Notifiable;
@@ -79,7 +79,7 @@ class User extends Authenticatable implements JWTSubject , FilamentUser, HasName
                 $user->roles = [self::ROLE_USER];
             }
         });
-        
+
         static::updating(function ($user) {
             if (request()->hasFile('profile_photo')) {
                 if ($user->getOriginal('profile_photo')) {

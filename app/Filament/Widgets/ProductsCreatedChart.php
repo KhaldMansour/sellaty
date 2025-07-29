@@ -19,12 +19,12 @@ class ProductsCreatedChart extends ChartWidget
             ->count();
 
         return [
-            'labels'   => $trend->map(fn (TrendValue $v) => $v->date),
+            'labels' => $trend->map(fn (TrendValue $v) => $v->date),
             'datasets' => [[
                 'label' => 'New Products',
-                'data'  => $trend->map(fn ($v) => $v->aggregate),
+                'data' => $trend->map(fn ($v) => $v->aggregate),
                 'backgroundColor' => '#3B82F6',
-                'borderColor'     => '#2563EB',
+                'borderColor' => '#2563EB',
             ]],
         ];
     }

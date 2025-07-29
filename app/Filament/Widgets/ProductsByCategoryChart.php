@@ -15,8 +15,9 @@ class ProductsByCategoryChart extends ChartWidget
     protected function getData(): array
     {
         $cats = Category::withCount('products')->get();
+
         return [
-            'labels'   => $cats->pluck('name_en')->toArray(),
+            'labels' => $cats->pluck('name_en')->toArray(),
             'datasets' => [[
                 'label' => 'Count',
                 'data' => $cats->pluck('products_count')->toArray(),
@@ -25,5 +26,8 @@ class ProductsByCategoryChart extends ChartWidget
         ];
     }
 
-    protected function getType(): string { return 'doughnut'; }
+    protected function getType(): string
+    {
+        return 'doughnut';
+    }
 }

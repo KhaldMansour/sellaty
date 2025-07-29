@@ -23,6 +23,6 @@ class TopUsersByProducts extends BaseWidget
                 TextColumn::make('full_name')->label('Name'),
                 TextColumn::make('products_count')->label('Listings'),
             ])
-            ->paginated(false); 
+            ->paginated(false);
     }
 }
