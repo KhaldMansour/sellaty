@@ -74,6 +74,12 @@ class User extends Authenticatable implements JWTSubject , FilamentUser, HasName
 
     protected static function booted()
     {
+        static::creating(function ($user) {
+            if (empty($user->roles)) {
+                $user->roles = [self::ROLE_USER];
+            }
+        });
+        
         static::updating(function ($user) {
             if (request()->hasFile('profile_photo')) {
                 if ($user->getOriginal('profile_photo')) {
