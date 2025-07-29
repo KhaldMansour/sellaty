@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\CategoryRepository;
 use App\Models\Category;
 use App\Models\CustomField;
+use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
 
 class CategoryService
@@ -57,7 +58,7 @@ class CategoryService
     public function getProducts(Category $category, $limit = 10)
     {
         $categoryProducts = $category->products()
-            ->where('is_active', true)
+            ->where('status', Product::STATUS_ACTIVE)
             ->orderBy('created_at', 'desc')
             ->paginate($limit);
 

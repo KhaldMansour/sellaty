@@ -321,6 +321,7 @@ class CategoryController extends Controller
     public function getProducts(Category $category)
     {
         $limit = request()->input('limit', 10);
+
         $categoryProducts = $this->categoryService->getProducts($category, $limit);
 
         return $this->success(['category' => new CategoryResource($category), 'products' => ProductResource::collection($categoryProducts)]);
