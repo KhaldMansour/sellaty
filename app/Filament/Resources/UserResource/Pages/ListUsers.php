@@ -20,7 +20,6 @@ class ListUsers extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            \App\Filament\Resources\UserResource\Widgets\UsersChart::class,
         ];
     }
 }

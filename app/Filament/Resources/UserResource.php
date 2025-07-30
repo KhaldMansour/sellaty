@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\Widgets\UsersChart;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Placeholder;
@@ -111,7 +110,6 @@ class UserResource extends Resource
     public static function getWidgets(): array
     {
         return [
-            UsersChart::class,
         ];
     }
 
