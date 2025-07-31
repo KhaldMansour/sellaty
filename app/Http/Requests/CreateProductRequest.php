@@ -141,7 +141,7 @@ class CreateProductRequest extends BaseFormRequest
             'brand' => 'nullable|string|max:255',
             'model' => 'nullable|string|max:255',
             'price' => 'required|numeric|min:0',
-            'duration' => 'required|string|max:255',
+            'duration' => ['required','regex:/^\\d+\\s(?:week|weeks|day|days|month|months)$/'],
             'quantity' => 'required|integer|min:0',
             'condition' => 'required|array',
             'condition.*' => 'string|in:New,Used',
