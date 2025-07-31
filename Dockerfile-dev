@@ -38,7 +38,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions zip, mbstring, exif, bcmath, intl
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype
-RUN docker-php-ext-install curl xml pdo pdo_mysql zip mbstring exif pcntl bcmath -j$(nproc) gd
+RUN docker-php-ext-install curl xml pdo pdo_mysql zip mbstring exif pcntl bcmath intl -j$(nproc) gd
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
