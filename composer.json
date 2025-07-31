@@ -9,7 +9,7 @@
         "php": "^8.2",
         "darkaonline/l5-swagger": "^9.0",
         "filament/filament": "^3.3",
-        "filament/spatie-laravel-translatable-plugin": "^3.2",
+        "filament/spatie-laravel-translatable-plugin": "3.3.*",
         "filament/widgets": "^3.3",
         "flowframe/laravel-trend": "^0.4.0",
         "intervention/image": "^3.11",
