@@ -89,7 +89,19 @@ class ProductResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(true, function ($query, $search) {
-                        return $query->whereRaw("MATCH(name_en, name_ar) AGAINST (? IN BOOLEAN MODE)", [$search . '*']);
+                        if (strlen($search) < 4) {
+                            $query = $query->where(function ($query) use ($search) {
+                                $query->where('name_en', 'LIKE', "%$search%")
+                                      ->orWhere('name_ar', 'LIKE', "%$search%");
+                            });
+                        } else {
+                            $query = $query->whereRaw(
+                                "MATCH(name_en, name_ar) AGAINST (? IN BOOLEAN MODE)",
+                                [$search . '*']
+                            );
+                        }
+
+                        return $query;
                     }),
                 Tables\Columns\TextColumn::make('price')
                     ->sortable(),
