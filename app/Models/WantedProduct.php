@@ -33,6 +33,7 @@ class WantedProduct extends Model
         'currency',
         'longitude',
         'latitude',
+        'status',
     ];
 
     public $translatable = ['name' , 'description'];
@@ -42,7 +43,7 @@ class WantedProduct extends Model
         'description' => 'array',
         'condition' => 'array',
         'delivery_options' => 'array',
-        'listed_until' => 'date',
+        'listed_until' => 'datetime',
         'latitude' => 'float',
         'longitude' => 'float',
     ];
@@ -62,7 +63,8 @@ class WantedProduct extends Model
     {
         static::creating(function ($model) {
             $model->handleTranslations();
-            $model->setListedUntilAttribute();
+
+            $model->setListedUntil();
         });
 
         static::saved(function ($model) {
@@ -82,6 +84,12 @@ class WantedProduct extends Model
         });
 
         static::updating(function ($model) {
+            if ($model->isDirty('duration')) {
+                if (empty($model->listed_until) || $model->getOriginal('listed_until') === $model->listed_until) {
+                    $model->setListedUntil();
+                }
+            }
+
             $model->handleTranslations();
         });
 
@@ -89,7 +97,7 @@ class WantedProduct extends Model
         });
     }
 
-    public function setListedUntilAttribute()
+    public function setListedUntil($value)
     {
         $this->attributes['listed_until'] = $this->calculateExpirationDate($this)->toDateString();
     }
@@ -97,7 +105,7 @@ class WantedProduct extends Model
     public function calculateExpirationDate($wantedProduct)
     {
         $duration = strtolower($wantedProduct->duration);
-        $pattern = '/(\d+)\s*(week|weeks|day|days)/';
+        $pattern = '/(\d+)\s*(week|weeks|day|days|month|months)/';
 
 
         if (preg_match($pattern, $duration, $matches)) {
@@ -109,6 +117,8 @@ class WantedProduct extends Model
                 return Carbon::now()->addWeeks($amount);
             } elseif (in_array($unit, ['day', 'days'])) {
                 return Carbon::now()->addDays($amount);
+            } elseif (in_array($unit, ['month', 'months'])) {
+                return Carbon::now()->addMonths($amount);
             }
         }
 

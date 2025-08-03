@@ -103,7 +103,8 @@ class Product extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
-            $model->setListedUntilAttribute();
+            $model->setListedUntil();
+
             $model->handleTranslations();
         });
 
@@ -121,6 +122,12 @@ class Product extends Model
         });
 
         static::updating(function ($model) {
+            if ($model->isDirty('duration')) {
+                if (empty($model->listed_until) || $model->getOriginal('listed_until') === $model->listed_until) {
+                    $model->setListedUntil();
+                }
+            }
+
             $model->handleTranslations();
         });
 
@@ -132,7 +139,7 @@ class Product extends Model
         });
     }
 
-    public function setListedUntilAttribute()
+    public function setListedUntil()
     {
         $this->attributes['listed_until'] = $this->calculateExpirationDate($this)->toDateString();
     }
@@ -140,7 +147,7 @@ class Product extends Model
     public function calculateExpirationDate($wantedProduct)
     {
         $duration = strtolower($wantedProduct->duration);
-        $pattern = '/(\d+)\s*(week|weeks|day|days)/';
+        $pattern = '/(\d+)\s*(week|weeks|day|days|month|months)/';
 
 
         if (preg_match($pattern, $duration, $matches)) {
@@ -151,6 +158,8 @@ class Product extends Model
                 return Carbon::now()->addWeeks($amount);
             } elseif (in_array($unit, ['day', 'days'])) {
                 return Carbon::now()->addDays($amount);
+            } elseif (in_array($unit, ['month', 'months'])) {
+                return Carbon::now()->addMonths($amount);
             }
         }
 
