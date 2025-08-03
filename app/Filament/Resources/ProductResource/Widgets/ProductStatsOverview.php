@@ -13,17 +13,19 @@ class ProductStatsOverview extends StatsOverviewWidget
     protected function getStats(): array
     {
         $now = Carbon::now();
-        $prevMonth = $now->copy()->subMonths(1);
+
+        $currentMonthStart = $now->copy()->startOfMonth();
+        $currentMonthEnd = $now->copy()->endOfMonth();
+
+        $prevMonthStart = $now->copy()->subMonth()->startOfMonth();
+        $prevMonthEnd = $now->copy()->subMonth()->endOfMonth();
 
         $currentMonthProducts = Product::where('status', Product::STATUS_ACTIVE)
-            ->whereMonth('created_at', $now->month)
-            ->whereYear('created_at', $now->year)
+            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
             ->count();
 
-
         $prevMonthProducts = Product::where('status', Product::STATUS_ACTIVE)
-            ->whereMonth('created_at', $prevMonth->month)
-            ->whereYear('created_at', $prevMonth->year)
+            ->whereBetween('created_at', [$prevMonthStart, $prevMonthEnd])
             ->count();
 
         $percent = $prevMonthProducts
@@ -31,6 +33,9 @@ class ProductStatsOverview extends StatsOverviewWidget
             : null;
 
         $percent = $prevMonthProducts ? round((($currentMonthProducts - $prevMonthProducts) / $prevMonthProducts) * 100, 1) : 0;
+
+        $startWeek = now()->startOfWeek()->format('M d');
+        $endWeek = now()->format('M d');
 
         return [
             Stat::make('New Active Products This Month', number_format($currentMonthProducts))
@@ -40,7 +45,7 @@ class ProductStatsOverview extends StatsOverviewWidget
                 ,
 
             Stat::make('New Today', Product::whereDate('created_at', today())->count()),
-            Stat::make('New This Week', Product::whereBetween('created_at', [now()->startOfWeek(), now()])->count()),
+            Stat::make("New This Week ({$startWeek} - {$endWeek})", Product::whereBetween('created_at', [now()->copy()->startOfWeek(), now()])->where('status', Product::STATUS_ACTIVE)->count()),
             Stat::make('Avg Products/User', round(User::withCount('products')->get()->avg('products_count'), 2)),
             Stat::make('Max Products/User', User::withCount('products')->get()->max('products_count')),
         ];
