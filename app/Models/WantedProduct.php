@@ -97,7 +97,7 @@ class WantedProduct extends Model
         });
     }
 
-    public function setListedUntil($value)
+    public function setListedUntil()
     {
         $this->attributes['listed_until'] = $this->calculateExpirationDate($this)->toDateString();
     }
@@ -125,9 +125,9 @@ class WantedProduct extends Model
         return Carbon::now();
     }
 
-    public function user()
+    public function buyer()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function images()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateChatRequest;
 use App\Http\Resources\ChatResource;
 use App\Models\Chat;
 use App\Models\Product;
@@ -103,10 +104,15 @@ class ChatController extends Controller
      * )
      */
 
-    public function getOrCreate(Product $product)
+    public function getOrCreate(CreateChatRequest $request, int $id)
     {
-        $buyerId = auth()->id();
-        $chat = $this->chatService->getOrCreateChat($product, $buyerId);
+        $userId = auth()->id();
+
+        $model = $request->resource();
+
+        $resource = $model::findOrFail($id);
+
+        $chat = $this->chatService->getOrCreateChat($resource, $userId);
 
         return $this->success(new ChatResource($chat));
     }

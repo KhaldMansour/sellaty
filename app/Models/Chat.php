@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model
 {
-    protected $fillable = ['product_id', 'buyer_id', 'seller_id'];
+    protected $fillable = ['chatable_id', 'chatable_type', 'buyer_id', 'seller_id'];
 
     protected $appends = ['name', 'users' , 'product_image'];
 
-    protected $with = ['seller', 'buyer' , 'offers' , 'product'];
+    protected $with = ['seller', 'buyer', 'offers', 'chatable'];
 
-    protected $hidden = ['product' , 'seller', 'buyer' , 'offers'];
+    protected $hidden = ['chatable', 'seller', 'buyer', 'offers'];
 
     public function messages()
     {
@@ -29,14 +29,14 @@ class Chat extends Model
         return $this->belongsTo(User::class, 'seller_id');
     }
 
-    public function product()
+    public function chatable()
     {
-        return $this->belongsTo(Product::class);
+        return $this->morphTo();
     }
 
     public function getNameAttribute()
     {
-        return $this->product?->name;
+        return $this->chatable?->name;
     }
 
     public function offers()
@@ -52,7 +52,7 @@ class Chat extends Model
     public static function getChatsWithProductSummary(int $userId)
     {
         return self::with([
-                'product' => function ($query) {
+                'chatable' => function ($query) {
                     $query->with([
                             'images' => function ($q) {
                                 $q->limit(1);
@@ -73,7 +73,7 @@ class Chat extends Model
 
     public function getProductImageAttribute()
     {
-        return $this->product->images->first()?->image_url;
+        return $this->chatable->images->first()?->image_url;
     }
 
     public function latestOffer()

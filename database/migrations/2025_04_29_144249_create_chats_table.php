@@ -12,12 +12,12 @@ return new class () extends Migration {
     {
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->morphs('chatable');
             $table->foreignId('buyer_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('seller_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
 
-            $table->unique(['product_id', 'buyer_id']);
+            $table->unique(['chatable_id', 'chatable_type', 'buyer_id']);
         });
     }
 

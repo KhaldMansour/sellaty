@@ -9,6 +9,8 @@ use App\Events\ChatMessageSent;
 use App\Events\MessagesSeen;
 use App\Factories\NotificationPayloadFactory;
 use App\Models\User;
+use App\Models\Product;
+use App\Models\WantedProduct;
 
 class ChatService
 {
@@ -16,14 +18,9 @@ class ChatService
     {
     }
 
-    public function getOrCreateChat($product, $userId): Chat
+    public function getOrCreateChat($resource, $userId): Chat
     {
-        $sellerId = $product->seller->id;
-
-        $chat = Chat::firstOrCreate(
-            ['product_id' => $product->id, 'buyer_id' => $userId],
-            ['seller_id' => $sellerId]
-        );
+        $chat = ($resource instanceof Product) ? $this->getChatForProduct($resource, $userId) : $this->getChatForWantedProduct($resource, $userId);
 
         return Chat::getChatsWithProductSummary($userId)->where('id', $chat->id)->first();
     }
@@ -114,4 +111,36 @@ class ChatService
 
     //     broadcast(new MessagesSeen($chat->id, $userId))->toOthers();
     // }
+
+    private function getChatForProduct(Product $product, int $userId): Chat
+    {
+        $sellerId = $product->seller->id;
+
+        return Chat::firstOrCreate(
+            [
+                'chatable_id' => $product->id,
+                'chatable_type' => get_class($product),
+                'buyer_id' => $userId,
+            ],
+            [
+                'seller_id' => $sellerId,
+            ]
+        );
+    }
+
+    private function getChatForWantedProduct(WantedProduct $wantedProduct, int $userId): Chat
+    {
+        $buyerId = $wantedProduct->buyer->id;
+
+        return Chat::firstOrCreate(
+            [
+                'chatable_id' => $wantedProduct->id,
+                'chatable_type' => get_class($wantedProduct),
+                'buyer_id' => $buyerId,
+            ],
+            [
+                'seller_id' => $userId,
+            ]
+        );
+    }
 }

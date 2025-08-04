@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Product;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -58,12 +59,14 @@ class ChatResource extends JsonResource
 
         $counterpart = $isBuyer ? $this->seller : $this->buyer;
 
+        // dd(($this->chatable instanceof Product) , $this->chatable);
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'buyer_id' => $this->buyer_id,
             'seller_id' => $this->seller_id,
-            'product' => new ProductResource($this->product),
+            'product' => ($this->chatable instanceof Product) ? new ProductResource($this->chatable) : new WantedProductResource($this->chatable),
             'latestOffer' => new OfferResource($this->latestOffer),
             'unseen_messages_count' => $this->unseen_messages_count,
             'counterpart' => [
