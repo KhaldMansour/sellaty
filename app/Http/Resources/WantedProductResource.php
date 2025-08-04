@@ -157,6 +157,7 @@ class WantedProductResource extends JsonResource
             'id' => $this->id,
             'name' => $this->getTranslation('name', $locale),
             'description' => $this->getTranslation('description', $locale),
+            'type' => 'WantedProduct',
             'brand' => $this->brand,
             'model' => $this->model,
             'duration' => $this->duration,

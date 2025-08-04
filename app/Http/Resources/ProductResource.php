@@ -106,6 +106,7 @@ class ProductResource extends JsonResource
             'name' => $this->getTranslation('name', $locale),
             'price' => number_format((float) $this->price, 2, '.', ''),
             'description' => $this->getTranslation('description', $locale),
+            'type' => 'Product',
             'brand' => $this->brand,
             'model' => $this->model,
             'duration' => $this->duration,
