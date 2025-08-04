@@ -53,6 +53,7 @@ class ChatResource extends JsonResource
     public function toArray($request)
     {
         $user = auth()->user();
+
         $isBuyer = $user->id === $this->buyer_id;
 
         $counterpart = $isBuyer ? $this->seller : $this->buyer;

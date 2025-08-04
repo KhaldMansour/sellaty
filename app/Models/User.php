@@ -48,7 +48,8 @@ class User extends Authenticatable implements JWTSubject, FilamentUser, HasName
         'is_verified',
         'username',
         'locked',
-        'fcm_token'
+        'fcm_token',
+        'roles',
     ];
 
     /**

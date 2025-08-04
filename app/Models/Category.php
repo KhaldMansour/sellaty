@@ -50,33 +50,39 @@ class Category extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
-            // $imagePath = request()->file('image')->store('categories', 'public');
-            // $imageUrl = asset('storage/' . $imagePath);
-            // $model->image_url = $imageUrl;
-
             $englishName = $model->getTranslation('name', 'en');
 
-            $model->handleTranslations();
-
             if ($englishName) {
-                $slug = Str::of($englishName)
-                            ->lower()
-                            ->replaceMatches('/[^a-z0-9]+/', '_')
-                            ->trim('_');
+                $baseSlug = Str::of($englishName)
+                                ->lower()
+                                ->replaceMatches('/[^a-z0-9]+/', '_')
+                                ->trim('_')
+                                ->toString();
+
+                $slug = $baseSlug;
+                $counter = 1;
+
+                $counter = 1;
+                $maxAttempts = 10;
+
+                while (self::where('slug', $slug)->exists()) {
+                    if ($counter > $maxAttempts) {
+                        $slug = $baseSlug . '_' . Str::random(5);
+                        break;
+                    }
+
+                    $slug = $baseSlug . '_' . $counter++;
+                }
+
                 $model->slug = $slug;
             } else {
                 $model->slug = Str::random(10);
             }
         });
 
-        static::updating(function ($model) {
-            $model->handleTranslations();
-        });
-
         static::deleting(function ($model) {
             if ($model->image_url) {
-                $imagePath = str_replace([url('/storage/'), 'storage/'], '', $model->image_url);
-                Storage::disk('public')->delete($imagePath);
+                Storage::disk('public')->delete($model->image_url);
             }
         });
     }

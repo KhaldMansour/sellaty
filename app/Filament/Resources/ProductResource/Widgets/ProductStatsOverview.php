@@ -34,8 +34,9 @@ class ProductStatsOverview extends StatsOverviewWidget
 
         $percent = $prevMonthProducts ? round((($currentMonthProducts - $prevMonthProducts) / $prevMonthProducts) * 100, 1) : 0;
 
-        $startWeek = now()->startOfWeek()->format('M d');
-        $endWeek = now()->format('M d');
+        $today = now();
+        $startWeek = $today->copy()->startOfWeek(Carbon::SUNDAY)->format('M d');
+        $endWeek = $today->format('M d');
 
         return [
             Stat::make('New Active Products This Month', number_format($currentMonthProducts))

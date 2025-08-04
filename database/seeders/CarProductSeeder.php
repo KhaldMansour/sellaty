@@ -155,7 +155,7 @@ class CarProductSeeder extends Seeder
 
             Storage::disk('public')->put($imageStoragePath, file_get_contents($imagePath));
 
-            return asset('storage/' . $imageStoragePath);
+            return $imageStoragePath;
         }
 
         return null;

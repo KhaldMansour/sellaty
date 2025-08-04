@@ -83,7 +83,7 @@ class CarMakeAndModelSeeder extends Seeder
             $imageStoragePath = 'categories/' . uniqid() . '_' . $imageName;
             Storage::disk('public')->put($imageStoragePath, file_get_contents($imagePath));
 
-            return asset('storage/' . $imageStoragePath);
+            return $imageStoragePath;
         }
 
         $files = glob($imageFolder . '/*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
@@ -94,7 +94,7 @@ class CarMakeAndModelSeeder extends Seeder
             $imageStoragePath = 'categories/' . uniqid() . '_' . $randomImageName;
             Storage::disk('public')->put($imageStoragePath, file_get_contents($randomImagePath));
 
-            return asset('storage/' . $imageStoragePath);
+            return $imageStoragePath;
         }
 
         return null;

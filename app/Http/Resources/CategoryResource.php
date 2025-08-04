@@ -53,7 +53,7 @@ class CategoryResource extends JsonResource
             'name' => $this->getTranslation('name', $locale),
             'slug' => $this->slug,
             'description' => $this->description,
-            'image_url' => $this->image_url,
+            'image_url' => asset('storage/' . $this->image_url),
             'products_count' => $this->products_count,
             'custom_fields' => $this->customFields,
             'created_at' => $this->created_at->toDateTimeString(),

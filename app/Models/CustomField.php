@@ -22,7 +22,7 @@ class CustomField extends Model
         self::TYPE_YEAR,
     ];
 
-    protected $fillable = ['name', 'type', 'is_required'];
+    protected $fillable = ['name', 'type', 'required'];
 
     public function categories()
     {

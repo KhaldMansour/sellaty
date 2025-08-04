@@ -17,7 +17,9 @@ class UserSeeder extends Seeder
 
         $faker = Faker::create();
 
-        $users = collect(range(1, 10))->map(function () use ($faker) {
+        $roles = User::ROLES;
+
+        $users = collect(range(1, 10))->map(function () use ($faker, $roles) {
             return [
                 'first_name' => $faker->firstName(),
                 'last_name' => $faker->lastName(),
@@ -26,6 +28,7 @@ class UserSeeder extends Seeder
                 'profile_photo' => 'https://picsum.photos/200/300?',
                 'phone_number' => $faker->unique()->phoneNumber,
                 'password' => Hash::make('password'),
+                'roles' => json_encode([$faker->randomElement($roles)]),
                 'is_verified' => $faker->boolean,
                 'created_at' => now(),
                 'updated_at' => now(),
