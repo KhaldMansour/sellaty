@@ -1,17 +1,27 @@
 <?php
 
+use App\Console\Commands\DeactivateExpiredProducts;
 use App\Http\Middleware\JwtMiddleware;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
+        channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
+    ->withCommands([
+        DeactivateExpiredProducts::class,
+    ])
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command('products:deactivate-expired')->everyMinute();
+    })
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'JwtMiddleware' => JwtMiddleware::class,
@@ -19,6 +29,18 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->shouldRenderJsonWhen(function (\Illuminate\Http\Request $request, Throwable $e) {
+            if ($request->is('api/*')) {
+                return true;
+            }
+
+            if ($request->ajax()) {
+                return true;
+            }
+
+            return false;
+        });
+
         $exceptions->renderable(function (Throwable $e, $request) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
                 return response()->json([
@@ -38,12 +60,21 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 404);
             }
 
-            return response()->json([
-                'status' => 'error',
-                'data' => null,
-                'error' => 'Something went wrong.',
-                'message' => $e->getMessage()
-            ], 500);
+            // if ($e instanceof HttpExceptionInterface) {
+            //     return response()->json([
+            //         'status' => 'error',
+            //         'data' => null,
+            //         'error' => $e->getMessage(),
+            //         'message' => $e->getMessage()
+            //     ], $e->getStatusCode());
+            // }
+
+            // return response()->json([
+            //     'status' => 'error',
+            //     'data' => null,
+            //     'error' => 'Something went wrong.',
+            //     'message' => $e->getMessage()
+            // ], 500);
         });
     })
     ->create();

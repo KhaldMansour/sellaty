@@ -43,7 +43,7 @@ class IntroMessage extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
-            $imagePath = request()->file('image')->store('intro_screens__images', 'public');
+            $imagePath = request()->file('image')->store('intro_screens_images', 'public');
             $imageUrl = asset('storage/' . $imagePath);
             $model->image_url = $imageUrl;
 

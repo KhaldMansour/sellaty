@@ -1,0 +1,46 @@
+name: Development Run Artisan Command
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Artisan command to execute'
+        required: true
+        default: 'ls -lah'
+      # environments:
+      #   description: 'The environments to deploy to (comma-separated)'
+      #   required: true
+      #   type: choice
+      #   options:
+      #     - production
+      #     - staging
+      #     - development
+      # notify:
+      #   description: 'Should workflow notify team?'
+      #   required: true
+      #   type: boolean
+
+jobs:
+  run-artisan-command:
+    name: Run Artisan Command
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the repository (optional if you don't need code context)
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Set up SSH connection
+    - name: Set up SSH agent
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.STAGING_SELLATY_SSH_PRIVATE_KEY }}
+
+    # Step 3: Connect to the remote server and run the Artisan command
+    - name: Run Artisan Command on Server
+      env:
+          USER: ubuntu # Replace with your actual GCP VM username
+          HOST: 34.246.142.162 # Replace with your actual GCP VM IP or hostname
+      run: |
+        ssh -o StrictHostKeyChecking=no ${USER}@${HOST} \
+          "sudo su -c 'docker exec -i dev-api ${{ github.event.inputs.command }}'"

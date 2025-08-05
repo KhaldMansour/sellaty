@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
 /**
  * @OA\Schema(
  *     schema="UpdateSplashScreenRequest",
@@ -16,7 +14,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * )
  */
 
-class UpdateSplashScreenRequest extends FormRequest
+class UpdateSplashScreenRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
 /**
  * @OA\Schema(
  *     schema="StoreIntroMessageRequest",
@@ -13,7 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *     @OA\Property(property="active", type="integer", description="Whether the splash screen is active"),
  * )
  */
-class StoreIntroMessageRequest extends FormRequest
+class StoreIntroMessageRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

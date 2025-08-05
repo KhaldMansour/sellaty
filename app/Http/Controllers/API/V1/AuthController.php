@@ -2,64 +2,179 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Factories\OtpSenderFactory;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\ResendOtpRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\OtpService;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    // Register a user
-    public function register(Request $request)
+    public function __construct(private readonly OtpService $otpService)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'phone_number' => $request->phone_number
-        ]);
-
-        return response()->json(['message' => 'User registered successfully'], 201);
     }
 
-    // Login a user and return JWT token
-    public function login(Request $request)
+    /**
+     * @OA\Post(
+     *     path="/api/v1/register",
+     *     summary="Register a new user",
+     *     description="Registers a new user with the provided information",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User registration data",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(ref="#/components/schemas/RegisterUserRequestSchema")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User registered successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="User registered successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="user", ref="#/components/schemas/UserSchema")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorResponseSchema")
+     *     )
+     * )
+     */
+
+    public function register(RegisterUserRequest $request)
     {
-        $credentials = $request->only('phone_number', 'password');
+        $user = User::create($request->validated());
+
+        return $this->success(new UserResource($user), __('messages.user_registered'), 201);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/login",
+     *     summary="Login with phone number and OTP",
+     *     description="Logs in a user using phone number and one-time password (OTP)",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Phone number and OTP",
+     *         @OA\JsonContent(ref="#/components/schemas/LoginRequestSchema")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login successful",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."),
+     *                 @OA\Property(property="user", ref="#/components/schemas/UserSchema")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true)
+     *         )
+     *     )
+     * )
+     */
+    public function login(LoginRequest $request)
+    {
+        $isValid = $this->otpService->validateOtp($request->phone_number, $request->otp);
+
+        if (!$isValid) {
+            return $this->failure(__('messages.otp_invalid_or_expired'), 400);
+        }
+
+        $user = User::where('phone_number', $request->phone_number)->first();
 
         try {
-            if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'Unauthorized'], 401);
+            if (!$token = JWTAuth::fromUser($user)) {
+                return $this->failure(__('messages.unauthorized'), 401);
             }
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Could not create token'], 500);
+            return $this->failure(__('messages.token_creation_failed'), 500);
         }
 
-        return response()->json(['token' => $token]);
+        if ($request->has('fcm_token') && $user->fcm_token !== $request->input('fcm_token')) {
+            $user->update(['fcm_token' => $request->input('fcm_token')]);
+        }
+
+        return $this->success(['token' => $token , 'user' => new UserResource($user)], 'Success', 200);
     }
 
-    public function me()
+    /**
+     * @OA\Post(
+     *     path="/api/v1/resend-otp",
+     *     summary="Resend OTP to the phone number",
+     *     description="Resends the OTP to the provided phone number",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="phone_number", type="string", example="+201000000000")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OTP sent successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="message", type="string", example="Otp has been sent.")
+     *             ),
+     *             @OA\Property(property="errors", type="object", nullable=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="OTP has already been sent, please wait",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="OTP has already been sent. Please wait."),
+     *             @OA\Property(property="data", type="object", nullable=true),
+     *             @OA\Property(property="errors", type="object", nullable=true)
+     *         )
+     *     )
+     * )
+     */
+    public function resendOtp(ResendOtpRequest $request)
     {
-        return response()->json(auth()->user());
+        $phoneNumber = $request->input('phone_number');
+
+        if (!$this->otpService->shouldSendOtp($phoneNumber)) {
+            return $this->failure(__('messages.otp_already_sent'), 400);
+        }
+
+        $otpDriver = config('services.otp.driver', 'appsenders');
+        $otpSender = OtpSenderFactory::create($otpDriver);
+        $this->otpService->setOtpSender($otpSender);
+
+        if (!$this->otpService->sendOtp($phoneNumber)) {
+            return $this->failure(__('messages.otp_send_failed'), 500);
+        };
+
+        return $this->success(null, __('messages.otp_sent'), 200);
     }
 
-    // Logout a user (invalidate the token)
     public function logout()
     {
         auth()->logout();
 
-        return response()->json(['message' => 'User logged out']);
+        return response()->json(['message' => __('messages.user_logged_out')]);
     }
 }

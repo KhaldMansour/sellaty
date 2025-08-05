@@ -7,10 +7,15 @@ services:
     build: .
     volumes:
       - ./:/var/www/html
+      - ./storage/app/public:/var/www/html/storage/app/public
+      - .public/storage:/var/www/html/public/storage
+
     ports:
       - 9000:80
+      - 6001:6001
     depends_on:
       - mysql_db
+    command: ./entrypoint.sh
 
   # MySQL database container
   mysql_db:
@@ -22,6 +27,8 @@ services:
       - 3306:3306
     volumes:
       - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
+
 
   # PHPMyAdmin for easy DB management
   phpmyadmin:
@@ -35,3 +42,4 @@ services:
 
 volumes:
   mysql_data:
+  laravel_storage:
