@@ -203,7 +203,7 @@ jobs:
           chmod 600 private_key
 
           # SSH into the EC2 instance and run the deploy script
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} "sudo /root/dev-sellaty/deploy.sh api:${TAG}"
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} "sudo /root/sellaty/deploy.sh api:${TAG}"
 
       - name: Capture End Time
         id: capture_duration
