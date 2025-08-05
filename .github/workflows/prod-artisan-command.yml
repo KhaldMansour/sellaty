@@ -1,4 +1,4 @@
-name: Development Run Artisan Command
+name: Production Run Artisan Command
 
 on:
   workflow_dispatch:
