@@ -1,0 +1,94 @@
+FROM php:8.2-fpm
+
+ARG WORKDIR=/var/www/html
+ENV LARAVEL_PROCS_NUMBER=1
+ENV NODE_VERSION=20
+ENV NODE_MAJOR 20
+ARG GROUP_ID=1000
+ARG USER_ID=1000
+ENV USER_NAME=www-data
+ARG GROUP_NAME=www-data
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    apt-transport-https wget gnupg2 curl unzip \
+    ca-certificates gnupg \
+    curl libcurl4-openssl-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libmemcached-dev \
+    libzip-dev \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    librdkafka-dev \
+    libpq-dev \
+    supervisor
+
+# Install Node.js and npm
+# RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+#     apt-get install -y nodejs && \
+#     npm install -g npm@latest
+
+# Install nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions zip, mbstring, exif, bcmath, intl
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype
+RUN docker-php-ext-install curl xml pdo pdo_mysql zip mbstring exif pcntl bcmath intl -j$(nproc) gd
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Set working directory
+WORKDIR $WORKDIR
+
+# Copy application files
+RUN rm -Rf /var/www/* && mkdir -p /var/www/html
+COPY . /var/www/html
+
+# Clean default nginx conf files
+RUN rm -rf /etc/nginx/conf.d/default.conf
+RUN rm -rf /etc/nginx/sites-enabled/default
+RUN rm -rf /etc/nginx/sites-available/default
+RUN rm -rf /etc/nginx/nginx.conf
+
+# Copy Custom-Nginx conf files
+COPY docker-conf/nginx.conf /etc/nginx/nginx.conf
+COPY docker-conf/default.conf /etc/nginx/conf.d/
+
+# Set user/group
+RUN usermod -u ${USER_ID} ${USER_NAME}
+RUN groupmod -g ${USER_ID} ${GROUP_NAME}
+
+# Configure logging
+RUN mkdir -p /var/log/supervisor
+RUN mkdir -p /var/log/nginx
+RUN mkdir -p /var/cache/nginx
+
+# Adding Supervisord and entrypoint scripts
+ADD docker-conf/php.ini $PHP_INI_DIR/conf.d/
+ADD docker-conf/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY docker-conf/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN ln -s /usr/local/bin/entrypoint.sh /
+
+# Set Directory permissions
+RUN chown -R ${USER_NAME}:${GROUP_NAME} /var/www && \
+  chown -R ${USER_NAME}:${GROUP_NAME} /var/www/html && \
+  chown -R ${USER_NAME}:${GROUP_NAME} /var/log/nginx && \
+  touch /var/run/nginx.pid && \
+  chown -R $USER_NAME:$USER_NAME /var/cache/nginx && \
+  chown -R $USER_NAME:$USER_NAME /var/lib/nginx/ && \
+  chown -R $USER_NAME:$USER_NAME /var/run/nginx.pid && \
+  chown -R $USER_NAME:$USER_NAME /etc/nginx/nginx.conf && \
+  chown -R $USER_NAME:$USER_NAME /etc/nginx/conf.d/ && \
+  chown -R ${USER_NAME}:${GROUP_NAME} /tmp
+
+# RUN npm install && npm run dev
+
+EXPOSE 80
+ENTRYPOINT ["entrypoint.sh"]
