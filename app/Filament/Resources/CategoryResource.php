@@ -36,13 +36,13 @@ class CategoryResource extends Resource
                     ->directory('categories')
                     ->image()
                     ->required(),
-                    Select::make('customFields') // <- model's relationship name
-                        ->label('Custom Fields')
-                        ->multiple()
-                        ->relationship('customFields', 'name')
-                        ->preload()
-                        ->searchable()
-                        ->columnSpan('full'),
+                    // Select::make('customFields') // <- model's relationship name
+                    //     ->label('Custom Fields')
+                    //     ->multiple()
+                    //     ->relationship('customFields', 'name')
+                    //     ->preload()
+                    //     ->searchable()
+                    //     ->columnSpan('full'),
             ]);
     }
 

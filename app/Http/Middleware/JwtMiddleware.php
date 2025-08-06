@@ -16,16 +16,16 @@ class JwtMiddleware
     {
         try {
             $user = JWTAuth::parseToken()->authenticate();
-
+        
             if (!$user) {
-                return ApiResponse::send('error', null, 'User not found', null, Response::HTTP_NOT_FOUND);
+                return ApiResponse::send('error', null, __('messages.user_not_found'), null, Response::HTTP_NOT_FOUND);
             }
         } catch (TokenExpiredException $e) {
-            return ApiResponse::send('error', null, 'Token has expired', null, Response::HTTP_UNAUTHORIZED);
+            return ApiResponse::send('error', null, __('messages.token_expired'), null, Response::HTTP_UNAUTHORIZED);
         } catch (TokenInvalidException $e) {
-            return ApiResponse::send('error', null, 'Token is invalid', null, Response::HTTP_UNAUTHORIZED);
+            return ApiResponse::send('error', null, __('messages.token_invalid'), null, Response::HTTP_UNAUTHORIZED);
         } catch (JWTException $e) {
-            return ApiResponse::send('error', null, 'Token is missing or not provided', null, Response::HTTP_UNAUTHORIZED);
+            return ApiResponse::send('error', null, __('messages.token_missing'), null, Response::HTTP_UNAUTHORIZED);
         }
 
         return $next($request);
