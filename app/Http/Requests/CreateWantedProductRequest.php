@@ -220,13 +220,14 @@ class CreateWantedProductRequest extends BaseFormRequest
         $latitude = $this->input('latitude');
         $longitude = $this->input('longitude');
 
-        if (is_null($latitude)) {
+
+        if (is_null($latitude) || $latitude == 0.0) {
             $this->merge([
                 'latitude' => $this->input('city_lat'),
             ]);
         }
 
-        if (is_null($longitude)) {
+        if (is_null($longitude) || $longitude == 0.0) {
             $this->merge([
                 'longitude' => $this->input('city_long'),
             ]);
