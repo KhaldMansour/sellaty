@@ -33,4 +33,8 @@ return [
     'otp_send_failed' => 'Failed to send OTP.',
     'success' => 'Success',
     'user_logged_out' => 'User logged out.',
+    'user_not_found' => 'We could not find your account. Please make sure you are logged in.',
+    'token_expired' => 'Your session has expired. Please log in again.',
+    'token_invalid' => 'There was a problem verifying your login. Please try again.',
+    'token_missing' => 'Authentication token not found. Please log in to continue.',
 ];
