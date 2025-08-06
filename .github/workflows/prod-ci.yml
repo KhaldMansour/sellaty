@@ -196,7 +196,7 @@ jobs:
           EC2_SSH_KEY: ${{ secrets.STAGING_SELLATY_SSH_PRIVATE_KEY }}
           HOST: 34.246.142.162
           USER: ubuntu
-          TAG: ${{ env.run_number }}  # Pass SHORT_SHA as TAG
+          TAG: ${{ github.run_number }}  # Pass run_number as TAG
         run: |
           # Save the private SSH key to a file
           echo "${{ secrets.STAGING_SELLATY_SSH_PRIVATE_KEY }}" | tr -d '\r' | sed 's/\\n/\n/g' > private_key
