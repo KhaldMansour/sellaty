@@ -130,7 +130,7 @@ class User extends Authenticatable implements JWTSubject, FilamentUser, HasName
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return $this->hasRole([self::ROLE_ADMIN, self::ROLE_SUPER_ADMIN]);
     }
 
     public function hasRole(string|array $role): bool

@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
                 'username' => 'admin',
                 'profile_photo' => 'https://picsum.photos/200/300?',
                 'phone_number' => $faker->unique()->phoneNumber,
-                'password' => Hash::make(config('filament.admin_email')),
+                'password' => Hash::make(config('filament.admin_password')),
                 'roles' => json_encode([User::ROLE_SUPER_ADMIN]),
                 'is_verified' => true,
                 'created_at' => now(),
