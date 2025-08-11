@@ -37,4 +37,5 @@ return [
     'token_expired' => 'Your session has expired. Please log in again.',
     'token_invalid' => 'There was a problem verifying your login. Please try again.',
     'token_missing' => 'Authentication token not found. Please log in to continue.',
+    'notifications_fetched' => 'Notifications fetched successfully',
 ];

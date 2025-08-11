@@ -43,8 +43,6 @@ class NotificationController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return $this->success(NotificationResource::collection($notifications), 'Notifications fetched successfully', );
-
-        return response()->json($notifications);
+        return $this->success(NotificationResource::collection($notifications), __('messages.notifications_fetched'));
     }
 }

@@ -11,6 +11,7 @@ class SplashScreenController extends Controller
     public function index()
     {
         $splashScreens = SplashScreen::all();
+
         return $this->success($splashScreens, 'Splash screens retrieved successfully');
     }
 
@@ -23,11 +24,12 @@ class SplashScreenController extends Controller
 
         $splashScreen = SplashScreen::create($validatedData);
 
-        return $this->success($splashScreen , 'Splash screen created successfully', 201);
+        return $this->success($splashScreen, 'Splash screen created successfully', 201);
     }
 
 
-    public function show(SplashScreen $splashScreen){
+    public function show(SplashScreen $splashScreen)
+    {
         return $this->success($splashScreen, 'Splash screen retrieved successfully');
     }
 }

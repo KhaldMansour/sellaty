@@ -16,7 +16,7 @@ class JwtMiddleware
     {
         try {
             $user = JWTAuth::parseToken()->authenticate();
-        
+
             if (!$user) {
                 return ApiResponse::send('error', null, __('messages.user_not_found'), null, Response::HTTP_NOT_FOUND);
             }

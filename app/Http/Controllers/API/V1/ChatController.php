@@ -188,7 +188,7 @@ class ChatController extends Controller
     public function sellerChats()
     {
         $userId = auth()->id();
-        
+
         $sellerChats = $this->chatService->getSellerChatsWithUnseenCount($userId);
 
         return $this->success(ChatResource::collection($sellerChats));
