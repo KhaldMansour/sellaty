@@ -52,13 +52,7 @@ class Chat extends Model
     public static function getChatsWithProductSummary(int $userId)
     {
         return self::with([
-                'chatable' => function ($query) {
-                    $query->with([
-                            'images' => function ($q) {
-                                $q->limit(1);
-                            },
-                        ]);
-                },
+                'chatable',
                 'buyer',
                 'seller',
                 'latestMessage',

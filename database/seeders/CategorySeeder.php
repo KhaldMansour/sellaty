@@ -32,7 +32,7 @@ class CategorySeeder extends Seeder
         }
 
         $categoryNames = [
-            ['en' => 'Home', 'ar' => 'الرئيسيه'],
+            ['en' => 'Real Estate', 'ar' => 'عقارات'],
             ['en' => 'Electronics', 'ar' => 'الكترونيات'],
         ];
         $categoryCount = count($categoryNames);
