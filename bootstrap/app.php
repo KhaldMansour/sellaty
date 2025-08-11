@@ -60,21 +60,21 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 404);
             }
 
-            // if ($e instanceof HttpExceptionInterface) {
-            //     return response()->json([
-            //         'status' => 'error',
-            //         'data' => null,
-            //         'error' => $e->getMessage(),
-            //         'message' => $e->getMessage()
-            //     ], $e->getStatusCode());
-            // }
+            if ($e instanceof HttpExceptionInterface) {
+                return response()->json([
+                    'status' => 'error',
+                    'data' => null,
+                    'error' => $e->getMessage(),
+                    'message' => $e->getMessage()
+                ], $e->getStatusCode());
+            }
 
-            // return response()->json([
-            //     'status' => 'error',
-            //     'data' => null,
-            //     'error' => 'Something went wrong.',
-            //     'message' => $e->getMessage()
-            // ], 500);
+            return response()->json([
+                'status' => 'error',
+                'data' => null,
+                'error' => 'Something went wrong.',
+                'message' => $e->getMessage()
+            ], 500);
         });
     })
     ->create();
