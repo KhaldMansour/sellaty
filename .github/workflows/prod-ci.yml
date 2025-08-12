@@ -141,6 +141,15 @@ jobs:
           FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
           FIREBASE_CLIENT_ID: ${{ secrets.FIREBASE_CLIENT_ID }}
           FIREBASE_CLIENT_X509_CERT_URL: ${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}
+
+          #Filament admin panel credentials
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+
+          #Dummy login data
+          DUMMY_LOGIN_EMAIL: ${{ secrets.DUMMY_LOGIN_EMAIL }}
+          DUMMY_LOGIN_PASSWORD: ${{ secrets.DUMMY_LOGIN_PASSWORD }}
+          DUMMY_LOGIN_PHONE_NUMBER: ${{ secrets.DUMMY_LOGIN_PHONE_NUMBER }}
         run: |
           envsubst < .env.ci > .env.ci.tmp || true
           rm -rf .env || true
