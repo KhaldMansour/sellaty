@@ -17,6 +17,8 @@ class UserSeeder extends Seeder
 
         $faker = Faker::create();
 
+        dd(config('filament.admin_password'));
+
         $admin = [
                 'first_name' => 'Admin',
                 'last_name' => 'Admin',
