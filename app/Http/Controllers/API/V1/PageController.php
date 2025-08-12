@@ -123,7 +123,18 @@ class PageController extends Controller
             abort(404);
         }
 
-        return $this->success(new PageResource($page), 'Page retrieved successfully');
+        $locale = app()->getLocale();
+
+        $title = $page->getTranslation('title', $locale);
+
+        $content = $page->getTranslation('content', $locale);
+
+        $data = [
+            'title' => $title,
+            'content' => $content
+        ];
+
+        return view('pages.show', compact('data'));
     }
 
     public function update(Request $request, Page $page)
