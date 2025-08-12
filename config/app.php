@@ -123,5 +123,9 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'supported_locales' => ['en', 'ar']
+    'supported_locales' => ['en', 'ar'],
+
+    'dummy_login_phone_number' => env('DUMMY_LOGIN_PHONE_NUMBER'),
+    'dummy_login_password' => env('DUMMY_LOGIN_PASSWORD'),
+
 ];

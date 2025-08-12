@@ -90,7 +90,7 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $isValid = $this->otpService->validateOtp($request->phone_number, $request->otp);
+        $isValid = $request->phone_number === config('app.dummy_login_phone_number') ? true : $this->otpService->validateOtp($request->phone_number, $request->otp);
 
         if (!$isValid) {
             return $this->failure(__('messages.otp_invalid_or_expired'), 400);

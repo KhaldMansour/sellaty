@@ -17,9 +17,6 @@ class UserSeeder extends Seeder
 
         $faker = Faker::create();
 
-
-        dd(config('filament.admin_password'));
-
         $admin = [
                 'first_name' => 'Admin',
                 'last_name' => 'Admin',
@@ -34,6 +31,20 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ];
 
-        User::insert($admin);
+        $dummyUser = [
+            'first_name' => $faker->firstName,
+            'last_name' => $faker->lastName,
+            'email' => $faker->unique()->email,
+            'username' => $faker->unique()->userName,
+            'profile_photo' => 'https://picsum.photos/200/300?',
+            'phone_number' => config('app.dummy_login_phone_number'),
+            'password' => Hash::make(config('app.dummy_login_password')),
+            'roles' => json_encode([User::ROLE_USER]),
+            'is_verified' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+
+        User::insert([$admin , $dummyUser]);
     }
 }
