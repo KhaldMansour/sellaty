@@ -58,6 +58,21 @@ class PageSeeder extends Seeder
                     'ar' => '<p>اتصل بنا على support@example.com أو املأ النموذج أدناه.</p>',
                 ]),
             ],
+            [
+                'slug' => 'privacy-policy',
+                'title' => json_encode([
+                    'en' => 'Privacy Policy',
+                    'ar' => 'سياسة الخصوصية',
+                ]),
+                'content' => json_encode([
+                    'en' => '<p>Effective Date: ' . date('Y-m-d') . '</p>
+                             <p>We value your privacy. This website does not collect, store, or share any personal information about you.</p>
+                             <p>If you have any questions regarding this policy, please contact us at support@example.com.</p>',
+                    'ar' => '<p>تاريخ السريان: ' . date('Y-m-d') . '</p>
+                             <p>نحن نُقدّر خصوصيتك. هذا الموقع لا يقوم بجمع أو تخزين أو مشاركة أي معلومات شخصية عنك.</p>
+                             <p>إذا كان لديك أي أسئلة بخصوص هذه السياسة، يرجى الاتصال بنا على support@example.com.</p>',
+                ]),
+            ]
         ];
 
         foreach ($pages as $pageData) {
