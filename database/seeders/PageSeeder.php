@@ -54,7 +54,7 @@ class PageSeeder extends Seeder
                     'ar' => 'اتصل بنا',
                 ]),
                 'content' => json_encode([
-                    'en' => '<p>Contact us at support@example.com or fill out the form below.</p>',
+                    'en' => '<p>Contact us  at support@example.com or fill out the form below.</p>',
                     'ar' => '<p>اتصل بنا على support@example.com أو املأ النموذج أدناه.</p>',
                 ]),
             ],
