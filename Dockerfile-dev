@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     librdkafka-dev \
     libpq-dev \
+    libicu-dev \
     supervisor
 
 # Install Node.js and npm
