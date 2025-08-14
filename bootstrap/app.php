@@ -30,25 +30,19 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->shouldRenderJsonWhen(function (\Illuminate\Http\Request $request, Throwable $e) {
-            if ($request->is('api/*')) {
-                return true;
-            }
-
-            if ($request->ajax()) {
-                return true;
-            }
-
-            return false;
+            return $request->is('api/*');
         });
 
         $exceptions->renderable(function (Throwable $e, $request) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
-                return response()->json([
-                    'status' => 'error',
-                    'error' => 'Validation failed',
-                    'data' => null,
-                    'message' => $e->errors()
-                ], 422);
+                if ($request->is('api/*')) {
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => 'Validation failed',
+                        'data' => null,
+                        'message' => $e->errors()
+                    ], 422);
+                }
             }
 
             if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
@@ -69,12 +63,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], $e->getStatusCode());
             }
 
-            return response()->json([
-                'status' => 'error',
-                'data' => null,
-                'error' => 'Something went wrong.',
-                'message' => $e->getMessage()
-            ], 500);
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'status' => 'error',
+                    'data' => null,
+                    'error' => 'Something went wrong.',
+                    'message' => $e->getMessage()
+                ], 500);
+            }
         });
     })
     ->create();
