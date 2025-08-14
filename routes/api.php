@@ -79,6 +79,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::get('/profile/my-followers', 'UserController@myFollowers');
             Route::get('/profile/my-followings', 'UserController@myFollowings');
             Route::post('/profile/update-fcm-token', 'UserController@updateFcmToken');
+            Route::delete('/profile/delete', 'UserController@delete');
         });
 
         Route::prefix('notifications')->group(function () {

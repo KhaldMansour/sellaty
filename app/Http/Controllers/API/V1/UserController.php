@@ -449,4 +449,13 @@ class UserController extends Controller
 
         return $this->success(new UserResource($user), 'FCM token updated successfully');
     }
+
+    public function delete()
+    {
+        $user = auth()->user();
+
+        $user->delete();
+
+        return $this->success(null, 'User deleted successfully');
+    }
 }
