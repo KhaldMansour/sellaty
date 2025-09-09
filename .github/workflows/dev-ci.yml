@@ -155,9 +155,9 @@ jobs:
           SCOUT_DRIVER: ${{ vars.SCOUT_DRIVER }}
 
           #MeiliSearch
-          MEILISEARCH_HOST: ${{ secrets.MEILISEARCH_HOST }}
-          MEILISEARCH_KEY: ${{ secrets.MEILISEARCH_KEY }}
-          
+          MEILISEARCH_HOST: ${{ vars.MEILISEARCH_HOST }}
+          MEILISEARCH_KEY: ${{ vars.MEILISEARCH_KEY }}
+
         run: |
           envsubst < .env.ci > .env.ci.tmp || true
           rm -rf .env || true
