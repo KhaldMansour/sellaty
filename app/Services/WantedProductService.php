@@ -17,7 +17,9 @@ class WantedProductService
     {
         $this->saveSearchValue($data, auth()->user());
 
-        return $this->wantedProductRepository->paginate($limit);
+        return $this->wantedProductRepository
+            ->orderBy('created_at', 'desc')
+            ->paginate($limit);
     }
 
     public function show(int $id)
