@@ -158,6 +158,10 @@ jobs:
           MEILISEARCH_HOST: ${{ vars.MEILISEARCH_HOST }}
           MEILISEARCH_KEY: ${{ vars.MEILISEARCH_KEY }}
 
+          #CarApi
+          CARAPI_API_KEY: ${{ secrets.CARAPI_API_KEY }}
+          CARAPI_API_SECRET: ${{ secrets.CARAPI_API_SECRET }}
+
         run: |
           envsubst < .env.ci > .env.ci.tmp || true
           rm -rf .env || true
