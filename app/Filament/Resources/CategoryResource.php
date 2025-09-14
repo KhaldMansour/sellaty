@@ -52,6 +52,7 @@ class CategoryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\ImageColumn::make('image_url'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
