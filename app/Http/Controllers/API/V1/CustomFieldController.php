@@ -48,19 +48,23 @@ class CustomFieldController extends Controller
     {
         $customField = CustomField::with('options')->findOrFail($customFieldId);
 
+        $sortedOptions = $customField->options->sortBy(function ($option) {
+            return is_null($option->image_url);
+        });
+
         return $this->success([
             'parent_option' => [
                 'id' => $customField->id,
                 'value' => $customField->name,
                 'image_url' => $customField->image_url,
             ],
-            'children' => $customField->options->map(function ($child) {
+            'children' => $sortedOptions->map(function ($child) {
                 return [
                     'id' => $child->id,
                     'value' => $child->value,
                     'image_url' => $child->image_url,
                 ];
-            }),
+            })->values(),
         ]);
     }
 
@@ -99,7 +103,7 @@ class CustomFieldController extends Controller
      */
     public function childrenByOption($customFieldOptionid)
     {
-        $option = CustomFieldOption::with('children')->findOrFail($customFieldOptionid);
+        $option = CustomFieldOption::orderByRaw('image_url IS NULL ASC')->with('children')->findOrFail($customFieldOptionid);
         $children = $option->children;
 
         $childKeyPairs = $children->map(function ($child) {
@@ -188,7 +192,7 @@ class CustomFieldController extends Controller
      */
     public function fieldWithProductCounts(CustomField $customField)
     {
-        $makes = CustomFieldOption::where('custom_field_id', $customField->id)
+        $makes = CustomFieldOption::orderByRaw('image_url IS NULL ASC')->where('custom_field_id', $customField->id)
         ->get(['id', 'value' , 'image_url'])
         ->map(function ($option) use ($customField) {
             $count = ProductCustomFieldValue::where('custom_field_id', $customField->id)
@@ -237,6 +241,7 @@ class CustomFieldController extends Controller
     {
         $option = DB::table('custom_field_options')
             ->where('value', $optionValue)
+            ->orderByRaw('image_url IS NULL ASC')
             ->first();
 
         if (!$option) {

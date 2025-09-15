@@ -7,7 +7,6 @@ use Illuminate\Console\Command;
 
 class UpdateCustomFieldImages extends Command
 {
-
     protected $signature = 'customfield:update-images';
     protected $description = 'Update CustomFieldOption image_url where parent_option_id and image_url are null';
 
