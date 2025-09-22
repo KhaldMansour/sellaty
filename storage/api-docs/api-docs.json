@@ -1501,13 +1501,13 @@
                 }
             }
         },
-        "/api/v1/options/search-models": {
+        "/api/v1/options/search-makes": {
             "post": {
                 "tags": [
                     "Custom Field Options"
                 ],
-                "summary": "Search Car Models",
-                "operationId": "23c1eac3c30135789b2c7b6807a6de05",
+                "summary": "Search Car Makes",
+                "operationId": "613cebb0ebe6056502abb3d69830e875",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1520,7 +1520,7 @@
                                     "value": {
                                         "description": "The car model to search for.",
                                         "type": "string",
-                                        "example": "Optra"
+                                        "example": "Toyota"
                                     }
                                 },
                                 "type": "object"

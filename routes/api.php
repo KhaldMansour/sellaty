@@ -44,7 +44,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
 
         Route::prefix('options')->group(function () {
             Route::post('/search', 'CustomFieldController@search');
-            Route::post('/search-models', 'CustomFieldController@searchCarModels');
+            Route::post('/search-makes', 'CustomFieldController@searchCarMakes');
             Route::get('/{optionValue}/product-count', 'CustomFieldController@getOptionWithProductCount');
             Route::get('/{optionValue}/products', 'CustomFieldController@getProductsByOptionValue');
         });

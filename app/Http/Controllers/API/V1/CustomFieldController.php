@@ -349,8 +349,8 @@ class CustomFieldController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/options/search-models",
-     *     summary="Search Car Models",
+     *     path="/api/v1/options/search-makes",
+     *     summary="Search Car Makes",
      *     tags={"Custom Field Options"},
      *     @OA\RequestBody(
      *         required=true,
@@ -359,7 +359,7 @@ class CustomFieldController extends Controller
      *             @OA\Property(
      *                 property="value",
      *                 type="string",
-     *                 example="Optra",
+     *                 example="Toyota",
      *                 description="The car model to search for."
      *             )
      *         )
@@ -379,9 +379,9 @@ class CustomFieldController extends Controller
      * )
      */
 
-    public function searchCarModels(Request $request)
+    public function searchCarMakes(Request $request)
     {
-        $customFieldId = CustomField::where('name', 'model')->first()->id;
+        $customFieldId = CustomField::where('name', 'make')->first()->id;
 
         $results = CustomFieldOption::where('custom_field_id', $customFieldId)
             ->where('value', 'like', "{$request->value}%")
