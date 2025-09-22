@@ -9,6 +9,7 @@ use App\Models\CustomField;
 use App\Models\CustomFieldOption;
 use App\Models\Product;
 use App\Models\ProductCustomFieldValue;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -340,6 +341,49 @@ class CustomFieldController extends Controller
     public function search(SearchCustomFieldOptionRequest $request)
     {
         $results = CustomFieldOption::where('custom_field_id', $request->input('custom_field_id'))
+            ->where('value', 'like', "{$request->value}%")
+            ->get();
+
+        return $this->success($results);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/options/search-models",
+     *     summary="Search Car Models",
+     *     tags={"Custom Field Options"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"value"},
+     *             @OA\Property(
+     *                 property="value",
+     *                 type="string",
+     *                 example="Optra",
+     *                 description="The car model to search for."
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful search",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="count", type="integer", example=2),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(type="object")
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
+    public function searchCarModels(Request $request)
+    {
+        $customFieldId = CustomField::where('name', 'model')->first()->id;
+
+        $results = CustomFieldOption::where('custom_field_id', $customFieldId)
             ->where('value', 'like', "{$request->value}%")
             ->get();
 

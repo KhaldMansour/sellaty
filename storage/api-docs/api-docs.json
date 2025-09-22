@@ -1501,6 +1501,59 @@
                 }
             }
         },
+        "/api/v1/options/search-models": {
+            "post": {
+                "tags": [
+                    "Custom Field Options"
+                ],
+                "summary": "Search Car Models",
+                "operationId": "23c1eac3c30135789b2c7b6807a6de05",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "value"
+                                ],
+                                "properties": {
+                                    "value": {
+                                        "description": "The car model to search for.",
+                                        "type": "string",
+                                        "example": "Optra"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful search",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "count": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/intro-messages": {
             "get": {
                 "tags": [
