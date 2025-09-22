@@ -1458,6 +1458,49 @@
                 }
             }
         },
+        "/api/v1/options/search": {
+            "post": {
+                "tags": [
+                    "Custom Field Options"
+                ],
+                "summary": "Search Custom Field Options",
+                "operationId": "4b31511459900bd653e41548f03b16d9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SearchCustomFieldOptionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful search",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "count": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/intro-messages": {
             "get": {
                 "tags": [
@@ -4701,6 +4744,25 @@
                         "description": "E.164 international format",
                         "type": "string",
                         "example": "+201000000000"
+                    }
+                },
+                "type": "object"
+            },
+            "SearchCustomFieldOptionRequest": {
+                "required": [
+                    "custom_field_id",
+                    "value"
+                ],
+                "properties": {
+                    "custom_field_id": {
+                        "description": "The ID of the custom field to search within.",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "value": {
+                        "description": "The value to search for within the custom field options.",
+                        "type": "string",
+                        "example": "Option"
                     }
                 },
                 "type": "object"

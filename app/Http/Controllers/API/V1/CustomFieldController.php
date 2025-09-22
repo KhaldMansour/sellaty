@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchCustomFieldOptionRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\CustomField;
 use App\Models\CustomFieldOption;
@@ -315,5 +316,33 @@ class CustomFieldController extends Controller
 
 
         return $this->success(ProductResource::collection($products));
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/options/search",
+     *     summary="Search Custom Field Options",
+     *     tags={"Custom Field Options"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/SearchCustomFieldOptionRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful search",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="count", type="integer", example=2),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
+     */
+    public function search(SearchCustomFieldOptionRequest $request)
+    {
+        $results = CustomFieldOption::where('custom_field_id', $request->input('custom_field_id'))
+            ->where('value', 'like', "{$request->value}%")
+            ->get();
+
+        return $this->success($results);
     }
 }
