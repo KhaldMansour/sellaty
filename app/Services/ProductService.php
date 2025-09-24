@@ -2,16 +2,18 @@
 
 namespace App\Services;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductCustomFieldValue;
 use App\Models\User;
 use App\Repositories\RecentSearchRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ProductService
 {
-    public function __construct(private readonly ProductRepository $productRepository, private readonly RecentSearchRepository $recentSearchRepository)
+    public function __construct(private readonly ProductRepository $productRepository, private readonly RecentSearchRepository $recentSearchRepository, private readonly RekognitionService $rekognitionService)
     {
     }
 
@@ -52,6 +54,8 @@ class ProductService
 
             ProductCustomFieldValue::insert($customFieldValues);
         }
+
+        $this->validateImages($data);
 
         return $product;
     }
@@ -162,5 +166,28 @@ class ProductService
         $products = $this->productRepository->where('user_id', $user->id)->where('status', Product::STATUS_ACTIVE)->paginate($limit);
 
         return $products;
+    }
+
+    protected function validateImages(array $data): void
+    {
+        $hasCar = false;
+
+        foreach ($data['images'] as $image) {
+            $imagePath = $image->getPathname();
+
+            if (! $this->rekognitionService->isSafe($imagePath)) {
+                throw new HttpException(422, 'One of the images contains inappropriate content.');
+            }
+
+            if ($this->rekognitionService->containsCar($imagePath)) {
+                $hasCar = true;
+            }
+        }
+
+        $carCategoryId = Category::where('name_en', 'Vehicles')->first()->id;
+
+        if ($hasCar && ! in_array($carCategoryId, $data['category_ids'])) {
+            throw new HttpException(422, 'Please change the category id to match Vehicles category.');
+        }
     }
 }
