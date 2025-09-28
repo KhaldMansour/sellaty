@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -299,5 +300,53 @@ class ProductController extends Controller
         $products = $this->productService->getAll($limit, $request->validated());
 
         return $this->success(ProductResource::collection($products));
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/products/{id}",
+     *     summary="Delete a product",
+     *     description="Deletes a product if the user is an admin or the product's seller.",
+     *     operationId="deleteProduct",
+     *     tags={"Products"},
+     *
+     *     security={{"bearerAuth": {}}},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the product to delete",
+     *         @OA\Schema(type="integer", example=42)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", ref="#/components/schemas/ProductSchema")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized - Only admins or the seller can delete this product",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failure"),
+     *             @OA\Property(property="message", type="string", example="This action is unauthorized.")
+     *         )
+     *     ),
+     * )
+     */
+    public function destroy(Product $product)
+    {
+        try {
+            $this->authorize('delete', $product);
+        } catch (AuthorizationException $e) {
+            return $this->failure($e->getMessage(), 403);
+        }
+
+        return $this->success(ProductResource::make($product));
     }
 }

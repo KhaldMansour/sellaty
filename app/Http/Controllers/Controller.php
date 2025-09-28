@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Response;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 /**
  * @OA\Info(title="Sellaty", version="1.0.0")
@@ -17,6 +18,8 @@ use Illuminate\Http\Response;
  */
 abstract class Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Standardized success response
      *

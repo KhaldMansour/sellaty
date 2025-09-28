@@ -5,12 +5,14 @@ namespace App\Models;
 use App\Jobs\ProcessProductImages;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
 class Product extends Model
 {
     use HasTranslations;
+    use SoftDeletes;
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
