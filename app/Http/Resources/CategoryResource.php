@@ -56,8 +56,8 @@ class CategoryResource extends JsonResource
             'image_url' => asset('storage/' . $this->image_url),
             'products_count' => $this->products_count,
             'custom_fields' => $this->customFields,
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Resources\WantedProductResource;
 use App\Models\User;
 use App\Models\WantedProduct;
 use App\Services\WantedProductService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 class WantedProductController extends Controller
@@ -185,5 +186,55 @@ class WantedProductController extends Controller
         $wantedProducts = $this->wantedProductService->getBuyerActiveWantedProducts($user, $limit);
 
         return $this->success(WantedProductResource::collection($wantedProducts));
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/wantedproducts/{id}",
+     *     summary="Delete a product",
+     *     description="Deletes a product if the user is an admin or the product's seller.",
+     *     operationId="deleteWantedProduct",
+     *     tags={"Wanted Products"},
+     *
+     *     security={{"bearerAuth": {}}},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the product to delete",
+     *         @OA\Schema(type="integer", example=42)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Wanted Product deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", ref="#/components/schemas/WantedProductSchema"),
+     *             @OA\Property(property="message", type="string", example="Wanted Product Deleted Successfuly")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized - Only admins or the seller can delete this product",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failure"),
+     *             @OA\Property(property="data", type="string", example="This action is unauthorized."),
+     *             @OA\Property(property="message", type="string", example="This action is unauthorized.")
+     *         )
+     *     ),
+     * )
+     */
+    public function destroy(WantedProduct $wantedProduct)
+    {
+        try {
+            $this->authorize('delete', $wantedProduct);
+        } catch (AuthorizationException $e) {
+            return $this->failure($e->getMessage(), 403);
+        }
+
+        return $this->success(WantedProductResource::make($wantedProduct), 'Wanted Product Deleted Successfuly');
     }
 }

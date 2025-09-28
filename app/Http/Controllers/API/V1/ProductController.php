@@ -347,6 +347,6 @@ class ProductController extends Controller
             return $this->failure($e->getMessage(), 403);
         }
 
-        return $this->success(ProductResource::make($product));
+        return $this->success(ProductResource::make($product), 'Product Deleted Successfuly');
     }
 }

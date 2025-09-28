@@ -61,6 +61,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         Route::prefix('wanted-products')->group(function () {
             Route::get('/', 'WantedProductController@index');
             Route::get('/{wantedProduct}', 'WantedProductController@show');
+            Route::delete('{wantedProduct}', 'WantedProductController@destroy');
         });
 
         Route::prefix('chats')->group(function () {
