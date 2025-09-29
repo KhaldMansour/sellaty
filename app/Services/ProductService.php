@@ -55,7 +55,7 @@ class ProductService
             ProductCustomFieldValue::insert($customFieldValues);
         }
 
-        $this->validateImages($data);
+        $this->validateImages($data, $product);
 
         return $product;
     }
@@ -168,7 +168,7 @@ class ProductService
         return $products;
     }
 
-    protected function validateImages(array $data): void
+    protected function validateImages(array $data, Product $product): void
     {
         $hasCar = false;
 
@@ -176,6 +176,8 @@ class ProductService
             $imagePath = $image->getPathname();
 
             if (! $this->rekognitionService->isSafe($imagePath)) {
+                $product->update(['status' => Product::STATUS_PENDING]);
+
                 throw new HttpException(422, 'One of the images contains inappropriate content.');
             }
 
@@ -187,6 +189,8 @@ class ProductService
         $carCategoryId = Category::where('name_en', 'Vehicles')->first()->id;
 
         if ($hasCar && ! in_array($carCategoryId, $data['category_ids'])) {
+            $product->update(['status' => Product::STATUS_PENDING]);
+
             throw new HttpException(422, 'Please change the category id to match Vehicles category.');
         }
     }
