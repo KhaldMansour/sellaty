@@ -51,6 +51,8 @@ class WantedProduct extends Model
         'longitude' => 'float',
     ];
 
+    protected $with = ['images', 'buyer'];
+
 
     protected function handleTranslations()
     {
