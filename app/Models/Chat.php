@@ -31,7 +31,9 @@ class Chat extends Model
 
     public function chatable()
     {
-        return $this->morphTo();
+        return $this->morphTo()->morphWithTrashed([
+            Product::class => Product::withTrashed(),
+        ]);
     }
 
     public function getNameAttribute()
@@ -52,7 +54,11 @@ class Chat extends Model
     public static function getChatsWithProductSummary(int $userId)
     {
         return self::with([
-                'chatable',
+                'chatable' => function ($morphTo) {
+                    $morphTo->morphWith([
+                        Product::class => fn ($query) => $query->withTrashed(),
+                    ]);
+                },
                 'buyer',
                 'seller',
                 'latestMessage',
