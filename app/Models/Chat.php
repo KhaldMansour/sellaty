@@ -33,7 +33,7 @@ class Chat extends Model
     {
         return $this->morphTo()->constrain([
             Product::class => fn ($q) => $q->withTrashed()->with(['images','customFieldValues','categories','seller']),
-            WantedProduct::class => fn ($q) => $q->withTrashed()->with(['images', 'customFieldValues', 'categories', 'user']),
+            WantedProduct::class => fn ($q) => $q->withTrashed()->with(['images', 'buyer']),
         ]);
     }
     public function getNameAttribute()
