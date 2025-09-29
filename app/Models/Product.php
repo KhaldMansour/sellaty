@@ -16,6 +16,7 @@ class Product extends Model
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_PENDING = 'pending';
 
     public static function getStatuses(): array
     {
@@ -49,6 +50,7 @@ class Product extends Model
         'status',
         'latitude',
         'longitude',
+        'deleted_at',
     ];
 
     protected $casts = [

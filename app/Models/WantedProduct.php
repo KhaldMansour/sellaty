@@ -36,6 +36,7 @@ class WantedProduct extends Model
         'longitude',
         'latitude',
         'status',
+        'deleted_at'
     ];
 
     public $translatable = ['name' , 'description'];
