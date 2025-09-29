@@ -110,7 +110,7 @@ class ChatController extends Controller
 
         $model = $request->resource();
 
-        $resource = $model::findOrFail($id);
+        $resource = $model::withTrashed()->findOrFail($id);
 
         $chat = $this->chatService->getOrCreateChat($resource, $userId);
 
