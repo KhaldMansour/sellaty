@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Jobs\ProcessProductImages;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -119,15 +118,6 @@ class Product extends Model
         });
 
         static::saved(function ($model) {
-            if (request()->has('images')) {
-                $productImages = request()->images;
-                foreach ($productImages as $image) {
-                    $tempPath = $image->store('products', 'public');
-
-                    ProcessProductImages::dispatch($tempPath, $model);
-                }
-            }
-
             $model->handleTranslations();
         });
 

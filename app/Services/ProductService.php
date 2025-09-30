@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\ProcessProductImages;
 use App\Jobs\ValidateProductImagesJob;
 use App\Models\Category;
 use App\Models\Product;
@@ -39,6 +40,9 @@ class ProductService
 
         $customFields = $data['custom_fields'] ?? [];
 
+        if (!empty($data['images'])) {
+            $this->processProductImages($product, $data['images']);
+        }
 
         if (count($customFields) > 0) {
             $customFieldValues = [];
@@ -59,6 +63,8 @@ class ProductService
         $imagePaths = collect($data['images'])
             ->map(fn ($image) => $image->getPathname())
             ->toArray();
+
+        // dd($imagePaths);
 
         $data['image_paths'] = $imagePaths;
         unset($data['images']);
@@ -200,6 +206,14 @@ class ProductService
             $product->update(['status' => Product::STATUS_PENDING]);
 
             throw new HttpException(422, 'Please change the category id to match Vehicles category.');
+        }
+    }
+
+    protected function processProductImages(Product $product, array $images): void
+    {
+        foreach ($images as $image) {
+            $tempPath = $image->store('products', 'public');
+            ProcessProductImages::dispatch($tempPath, $product);
         }
     }
 }
