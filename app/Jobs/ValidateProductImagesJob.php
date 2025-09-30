@@ -39,7 +39,7 @@ class ValidateProductImagesJob implements ShouldQueue
 
                 $notification = NotificationPayloadFactory::productRejected(
                     $this->product,
-                    "Ad rejected: one or more images appear to contain inappropriate content, which isn't allowed. Please remove those images and resubmit. If you believe your photos are appropriate, please send them to our Admin Team for review"
+                    __('messages.product_rejected_inappropriate')
                 );
 
 
@@ -63,7 +63,7 @@ class ValidateProductImagesJob implements ShouldQueue
 
             $notification = NotificationPayloadFactory::productRejected(
                 $this->product,
-                "Ad rejected: your photos appear to show Vehicles, but the selected category isn't 'Vehicles'. Please move your ad to 'Vehicle' or change the photos."
+                __('messages.product_rejected_wrong_category')
             );
 
             $firebaseNotificationService->sendNotification(

@@ -38,4 +38,6 @@ return [
     'token_invalid' => 'There was a problem verifying your login. Please try again.',
     'token_missing' => 'Authentication token not found. Please log in to continue.',
     'notifications_fetched' => 'Notifications fetched successfully',
+    'product_rejected_inappropriate' => "One or more images appear to contain inappropriate content, which isn't allowed. Please remove those images and resubmit. If you believe your photos are appropriate, please send them to our Admin Team for review",
+    'product_rejected_wrong_category' => "Your photos appear to show Vehicles, but the selected category isn't 'Vehicles'. Please move your ad to 'Vehicle' or change the photos.",
 ];
