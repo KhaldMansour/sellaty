@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\ValidateProductImagesJob;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductCustomFieldValue;
@@ -55,7 +56,14 @@ class ProductService
             ProductCustomFieldValue::insert($customFieldValues);
         }
 
-        $this->validateImages($data, $product);
+        $imagePaths = collect($data['images'])
+            ->map(fn ($image) => $image->getPathname())
+            ->toArray();
+
+        $data['image_paths'] = $imagePaths;
+        unset($data['images']);
+
+        ValidateProductImagesJob::dispatch($data, $product);
 
         return $product;
     }

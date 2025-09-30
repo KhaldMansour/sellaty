@@ -4,6 +4,7 @@ namespace App\Factories;
 
 use App\Models\ChatMessage;
 use App\Models\Offer;
+use App\Models\Product;
 
 class NotificationPayloadFactory
 {
@@ -49,6 +50,21 @@ class NotificationPayloadFactory
                     'profile_photo' => $fromUser->profile_photo,
                     'date' => now()->toDateTimeString(),
                 ],
+            ],
+        ];
+    }
+
+    public static function productRejected(Product $product, string $reason): array
+    {
+        return [
+            'title' => 'Product Rejected',
+            'body' => "Your product '{$product->name}' was rejected. Reason: {$reason}.",
+            'data' => [
+                'type' => 'product_rejected',
+                'product_id' => (int) $product->id,
+                'status' => $product->status,
+                'reason' => $reason,
+                'date' => now()->toDateTimeString(),
             ],
         ];
     }

@@ -16,6 +16,7 @@ class Product extends Model
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_REJECTED = 'rejected';
     public const STATUS_PENDING = 'pending';
 
     public static function getStatuses(): array
@@ -23,6 +24,8 @@ class Product extends Model
         return [
             self::STATUS_ACTIVE,
             self::STATUS_INACTIVE,
+            self::STATUS_REJECTED,
+            self::STATUS_PENDING
         ];
     }
 
@@ -73,6 +76,9 @@ class Product extends Model
 
     protected $with = ['images' , 'customFieldValues' , 'categories' , 'seller'];
 
+    protected $attributes = [
+        'status' => self::STATUS_PENDING,
+    ];
 
     public function categories()
     {
