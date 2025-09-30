@@ -121,16 +121,22 @@ class CustomFieldController extends Controller
         ])->toArray();
 
         $productCounts = DB::table('product_custom_field_values')
-            ->select('custom_field_id', 'value', DB::raw('COUNT(*) as count'))
+            ->join('products', 'product_custom_field_values.product_id', '=', 'products.id')
+            ->select(
+                'product_custom_field_values.custom_field_id',
+                'product_custom_field_values.value',
+                DB::raw('COUNT(*) as count')
+            )
+            ->whereNull('products.deleted_at')
             ->where(function ($query) use ($allKeyPairs) {
                 foreach ($allKeyPairs as $pair) {
                     $query->orWhere(function ($q) use ($pair) {
-                        $q->where('custom_field_id', $pair['custom_field_id'])
-                          ->where('value', $pair['value']);
+                        $q->where('product_custom_field_values.custom_field_id', $pair['custom_field_id'])
+                        ->where('product_custom_field_values.value', $pair['value']);
                     });
                 }
             })
-            ->groupBy('custom_field_id', 'value')
+            ->groupBy('product_custom_field_values.custom_field_id', 'product_custom_field_values.value')
             ->get()
             ->keyBy(function ($item) {
                 return $item->custom_field_id . '|' . $item->value;
@@ -194,17 +200,20 @@ class CustomFieldController extends Controller
      */
     public function fieldWithProductCounts(CustomField $customField)
     {
-        $makes = CustomFieldOption::orderByRaw('image_url IS NULL ASC')->where('custom_field_id', $customField->id)
-        ->get(['id', 'value' , 'image_url'])
-        ->map(function ($option) use ($customField) {
-            $count = ProductCustomFieldValue::where('custom_field_id', $customField->id)
-                ->where('value', $option->value)
-                ->count();
+        $makes = CustomFieldOption::orderByRaw('image_url IS NULL ASC')
+            ->where('custom_field_id', $customField->id)
+            ->get(['id', 'value', 'image_url'])
+            ->map(function ($option) use ($customField) {
+                $count = ProductCustomFieldValue::join('products', 'product_custom_field_values.product_id', '=', 'products.id')
+                    ->whereNull('products.deleted_at')
+                    ->where('product_custom_field_values.custom_field_id', $customField->id)
+                    ->where('product_custom_field_values.value', $option->value)
+                    ->count();
 
-            $option->product_count = $count;
+                $option->product_count = $count;
 
-            return $option;
-        });
+                return $option;
+            });
 
         return $this->success($makes);
     }
@@ -249,10 +258,15 @@ class CustomFieldController extends Controller
         if (!$option) {
             throw new HttpException(404, 'Wrong value');
         }
-
+        // $productCount = DB::table('product_custom_field_values')
+        //     ->where('custom_field_id', $option->custom_field_id)
+        //     ->where('value', $option->value)
+        //     ->count();
         $productCount = DB::table('product_custom_field_values')
-            ->where('custom_field_id', $option->custom_field_id)
-            ->where('value', $option->value)
+            ->join('products', 'products.id', '=', 'product_custom_field_values.product_id')
+            ->whereNull('products.deleted_at')
+            ->where('product_custom_field_values.custom_field_id', $option->custom_field_id)
+            ->where('product_custom_field_values.value', $option->value)
             ->count();
 
         $results = [
