@@ -60,16 +60,14 @@ class ProductService
             ProductCustomFieldValue::insert($customFieldValues);
         }
 
-        $imagePaths = collect($data['images'])
-            ->map(fn ($image) => $image->getPathname())
-            ->toArray();
+        // $imagePaths = collect($data['images'])
+        //     ->map(fn ($image) => $image->getPathname())
+        //     ->toArray();
 
-        // dd($imagePaths);
+        // $data['image_paths'] = $imagePaths;
+        // unset($data['images']);
 
-        $data['image_paths'] = $imagePaths;
-        unset($data['images']);
-
-        ValidateProductImagesJob::dispatch($data, $product);
+        // ValidateProductImagesJob::dispatch($data, $product);
 
         return $product;
     }
