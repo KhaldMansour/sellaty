@@ -152,6 +152,10 @@ jobs:
           DUMMY_LOGIN_PASSWORD: ${{ secrets.DUMMY_LOGIN_PASSWORD }}
           DUMMY_LOGIN_PHONE_NUMBER: ${{ secrets.DUMMY_LOGIN_PHONE_NUMBER }}
 
+          RKG_AWS_ACCESS_KEY_ID: ${{ secrets.RKG_AWS_ACCESS_KEY_ID }}
+          RKG_AWS_SECRET_ACCESS_KEY: ${{ secrets.RKG_AWS_SECRET_ACCESS_KEY }}
+          RKG_AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+
           SCOUT_DRIVER: ${{ vars.SCOUT_DRIVER }}
 
           #MeiliSearch
@@ -161,7 +165,6 @@ jobs:
           #CarApi
           CARAPI_API_KEY: ${{ secrets.CARAPI_API_KEY }}
           CARAPI_API_SECRET: ${{ secrets.CARAPI_API_SECRET }}
-
         run: |
           envsubst < .env.ci > .env.ci.tmp || true
           rm -rf .env || true
