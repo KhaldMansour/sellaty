@@ -76,7 +76,7 @@ class Product extends Model
     protected $with = ['images' , 'customFieldValues' , 'categories' , 'seller'];
 
     protected $attributes = [
-        'status' => self::STATUS_ACTIVE,
+        'status' => self::STATUS_PENDING,
     ];
 
     public function categories()

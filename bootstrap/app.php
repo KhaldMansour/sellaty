@@ -1,6 +1,7 @@
 <?php
 
 use App\Console\Commands\DeactivateExpiredProducts;
+use App\Console\Commands\ValidateProductImages;
 use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
@@ -18,9 +19,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withCommands([
         DeactivateExpiredProducts::class,
+        ValidateProductImages::class
     ])
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->command('products:deactivate-expired')->everyMinute();
+        $schedule->command('products:deactivate-expired')->daily();
+        $schedule->command('products:validate-images')->everyMinute();
     })
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([

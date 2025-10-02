@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Aws\Rekognition\RekognitionClient;
+use Illuminate\Support\Facades\Log;
 
 class RekognitionService
 {
@@ -12,45 +13,53 @@ class RekognitionService
     {
         $this->client = new RekognitionClient([
             'version' => 'latest',
-            'region' => config('services.aws.region'),
+            'region' => config('services.aws.rekognition.region'),
             'credentials' => [
-                'key' => config('services.aws.key'),
-                'secret' => config('services.aws.secret'),
+                'key' => config('services.aws.rekognition.key'),
+                'secret' => config('services.aws.rekognition.secret'),
             ],
         ]);
     }
 
-    public function containsCar(string $imagePath): bool
+    public function analyzeImage(string $imagePath): array
     {
         $imageBytes = file_get_contents($imagePath);
 
-        $result = $this->client->detectLabels([
-            'Image' => ['Bytes' => $imageBytes],
-            'MaxLabels' => 50,
-            'MinConfidence' => 80,
-        ]);
+        $results = [
+            'is_safe' => true,
+            'contains_car' => false,
+        ];
 
-        $carKeywords = ['car', 'vehicle', 'automobile', 'sedan', 'sports car', 'truck'];
+        try {
+            $moderation = $this->client->detectModerationLabels([
+                'Image' => ['Bytes' => $imageBytes],
+                'MinConfidence' => 70,
+            ]);
 
-        foreach ($result['Labels'] as $label) {
-            if (in_array(strtolower($label['Name']), $carKeywords)
-                && $label['Confidence'] >= 80) {
-                return true;
+            if (!empty($moderation['ModerationLabels'])) {
+                $results['is_safe'] = false;
+
+                return $results;
             }
+
+            $labels = $this->client->detectLabels([
+                'Image' => ['Bytes' => $imageBytes],
+                'MaxLabels' => 50,
+                'MinConfidence' => 80,
+            ]);
+
+            $carKeywords = ['car', 'vehicle', 'automobile', 'sedan', 'sports car', 'truck'];
+
+            foreach ($labels['Labels'] as $label) {
+                if (in_array(strtolower($label['Name']), $carKeywords)) {
+                    $results['contains_car'] = true;
+                    break;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Rekognition analyzeImage failed: " . $e->getMessage());
         }
 
-        return false;
-    }
-
-    public function isSafe(string $imagePath): bool
-    {
-        $imageBytes = file_get_contents($imagePath);
-
-        $result = $this->client->detectModerationLabels([
-            'Image' => ['Bytes' => $imageBytes],
-            'MinConfidence' => 70,
-        ]);
-
-        return empty($result['ModerationLabels']);
+        return $results;
     }
 }

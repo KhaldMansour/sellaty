@@ -3,15 +3,12 @@
 namespace App\Services;
 
 use App\Jobs\ProcessProductImages;
-use App\Jobs\ValidateProductImagesJob;
-use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductCustomFieldValue;
 use App\Models\User;
 use App\Repositories\RecentSearchRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ProductService
 {
@@ -59,15 +56,6 @@ class ProductService
 
             ProductCustomFieldValue::insert($customFieldValues);
         }
-
-        // $imagePaths = collect($data['images'])
-        //     ->map(fn ($image) => $image->getPathname())
-        //     ->toArray();
-
-        // $data['image_paths'] = $imagePaths;
-        // unset($data['images']);
-
-        // ValidateProductImagesJob::dispatch($data, $product);
 
         return $product;
     }
@@ -178,33 +166,6 @@ class ProductService
         $products = $this->productRepository->where('user_id', $user->id)->where('status', Product::STATUS_ACTIVE)->paginate($limit);
 
         return $products;
-    }
-
-    protected function validateImages(array $data, Product $product): void
-    {
-        $hasCar = false;
-
-        foreach ($data['images'] as $image) {
-            $imagePath = $image->getPathname();
-
-            if (! $this->rekognitionService->isSafe($imagePath)) {
-                $product->update(['status' => Product::STATUS_PENDING]);
-
-                throw new HttpException(422, 'One of the images contains inappropriate content.');
-            }
-
-            if ($this->rekognitionService->containsCar($imagePath)) {
-                $hasCar = true;
-            }
-        }
-
-        $carCategoryId = Category::where('name_en', 'Vehicles')->first()->id;
-
-        if ($hasCar && ! in_array($carCategoryId, $data['category_ids'])) {
-            $product->update(['status' => Product::STATUS_PENDING]);
-
-            throw new HttpException(422, 'Please change the category id to match Vehicles category.');
-        }
     }
 
     protected function processProductImages(Product $product, array $images): void
