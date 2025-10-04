@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Jobs\ProcessProductImages;
 use App\Models\Product;
 use App\Models\ProductCustomFieldValue;
+use App\Models\ProductImage;
 use App\Models\User;
 use App\Repositories\RecentSearchRepository;
 use App\Repositories\ProductRepository;
@@ -38,7 +39,7 @@ class ProductService
         $customFields = $data['custom_fields'] ?? [];
 
         if (!empty($data['images'])) {
-            $this->processProductImages($product, $data['images']);
+            $this->saveProductImages($product, $data['images']);
         }
 
         if (count($customFields) > 0) {
@@ -173,6 +174,18 @@ class ProductService
         foreach ($images as $image) {
             $tempPath = $image->store('products', 'public');
             ProcessProductImages::dispatch($tempPath, $product);
+        }
+    }
+
+    protected function saveProductImages(Product $product, array $images): void
+    {
+        foreach ($images as $image) {
+            $path = $image->store('products', 'public');
+
+            ProductImage::create([
+                'image_url' => config('app.url') . Storage::url($path),
+                'product_id' => $product->id,
+            ]);
         }
     }
 }
