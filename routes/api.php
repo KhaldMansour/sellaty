@@ -83,6 +83,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::get('/profile/my-followings', 'UserController@myFollowings');
             Route::post('/profile/update-fcm-token', 'UserController@updateFcmToken');
             Route::delete('/profile/delete', 'UserController@delete');
+            Route::put('/profile/locale', 'UserController@updateLocale');
         });
 
         Route::prefix('notifications')->group(function () {
@@ -130,6 +131,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::get('{user}/wanted-products', 'WantedProductController@buyerActiveWantedProducts');
             Route::get('{user}/followings', 'LikeController@getUserFollowing');
             Route::get('{user}/followers', 'LikeController@getUserFollowers');
+            Route::post('/locale', [UserController::class, 'setLocale'])->middleware('auth');
         });
     });
 

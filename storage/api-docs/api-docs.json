@@ -4079,6 +4079,63 @@
                 ]
             }
         },
+        "/api/v1/users/profile/locale": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update user locale",
+                "description": "Change the authenticated user's preferred locale.",
+                "operationId": "a46a1015e1f000b2f8fa6acc6f0018cc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserLocaleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Locale updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Locale updated successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/wanted-products": {
             "get": {
                 "tags": [
@@ -5157,6 +5214,21 @@
                         "description": "The order in which the splash screen is displayed relative to others",
                         "type": "integer",
                         "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUserLocaleRequest": {
+                "title": "Update User Locale Request",
+                "description": "Request body to update the user's locale.",
+                "required": [
+                    "locale"
+                ],
+                "properties": {
+                    "locale": {
+                        "description": "User's preferred language. Must be one of the supported locales: en, fr, ar, de, es.",
+                        "type": "string",
+                        "example": "en"
                     }
                 },
                 "type": "object"

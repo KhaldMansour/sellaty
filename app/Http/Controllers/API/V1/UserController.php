@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserLocaleRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\RecentSearchResource;
@@ -457,5 +458,37 @@ class UserController extends Controller
         $user->delete();
 
         return $this->success(null, 'User deleted successfully');
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/v1/users/profile/locale",
+     *     summary="Update user locale",
+     *     description="Change the authenticated user's preferred locale.",
+     *     tags={"Users"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateUserLocaleRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Locale updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Locale updated successfully"),
+     *             @OA\Property(property="data", type="object", nullable=true, example=null),
+     *             @OA\Property(property="errors", type="object", nullable=true, example=null)
+     *         )
+     *     )
+     * )
+     */
+    public function updateLocale(UpdateUserLocaleRequest $request)
+    {
+        $user = auth()->user();
+
+        $user->update($request->validated());
+
+        return $this->success(null, 'Locale updated successfully');
     }
 }

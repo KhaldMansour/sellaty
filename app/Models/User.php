@@ -50,6 +50,7 @@ class User extends Authenticatable implements JWTSubject, FilamentUser, HasName
         'locked',
         'fcm_token',
         'roles',
+        'locale'
     ];
 
     /**
