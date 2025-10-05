@@ -58,7 +58,7 @@ class NotificationPayloadFactory
     {
         return [
             'title' => 'Product Rejected',
-            'body' => "Your product '{$product->name}' was rejected. Reason: {$reason}.",
+            'body' => "'{$product->name}' was rejected. Reason: {$reason}.",
             'data' => [
                 'type' => 'product_rejected',
                 'product_id' => (int) $product->id,

@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Models\User;
+use Kreait\Firebase\Exception\Messaging\NotFound;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FirebaseNotificationService
 {
@@ -35,6 +35,12 @@ class FirebaseNotificationService
     {
         $fcmToken = $user->fcm_token;
 
+        if (empty($fcmToken)) {
+            logger()->warning("🚫 User {$user->id} has no FCM token.");
+
+            return false;
+        }
+
         $message = CloudMessage::withTarget('token', $fcmToken)
             ->withNotification(['title' => $notification['title'], 'body' => $notification['body']])
             ->withData($this->flattenData($notification['data']), );
@@ -49,10 +55,15 @@ class FirebaseNotificationService
             ]);
 
             return true;
-        } catch (\Exception $e) {
-            throw new HttpException(400, __('messages.failed_to_send_message', ['error' => $e->getMessage()]));
+        } catch (NotFound $e) {
+            logger()->warning("⚠️ Invalid FCM token for user {$user->id}, removing token... Error: {$e->getMessage()}");
+            $user->update(['fcm_token' => null]);
 
-            logger()->error('FCM Notification Failed', ['error' => $e->getMessage()]);
+            return false;
+        } catch (\Exception $e) {
+            logger()->error("❌ FCM Notification Failed for user {$user->id}", [
+                'error' => $e->getMessage(),
+            ]);
 
             return false;
         }

@@ -45,6 +45,8 @@ class ValidateProductImages extends Command
 
         foreach ($products as $product) {
             foreach ($product->images as $image) {
+                app()->setlocale($product->seller?->locale ?? config('app.locale'));
+
                 Log::info("Checking image {$image->image_url} for product #{$product->id}");
 
                 $results = $rekognitionService->analyzeImage($image->image_url);
