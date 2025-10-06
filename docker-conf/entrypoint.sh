@@ -38,7 +38,7 @@ chown www-data:www-data /var/www/html/storage/logs/laravel.log
 chmod 775 /var/www/html/storage/logs/laravel.log
 
 php artisan optimize
-php artisan migrate
+php artisan migrate --force
 
 ## Start Supervisord
 supervisord -c /etc/supervisor/supervisord.conf
