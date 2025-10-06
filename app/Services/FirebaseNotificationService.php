@@ -47,8 +47,10 @@ class FirebaseNotificationService
             return false;
         }
 
+        $locale = auth()->user()?->locale ?? app()->getLocale();
+
         $message = CloudMessage::withTarget('token', $fcmToken)
-            ->withNotification(['title' => $notification['title'], 'body' => $notification['body']])
+            ->withNotification(['title' => $notification['title'], 'body' => $notification['body'][$locale]])
             ->withData($this->flattenData($notification['data']), );
 
         try {
