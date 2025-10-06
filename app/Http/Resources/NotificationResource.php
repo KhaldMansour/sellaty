@@ -22,11 +22,13 @@ class NotificationResource extends JsonResource
 {
     public function toArray($request)
     {
+        $locale = app()->getLocale() ?? auth()->user()?->locale;
+
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
             'title' => $this->title,
-            'body' => $this->body,
+            'body' => $this->getTranslation('body', $locale),
             'data' => $this->data,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

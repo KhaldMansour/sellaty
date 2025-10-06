@@ -15,7 +15,10 @@ class NotificationPayloadFactory
 
         return [
             'title' => 'New Message',
-            'body' => 'Message from ' . $sender->first_name,
+            'body' => [
+                'en' => 'Message from ' . $sender->first_name,
+                'ar' => 'رسالة من ' . $sender->first_name,
+            ],
             'data' => [
                 'type' => 'chat',
                 'chat_id' => (int) $chat->id,
@@ -38,7 +41,10 @@ class NotificationPayloadFactory
 
         return [
             'title' => 'New Offer!',
-            'body' => "{$fromUser->full_name} offered {$price} on your {$productName}",
+            'body' => [
+                'en' => "{$fromUser->full_name} offered {$price} on your {$productName}",
+                'ar' => "{$fromUser->full_name} قدم عرضًا بقيمة {$price} على منتجك {$productName}",
+            ],
             'data' => [
                 'type' => 'offer',
                 'offer_id' => (int) $offer->id,
@@ -54,16 +60,18 @@ class NotificationPayloadFactory
         ];
     }
 
-    public static function productRejected(Product $product, string $reason): array
+    public static function productRejected(Product $product, array $reason): array
     {
         return [
             'title' => 'Product Rejected',
-            'body' => "'{$product->name}' was rejected. Reason: {$reason}.",
+            'body' => [
+                'en' => "'{$product->name}' was rejected. Reason: {$reason['en']}.",
+                'ar' => "تم رفض المنتج '{$product->name}'. السبب: {$reason['ar']}.",
+            ],
             'data' => [
                 'type' => 'product_rejected',
                 'product_id' => (int) $product->id,
                 'status' => $product->status,
-                'reason' => $reason,
                 'date' => now()->toDateTimeString(),
             ],
         ];

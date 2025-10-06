@@ -33,6 +33,12 @@ class FirebaseNotificationService
 
     public function sendNotification(User $user, array $notification): bool
     {
+        $user->notifications()->create([
+            'title' => $notification['title'],
+            'body' => $notification['body'],
+            'data' => $notification['data'],
+        ]);
+
         $fcmToken = $user->fcm_token;
 
         if (empty($fcmToken)) {
@@ -48,11 +54,6 @@ class FirebaseNotificationService
         try {
             $this->messaging->send($message);
 
-            $user->notifications()->create([
-                'title' => $notification['title'],
-                'body' => $notification['body'],
-                'data' => $notification['data'],
-            ]);
 
             return true;
         } catch (NotFound $e) {

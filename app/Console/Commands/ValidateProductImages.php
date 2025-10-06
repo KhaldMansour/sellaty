@@ -56,7 +56,10 @@ class ValidateProductImages extends Command
 
                     $notification = NotificationPayloadFactory::productRejected(
                         $product,
-                        __('messages.product_rejected_inappropriate')
+                        [
+                            'en' => __('messages.product_rejected_inappropriate', [], 'en'),
+                            'ar' => __('messages.product_rejected_inappropriate', [], 'ar'),
+                        ]
                     );
 
                     $firebaseNotificationService->sendNotification($product->seller, $notification);
