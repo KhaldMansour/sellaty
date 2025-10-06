@@ -11,7 +11,7 @@ class Notification extends Model
 
     protected $fillable = ['user_id', 'title', 'body', 'data', 'is_read'];
 
-    public $translatable = ['body'];
+    public $translatable = ['title', 'body'];
 
     public function user()
     {

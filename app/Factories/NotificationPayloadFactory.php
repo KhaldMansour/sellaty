@@ -14,7 +14,10 @@ class NotificationPayloadFactory
         $chat = $chatMessage->chat;
 
         return [
-            'title' => 'New Message',
+            'title' => [
+                'en' => 'New Message',
+                'ar' => 'رسالة جديدة',
+            ],
             'body' => [
                 'en' => 'Message from ' . $sender->first_name,
                 'ar' => 'رسالة من ' . $sender->first_name,
@@ -40,7 +43,10 @@ class NotificationPayloadFactory
         $price = $offer->price;
 
         return [
-            'title' => 'New Offer!',
+            'title' => [
+                'en' => 'New Offer!',
+                'ar' => 'عرض جديد!',
+            ],
             'body' => [
                 'en' => "{$fromUser->full_name} offered {$price} on your {$productName}",
                 'ar' => "{$fromUser->full_name} قدم عرضًا بقيمة {$price} على منتجك {$productName}",
@@ -63,7 +69,10 @@ class NotificationPayloadFactory
     public static function productRejected(Product $product, array $reason): array
     {
         return [
-            'title' => 'Product Rejected',
+            'title' => [
+                'en' => 'Product Rejected',
+                'ar' => 'تم رفض المنتج',
+            ],
             'body' => [
                 'en' => "'{$product->name}' was rejected. Reason: {$reason['en']}.",
                 'ar' => "تم رفض المنتج '{$product->name}'. السبب: {$reason['ar']}.",
