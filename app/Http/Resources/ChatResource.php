@@ -59,8 +59,6 @@ class ChatResource extends JsonResource
 
         $counterpart = $isBuyer ? $this->seller : $this->buyer;
 
-        // dd(($this->chatable instanceof Product) , $this->chatable);
-
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -72,6 +70,7 @@ class ChatResource extends JsonResource
             'counterpart' => [
                 'id' => $counterpart->id,
                 'name' => $counterpart->full_name,
+                'username' => $counterpart->username,
             ],
             'latest_message' => new ChatMessageResource($this->latestMessage),
             'created_at' => $this->created_at,
