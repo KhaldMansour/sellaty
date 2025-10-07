@@ -19,8 +19,8 @@ class NotificationPayloadFactory
                 'ar' => 'رسالة جديدة',
             ],
             'body' => [
-                'en' => 'Message from ' . $sender->first_name,
-                'ar' => 'رسالة من ' . $sender->first_name,
+                'en' => 'Message from ' . $sender->username,
+                'ar' => 'رسالة من ' . $sender->username,
             ],
             'data' => [
                 'type' => 'chat',
@@ -28,7 +28,7 @@ class NotificationPayloadFactory
                 'product_id' => (int) $chat->product_id,
                 'fromUser' => [
                     'id' => (int) $sender->id,
-                    'name' => $sender->full_name,
+                    'name' => $sender->username,
                     'profile_photo' => $sender->profile_photo,
                     'date' => now()->toDateTimeString(),
                 ],
@@ -48,8 +48,8 @@ class NotificationPayloadFactory
                 'ar' => 'عرض جديد!',
             ],
             'body' => [
-                'en' => "{$fromUser->full_name} offered {$price} on your {$productName}",
-                'ar' => "{$fromUser->full_name} قدم عرضًا بقيمة {$price} على منتجك {$productName}",
+                'en' => "{$fromUser->username} offered {$price} on your {$productName}",
+                'ar' => "{$fromUser->username} قدم عرضًا بقيمة {$price} على منتجك {$productName}",
             ],
             'data' => [
                 'type' => 'offer',
@@ -58,7 +58,7 @@ class NotificationPayloadFactory
                 'product_id' => (int) $offer->product->id ?? null,
                 'fromUser' => [
                     'id' => (int) $fromUser->id,
-                    'name' => $fromUser->full_name,
+                    'name' => $fromUser->username,
                     'profile_photo' => $fromUser->profile_photo,
                     'date' => now()->toDateTimeString(),
                 ],
