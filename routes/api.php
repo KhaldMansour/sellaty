@@ -50,7 +50,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
         });
 
         Route::prefix('products')->group(function () {
-            Route::put('{product}', 'ProductController@update');
+            Route::post('{product}', 'ProductController@update');
             Route::delete('{product}', 'ProductController@destroy');
             Route::put('{product}/toggle-featured', 'ProductController@toggleFeatured');
             Route::post('{product}/categories/attach', 'ProductController@attachCategories');

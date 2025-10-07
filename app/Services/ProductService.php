@@ -43,19 +43,7 @@ class ProductService
         }
 
         if (count($customFields) > 0) {
-            $customFieldValues = [];
-
-            foreach ($customFields as $fieldId => $value) {
-                $customFieldValues[] = [
-                    'product_id' => $product->id,
-                    'custom_field_id' => $fieldId,
-                    'value' => $value,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
-
-            ProductCustomFieldValue::insert($customFieldValues);
+            $this->attachCustomFields($product, $customFields);
         }
 
         return $product;
@@ -63,13 +51,12 @@ class ProductService
 
     public function updateProduct($product, $data)
     {
-        if (isset($data['image'])) {
-            $imagePath = str_replace([url('/storage/'), 'storage/'], '', $product->image_url);
-            Storage::disk('public')->delete($imagePath);
+        $data = $this->handleImagesAndStatus($product, $data);
 
-            $imagePath = request()->file('image')->store('products', 'public');
-            $imageUrl = asset('storage/' . $imagePath);
-            $data['image_url'] = $imageUrl;
+        $customFields = $data['custom_fields'] ?? [];
+
+        if (count($customFields) > 0) {
+            $this->attachCustomFields($product, $customFields);
         }
 
         return $this->productRepository->update($data, $product->id);
@@ -187,5 +174,52 @@ class ProductService
                 'product_id' => $product->id,
             ]);
         }
+    }
+
+    protected function attachCustomFields(Product $product, array $customFields): void
+    {
+        $customFieldValues = [];
+
+        foreach ($customFields as $fieldId => $value) {
+            $customFieldValues[] = [
+                'product_id' => $product->id,
+                'custom_field_id' => $fieldId,
+                'value' => $value,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        ProductCustomFieldValue::insert($customFieldValues);
+    }
+
+    private function handleImagesAndStatus(Product $product, array $data): array
+    {
+        $newImagesUploaded = false;
+        $categoryChanged = false;
+
+        if (!empty($data['category_ids'])) {
+            $oldCategoryIds = $product->categories()->pluck('categories.id')->toArray();
+            $newCategoryIds = $data['category_ids'];
+
+            $categoryChanged = count(array_diff($newCategoryIds, $oldCategoryIds)) > 0
+                || count(array_diff($oldCategoryIds, $newCategoryIds)) > 0;
+        }
+
+        if (!empty($data['images'])) {
+            $this->saveProductImages($product, $data['images']);
+            $newImagesUploaded = true;
+        }
+
+        if ($categoryChanged) {
+            $product->categories()->sync($newCategoryIds);
+            $product->images()->update(['scanned' => false]);
+        }
+
+        if ($newImagesUploaded || $categoryChanged) {
+            $data['status'] = Product::STATUS_PENDING;
+        }
+
+        return $data;
     }
 }

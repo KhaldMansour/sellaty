@@ -129,6 +129,12 @@ class ProductController extends Controller
 
     public function update(UpdateProductRequest $request, Product $product)
     {
+        try {
+            $this->authorize('update', $product);
+        } catch (AuthorizationException $e) {
+            return $this->failure($e->getMessage(), 403);
+        }
+
         $product = $this->productService->updateProduct($product, $request->validated());
 
         return $this->success(new ProductResource($product));

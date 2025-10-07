@@ -123,9 +123,7 @@ class Product extends Model
 
         static::updating(function ($model) {
             if ($model->isDirty('duration')) {
-                if (empty($model->listed_until) || $model->getOriginal('listed_until') === $model->listed_until) {
-                    $model->setListedUntil();
-                }
+                $model->setListedUntil();
             }
 
             $model->handleTranslations();

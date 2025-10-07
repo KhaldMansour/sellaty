@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductImage extends Model
 {
-    protected $fillable = ['product_id', 'image_url'];
+    protected $fillable = ['product_id', 'image_url', 'scanned' , 'is_nsfw'];
 
+    protected $attributes = [
+        'scanned' => false,
+        'is_nsfw' => false
+    ];
     public function product()
     {
         return $this->belongsTo(Product::class);

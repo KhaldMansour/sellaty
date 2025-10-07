@@ -103,7 +103,6 @@ class CreateProductRequest extends BaseFormRequest
 {
     protected $customFieldsMap = [];
 
-
     protected function getCustomFields()
     {
         if (empty($this->customFieldsMap)) {

@@ -14,4 +14,12 @@ class ProductPolicy
     {
         return $user->isAdmin() || $user->id === $product->user_id;
     }
+
+    /**
+     * Determine whether the user can update the product.
+     */
+    public function update(User $user, Product $product): bool
+    {
+        return $user->isAdmin() || $user->id === $product->user_id;
+    }
 }
