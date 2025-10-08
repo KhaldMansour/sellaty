@@ -127,6 +127,71 @@ class ProductController extends Controller
         return $this->success(new ProductResource($product));
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/v1/products/{id}",
+     *     summary="Update an existing product",
+     *     description="Updates an existing product using the provided data. Only the fields included in the request will be updated.",
+     *     tags={"Products"},
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="The ID of the product to update",
+     *         @OA\Schema(type="integer", example=123)
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Data to update the product",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(ref="#/components/schemas/UpdateProductRequestSchema")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product successfully updated",
+     *         @OA\JsonContent(ref="#/components/schemas/ProductSchema")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation failed or bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - Bearer token missing or invalid",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden - The user is not allowed to update this product",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="This action is unauthorized.")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Product not found")
+     *         )
+     *     )
+     * )
+     */
     public function update(UpdateProductRequest $request, Product $product)
     {
         try {

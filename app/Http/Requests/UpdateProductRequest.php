@@ -5,6 +5,82 @@ namespace App\Http\Requests;
 use App\Models\CustomField;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @OA\Schema(
+ *     schema="UpdateProductRequestSchema",
+ *     type="object",
+ *     description="Schema for updating an existing product. Only send the fields you want to update.",
+ *     @OA\Property(property="name", type="string", example="Updated Product Name"),
+ *     @OA\Property(property="description", type="string", example="Updated product description"),
+ *     @OA\Property(property="brand", type="string", maxLength=255, example="Adidas"),
+ *     @OA\Property(property="model", type="string", maxLength=255, example="UltraBoost"),
+ *     @OA\Property(property="price", type="number", format="float", example=120.50),
+ *     @OA\Property(
+ *         property="duration",
+ *         type="string",
+ *         description="Updated product duration (e.g., '30 days', '2 weeks')",
+ *         example="60 days"
+ *     ),
+ *     @OA\Property(property="quantity", type="integer", minimum=0, example=5),
+ *     @OA\Property(
+ *         property="condition[]",
+ *         type="array",
+ *         @OA\Items(type="string", enum={"New", "Used"}),
+ *         example={"Used"}
+ *     ),
+ *     @OA\Property(
+ *         property="delivery_options[]",
+ *         type="array",
+ *         @OA\Items(type="string", enum={"Meet up", "Pickup"}),
+ *         example={"Meet up"}
+ *     ),
+ *     @OA\Property(
+ *         property="images[]",
+ *         type="array",
+ *         description="New images to upload (existing ones are not re-uploaded)",
+ *         @OA\Items(type="string", format="binary")
+ *     ),
+ *     @OA\Property(property="address", type="string", example="456 New Street"),
+ *     @OA\Property(property="country", type="string", example="United States"),
+ *     @OA\Property(property="state", type="string", example="California"),
+ *     @OA\Property(property="city", type="string", example="San Francisco"),
+ *     @OA\Property(property="city_lat", type="number", format="float", example=37.7749),
+ *     @OA\Property(property="city_long", type="number", format="float", example=-122.4194),
+ *     @OA\Property(property="latitude", type="number", format="float", example=37.7749),
+ *     @OA\Property(property="longitude", type="number", format="float", example=-122.4194),
+ *     @OA\Property(property="postal_code", type="string", example="94103"),
+ *     @OA\Property(property="negotiable", type="boolean", example=true),
+ *     @OA\Property(property="deliverable", type="boolean", example=false),
+ *     @OA\Property(
+ *         property="category_ids[]",
+ *         type="array",
+ *         @OA\Items(type="integer"),
+ *         description="Updated array of category IDs",
+ *         example={2, 5}
+ *     ),
+ *     @OA\Property(
+ *         property="currency",
+ *         type="string",
+ *         maxLength=3,
+ *         example="USD",
+ *         description="Currency code (ISO 4217)"
+ *     ),
+ *     @OA\Property(
+ *         property="custom_fields",
+ *         type="object",
+ *         description="Key-value pairs of custom field IDs and their updated values. Keys are field IDs as strings.",
+ *         example={
+ *             "1": "BMW",
+ *             "2": "X5",
+ *             "3": false
+ *         },
+ *         @OA\AdditionalProperties(
+ *             type="string",
+ *             description="Value for the custom field. Type depends on field configuration (text, number, boolean, etc.)."
+ *         )
+ *     ),
+ * )
+ */
 class UpdateProductRequest extends BaseFormRequest
 {
     protected $customFieldsMap = [];

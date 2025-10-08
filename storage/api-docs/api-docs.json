@@ -2861,6 +2861,189 @@
                 }
             }
         },
+        "/api/v1/products/{id}": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update an existing product",
+                "description": "Updates an existing product using the provided data. Only the fields included in the request will be updated.",
+                "operationId": "2f011741af75ff8da5611ff0aea1f66d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the product to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 123
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Data to update the product",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProductRequestSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product successfully updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductSchema"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation failed or bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Bearer token missing or invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user is not allowed to update this product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "This action is unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete a product",
+                "description": "Deletes a product if the user is an admin or the product's seller.",
+                "operationId": "deleteProduct",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 42
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProductSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized - Only admins or the seller can delete this product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "failure"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "This action is unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/users/{user}/products": {
             "get": {
                 "tags": [
@@ -3055,74 +3238,6 @@
                         }
                     }
                 }
-            }
-        },
-        "/api/v1/products/{id}": {
-            "delete": {
-                "tags": [
-                    "Products"
-                ],
-                "summary": "Delete a product",
-                "description": "Deletes a product if the user is an admin or the product's seller.",
-                "operationId": "deleteProduct",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the product to delete",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 42
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Product deleted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/ProductSchema"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Unauthorized - Only admins or the seller can delete this product",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "failure"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "This action is unauthorized."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
             }
         },
         "/api/v1/splash-screens": {
@@ -5182,6 +5297,157 @@
                         "description": "Indicates if the splash screen is active or not",
                         "type": "boolean",
                         "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateProductRequestSchema": {
+                "description": "Schema for updating an existing product. Only send the fields you want to update.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Updated Product Name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Updated product description"
+                    },
+                    "brand": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Adidas"
+                    },
+                    "model": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "UltraBoost"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 120.5
+                    },
+                    "duration": {
+                        "description": "Updated product duration (e.g., '30 days', '2 weeks')",
+                        "type": "string",
+                        "example": "60 days"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "example": 5
+                    },
+                    "condition[]": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "New",
+                                "Used"
+                            ]
+                        },
+                        "example": [
+                            "Used"
+                        ]
+                    },
+                    "delivery_options[]": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "Meet up",
+                                "Pickup"
+                            ]
+                        },
+                        "example": [
+                            "Meet up"
+                        ]
+                    },
+                    "images[]": {
+                        "description": "New images to upload (existing ones are not re-uploaded)",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary"
+                        }
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "456 New Street"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "United States"
+                    },
+                    "state": {
+                        "type": "string",
+                        "example": "California"
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "San Francisco"
+                    },
+                    "city_lat": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 37.7749
+                    },
+                    "city_long": {
+                        "type": "number",
+                        "format": "float",
+                        "example": -122.4194
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 37.7749
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "float",
+                        "example": -122.4194
+                    },
+                    "postal_code": {
+                        "type": "string",
+                        "example": "94103"
+                    },
+                    "negotiable": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "deliverable": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "category_ids[]": {
+                        "description": "Updated array of category IDs",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            2,
+                            5
+                        ]
+                    },
+                    "currency": {
+                        "description": "Currency code (ISO 4217)",
+                        "type": "string",
+                        "maxLength": 3,
+                        "example": "USD"
+                    },
+                    "custom_fields": {
+                        "description": "Key-value pairs of custom field IDs and their updated values. Keys are field IDs as strings.",
+                        "type": "object",
+                        "example": {
+                            "1": "BMW",
+                            "2": "X5",
+                            "3": false
+                        },
+                        "additionalProperties": {
+                            "description": "Value for the custom field. Type depends on field configuration (text, number, boolean, etc.).",
+                            "type": "string"
+                        }
                     }
                 },
                 "type": "object"
