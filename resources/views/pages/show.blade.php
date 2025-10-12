@@ -1,2 +1,2 @@
 <h1> {{ $data['title'] }} </h1>
-<div>{!! $data['content'] !!}</div>
+<div style="white-space: pre-wrap;">{!! $data['content'] !!}</div>
