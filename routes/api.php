@@ -98,8 +98,8 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::get('messages/{chatMessage}/media', 'ChatMessageController@getMedia')->name('chat-uploads');
             Route::post('{chat}/messages', 'ChatMessageController@send');
             Route::get('{chat}/messages', 'ChatMessageController@messages');
-            Route::post('{chat}/seen', 'ChatMessageController@markAsSeen');
             Route::get('{chat}', 'ChatController@show');
+            Route::post('{chat}/mark-as-seen', 'ChatController@markAsSeen');
         });
 
         Route::prefix('offers')->group(function () {

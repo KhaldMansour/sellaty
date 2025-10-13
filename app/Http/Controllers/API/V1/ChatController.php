@@ -8,6 +8,7 @@ use App\Http\Resources\ChatResource;
 use App\Models\Chat;
 use App\Models\Product;
 use App\Services\ChatService;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class ChatController extends Controller
 {
@@ -230,5 +231,64 @@ class ChatController extends Controller
         $chats = $this->chatService->getChatsWithUnseenCount($userId);
 
         return $this->success(ChatResource::collection($chats));
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/chats/{chat}/mark-as-seen",
+     *     summary="Mark all messages in a chat as seen",
+     *     description="Marks all unseen messages in the specified chat as seen for the authenticated user.",
+     *     tags={"Chats"},
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="chat",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the chat to mark messages as seen",
+     *         @OA\Schema(type="integer", example=42)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Messages marked as seen successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Messages marked as seen."),
+     *             @OA\Property(property="data", type="null", example=null)
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized to access this chat",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="You are not authorized to access this chat.")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Chat not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Chat not found.")
+     *         )
+     *     )
+     * )
+     */
+    public function markAsSeen(Chat $chat)
+    {
+        try {
+            $this->authorize('access', $chat);
+        } catch (AuthorizationException $e) {
+            return $this->failure('You are not authorized to access this chat.', 403);
+        }
+
+        $userId = auth()->id();
+        $this->chatService->markMessagesAsSeen($chat, $userId);
+
+        return $this->success(null, 'Messages marked as seen.');
     }
 }

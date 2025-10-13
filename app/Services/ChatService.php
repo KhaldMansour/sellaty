@@ -102,15 +102,15 @@ class ChatService
             ->get();
     }
 
-    // public function markMessagesAsSeen(Chat $chat, int $userId): void
-    // {
-    //     $chat->messages()
-    //         ->where('sender_id', '!=', $userId)
-    //         ->whereNull('seen_at')
-    //         ->update(['seen_at' => now()]);
+    public function markMessagesAsSeen(Chat $chat, int $userId): void
+    {
+        $chat->messages()
+            ->where('sender_id', '!=', $userId)
+            ->whereNull('seen_at')
+            ->update(['seen_at' => now()]);
 
-    //     broadcast(new MessagesSeen($chat->id, $userId))->toOthers();
-    // }
+        // broadcast(new MessagesSeen($chat->id, $userId))->toOthers();
+    }
 
     private function getChatForProduct(Product $product, int $userId): Chat
     {

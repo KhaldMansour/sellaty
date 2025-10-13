@@ -952,6 +952,99 @@
                 ]
             }
         },
+        "/api/v1/chats/{chat}/mark-as-seen": {
+            "post": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Mark all messages in a chat as seen",
+                "description": "Marks all unseen messages in the specified chat as seen for the authenticated user.",
+                "operationId": "7a4dcf7efb4f26ed8d6810f2587287d2",
+                "parameters": [
+                    {
+                        "name": "chat",
+                        "in": "path",
+                        "description": "ID of the chat to mark messages as seen",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 42
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Messages marked as seen successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Messages marked as seen."
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized to access this chat",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not authorized to access this chat."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Chat not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Chat not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/chats/{chat}/messages": {
             "get": {
                 "tags": [
