@@ -170,8 +170,8 @@ class WantedProductResource extends JsonResource
             'country' => $this->country,
             'state' => $this->state,
             'city' => $this->city,
-            'latitude' => $this->latitude,
-            'longitude' => $this->longitude,
+            'latitude' => $this->formatCoordinate($this->latitude),
+            'longitude' => $this->formatCoordinate($this->longitude),
             'postal_code' => $this->postal_code,
             'listed_until' => $this->listed_until,
             'status' => $this->status,
@@ -181,5 +181,21 @@ class WantedProductResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
+    }
+
+    private function formatCoordinate($value): float
+    {
+        if ($value === null) {
+            return 0.0000001;
+        }
+
+        $value = (float) $value;
+        $epsilon = 0.0001;
+
+        if (fmod($value, 1.0) === 0.0) {
+            $value += $epsilon;
+        }
+
+        return $value;
     }
 }

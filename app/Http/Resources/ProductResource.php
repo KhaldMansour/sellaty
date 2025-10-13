@@ -119,8 +119,8 @@ class ProductResource extends JsonResource
             'state' => $this->state,
             'city' => $this->city,
             'postal_code' => $this->postal_code,
-            'longitude' => $this->longitude,
-            'latitude' => $this->latitude,
+            'latitude' => $this->formatCoordinate($this->latitude),
+            'longitude' => $this->formatCoordinate($this->longitude),
             'listed_until' => $this->listed_until,
             'status' => $this->status,
             'negotiable' => $this->negotiable,
@@ -149,5 +149,21 @@ class ProductResource extends JsonResource
             'date' => $value ? date('Y-m-d', strtotime($value)) : null,
             default => $value,
         };
+    }
+
+    private function formatCoordinate($value): float
+    {
+        if ($value === null) {
+            return 0.0000001;
+        }
+
+        $value = (float) $value;
+        $epsilon = 0.0001;
+
+        if (fmod($value, 1.0) === 0.0) {
+            $value += $epsilon;
+        }
+
+        return $value;
     }
 }
