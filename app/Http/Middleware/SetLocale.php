@@ -10,7 +10,7 @@ class SetLocale
     public function handle($request, Closure $next)
     {
         $locale = $request->query('locale');
-        in_array($locale, ['en', 'ar']) ? App::setLocale($locale) : App::setLocale('en');
+        in_array($locale, ['en', 'ar']) ? App::setLocale($locale) : App::setLocale('ar');
 
         return $next($request);
     }
