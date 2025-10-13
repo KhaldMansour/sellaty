@@ -190,7 +190,11 @@ class ProductService
             ];
         }
 
-        ProductCustomFieldValue::insert($customFieldValues);
+        ProductCustomFieldValue::upsert(
+            $customFieldValues,
+            ['product_id', 'custom_field_id'],
+            ['value', 'updated_at']
+        );
     }
 
     private function handleImagesAndStatus(Product $product, array $data): array
