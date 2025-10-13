@@ -202,7 +202,7 @@ class ProductController extends Controller
 
         $product = $this->productService->updateProduct($product, $request->validated());
 
-        return $this->success(new ProductResource($product));
+        return $this->success(new ProductResource($product), 'Product updated successfully');
     }
 
     public function toggleFeatured(Product $product)

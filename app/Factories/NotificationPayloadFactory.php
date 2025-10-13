@@ -74,8 +74,14 @@ class NotificationPayloadFactory
                 'ar' => 'تم رفض المنتج',
             ],
             'body' => [
-                'en' => "'{$product->name}' was rejected. Reason: {$reason['en']}.",
-                'ar' => "تم رفض المنتج '{$product->name}'. السبب: {$reason['ar']}.",
+            'en' => (($product->getTranslation('name', 'en')
+                    ?? $product->getTranslation('name', 'ar'))
+                . " was rejected. Reason: {$reason['en']}."),
+
+            'ar' => "تم رفض المنتج '" .
+                ($product->getTranslation('name', 'ar')
+                    ?? $product->getTranslation('name', 'en'))
+                . "'. السبب: {$reason['ar']}.",
             ],
             'data' => [
                 'type' => 'product_rejected',
