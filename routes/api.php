@@ -56,6 +56,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::post('{product}/categories/attach', 'ProductController@attachCategories');
             Route::post('{product}/categories/detach', 'ProductController@detachCategories');
             Route::post('filter', 'ProductController@filter');
+            Route::delete('/images/{image}', 'ProductController@deleteImage');
         });
 
         Route::prefix('wanted-products')->group(function () {
@@ -131,7 +132,7 @@ Route::prefix('v1')->middleware([SetLocale::class])->namespace('App\Http\Control
             Route::get('{user}/wanted-products', 'WantedProductController@buyerActiveWantedProducts');
             Route::get('{user}/followings', 'LikeController@getUserFollowing');
             Route::get('{user}/followers', 'LikeController@getUserFollowers');
-            Route::post('/locale', [UserController::class, 'setLocale'])->middleware('auth');
+            Route::put('/profile/locale', 'UserController@updateLocale');
         });
     });
 

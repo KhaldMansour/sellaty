@@ -22,4 +22,9 @@ class ProductPolicy
     {
         return $user->isAdmin() || $user->id === $product->user_id;
     }
+
+    public function deleteImage(User $user, Product $product): bool
+    {
+        return $user->isAdmin() || $user->id === $product->user_id;
+    }
 }
