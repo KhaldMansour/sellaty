@@ -11,6 +11,7 @@ use App\Factories\NotificationPayloadFactory;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\WantedProduct;
+use Illuminate\Support\Facades\DB;
 
 class ChatService
 {
@@ -94,12 +95,22 @@ class ChatService
             ->get();
     }
 
-    public function getChatsWithUnseenCount(int $userId)
+    public function getChatsWithUnseenCount(int $userId, $perPage)
     {
         return Chat::getChatsWithProductSummary($userId)
-            ->where('buyer_id', $userId)
-            ->orWhere('seller_id', $userId)
-            ->get();
+        ->where(function ($query) use ($userId) {
+            $query->where('buyer_id', $userId)
+                  ->orWhere('seller_id', $userId);
+        })
+        ->orderByDesc(
+            DB::raw('COALESCE(
+                (SELECT MAX(created_at)
+                 FROM chat_messages
+                 WHERE chat_messages.chat_id = chats.id),
+                chats.updated_at
+            )')
+        )
+        ->paginate($perPage);
     }
 
     public function markMessagesAsSeen(Chat $chat, int $userId): void

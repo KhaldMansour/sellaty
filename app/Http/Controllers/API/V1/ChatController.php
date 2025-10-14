@@ -228,7 +228,9 @@ class ChatController extends Controller
     public function myChats()
     {
         $userId = auth()->id();
-        $chats = $this->chatService->getChatsWithUnseenCount($userId);
+        $limit = request('limit', 15);
+
+        $chats = $this->chatService->getChatsWithUnseenCount($userId, $limit);
 
         return $this->success(ChatResource::collection($chats));
     }
