@@ -100,12 +100,23 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
         $locale = app()->getLocale();
+        $fallbackLocale = $locale === 'en' ? 'ar' : 'en';
+
+        $name = $this->getTranslation('name', $locale);
+        if (empty($name)) {
+            $name = $this->getTranslation('name', $fallbackLocale);
+        }
+
+        $description = $this->getTranslation('description', $locale);
+        if (empty($description)) {
+            $description = $this->getTranslation('description', $fallbackLocale);
+        }
 
         return [
             'id' => $this->id,
-            'name' => $this->getTranslation('name', $locale),
+            'name' => $name,
             'price' => number_format((float) $this->price, 2, '.', ''),
-            'description' => $this->getTranslation('description', $locale),
+            'description' => $description,
             'type' => 'Product',
             'brand' => $this->brand,
             'model' => $this->model,
