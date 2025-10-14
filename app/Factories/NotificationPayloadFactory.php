@@ -75,12 +75,12 @@ class NotificationPayloadFactory
             ],
             'body' => [
             'en' => (($product->getTranslation('name', 'en')
-                    ?? $product->getTranslation('name', 'ar'))
+                    ?: $product->getTranslation('name', 'ar'))
                 . " was rejected. Reason: {$reason['en']}."),
 
             'ar' => "تم رفض المنتج '" .
                 ($product->getTranslation('name', 'ar')
-                    ?? $product->getTranslation('name', 'en'))
+                    ?: $product->getTranslation('name', 'en'))
                 . "'. السبب: {$reason['ar']}.",
             ],
             'data' => [
