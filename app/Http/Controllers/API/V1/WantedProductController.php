@@ -9,9 +9,11 @@ use App\Http\Requests\UpdateWantedProductRequest;
 use App\Http\Resources\WantedProductResource;
 use App\Models\User;
 use App\Models\WantedProduct;
+use App\Models\WantedProductImage;
 use App\Services\WantedProductService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class WantedProductController extends Controller
 {
@@ -302,5 +304,65 @@ class WantedProductController extends Controller
         $wantedProduct->delete();
 
         return $this->success(WantedProductResource::make($wantedProduct), 'Wanted Product Deleted Successfuly');
+    }
+
+       /**
+     * @OA\Delete(
+     *     path="/api/v1/wanted-products/images/{image}",
+     *     summary="Delete a product image",
+     *     description="Deletes a product image by ID if the authenticated user owns the product associated with that image.",
+     *     operationId="deleteWantedProductImage",
+     *     tags={"Wanted Products"},
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="image",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the product image to delete",
+     *         @OA\Schema(type="integer", example=12)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Image deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Image deleted successfully")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized – user does not own this product image",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Image not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Image not found")
+     *         )
+     *     )
+     * )
+     */
+    public function deleteImage(WantedProductImage $image)
+    {
+        $this->authorize('deleteImage', $image-> wantedProduct);
+
+        $imagePath = str_replace([url('/storage/'), 'storage/'], '', $image->image_url);
+
+        if (Storage::disk('public')->exists($imagePath)) {
+            Storage::disk('public')->delete($imagePath);
+        }
+
+        $image->delete();
+
+        return $this->success(null, 'Image deleted successfully');
     }
 }

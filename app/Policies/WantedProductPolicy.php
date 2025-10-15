@@ -14,4 +14,9 @@ class WantedProductPolicy
     {
         return $user->isAdmin() || $user->id === $wantedProduct->user_id;
     }
+
+    public function deleteImage(User $user, WantedProduct $wantedProduct): bool
+    {
+        return $user->isAdmin() || $user->id === $wantedProduct->user_id;
+    }
 }
