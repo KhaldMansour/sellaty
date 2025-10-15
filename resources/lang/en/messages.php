@@ -40,4 +40,8 @@ return [
     'notifications_fetched' => 'Notifications fetched successfully',
     'product_rejected_inappropriate' => "One or more images appear to contain inappropriate content, which isn't allowed. Please remove those images and resubmit. If you believe your photos are appropriate, please send them to our Admin Team for review",
     'product_rejected_wrong_category' => "Your photos appear to show Vehicles, but the selected category isn't 'Vehicles'. Please move your ad to 'Vehicle' or change the photos.",
+    'product_status_rejected' => "Rejected",
+    'product_status_active' => "Active",
+    'product_status_inactive' => "Inactive",
+    'product_status_pending' => "Pending",
 ];

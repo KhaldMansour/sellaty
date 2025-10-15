@@ -40,4 +40,8 @@ return [
     'notifications_fetched' => 'تم جلب الإشعارات بنجاح',
     'product_rejected_inappropriate' => " تحتوي صورة واحدة أو أكثر على محتوى غير مناسب، وهو غير مسموح به. يرجى إزالة هذه الصور وإعادة إرسال الإعلان. إذا كنت تعتقد أن صورك مناسبة، يرجى إرسالها إلى فريق الإدارة للمراجعة",
     'product_rejected_wrong_category' => " صورك تظهر أنها مركبات ولكن الفئة المختارة ليست 'مركبات'. يرجى نقل إعلانك إلى فئة 'مركبات' أو تغيير الصور.",
+    'product_status_rejected' => "مرفوض",
+    'product_status_active' => "نشط",
+    'product_status_inactive' => "عير نشط",
+    'product_status_pending' => "قيد المراجعه",
 ];
