@@ -4572,6 +4572,103 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Wanted Products"
+                ],
+                "summary": "Update a wanted product",
+                "description": "Updates an existing wanted product with new data",
+                "operationId": "updateWantedProduct",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the wanted product to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 12
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Wanted product update payload",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateWantedProductRequestSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Wanted product updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/WantedProductSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error or bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Wanted product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/users/{user}/wanted-products": {
@@ -5716,6 +5813,148 @@
                             1
                         ],
                         "example": 0
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateWantedProductRequestSchema": {
+                "description": "Schema for updating a wanted product",
+                "properties": {
+                    "name": {
+                        "description": "The name of the wanted product",
+                        "type": "string",
+                        "maxLength": 255,
+                        "nullable": true
+                    },
+                    "description": {
+                        "description": "Description of the wanted product",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "brand": {
+                        "description": "The brand of the wanted product",
+                        "type": "string",
+                        "maxLength": 255,
+                        "nullable": true
+                    },
+                    "model": {
+                        "description": "The model of the wanted product",
+                        "type": "string",
+                        "maxLength": 255,
+                        "nullable": true
+                    },
+                    "duration": {
+                        "description": "Product duration/availability",
+                        "type": "string",
+                        "example": "30 days"
+                    },
+                    "min_price": {
+                        "description": "Minimum price for the wanted product",
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0
+                    },
+                    "max_price": {
+                        "description": "Maximum price for the wanted product",
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0
+                    },
+                    "currency": {
+                        "description": "Currency code (e.g., USD, SAR)",
+                        "type": "string",
+                        "maxLength": 3,
+                        "example": "SAR"
+                    },
+                    "category_ids[]": {
+                        "description": "Array of category IDs",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1
+                        ]
+                    },
+                    "condition[]": {
+                        "description": "Condition of the wanted product (e.g., new, used)",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "New"
+                        }
+                    },
+                    "delivery_options[]": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "Pickup"
+                        ]
+                    },
+                    "address": {
+                        "description": "The address of the buyer",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "country": {
+                        "description": "The country where the buyer is located",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "state": {
+                        "description": "The state where the buyer is located",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "city": {
+                        "description": "The city where the buyer is located",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "city_lat": {
+                        "description": "Latitude coordinate of the city",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "city_long": {
+                        "description": "Longitude coordinate of the city",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "latitude": {
+                        "description": "Latitude coordinate of the specific location",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "longitude": {
+                        "description": "Longitude coordinate of the specific location",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "postal_code": {
+                        "description": "Postal code of the buyer's address",
+                        "type": "string",
+                        "maxLength": 6,
+                        "example": "12345"
+                    },
+                    "images[]": {
+                        "description": "Product images (array of files)",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary"
+                        }
+                    },
+                    "active": {
+                        "description": "Is the product active (0 = false, 1 = true)",
+                        "type": "integer",
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "example": 1
                     }
                 },
                 "type": "object"

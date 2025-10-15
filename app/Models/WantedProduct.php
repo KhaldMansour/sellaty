@@ -14,6 +14,18 @@ class WantedProduct extends Model
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_REJECTED = 'rejected';
+    public const STATUS_PENDING = 'pending';
+
+    public static function getStatuses(): array
+    {
+        return [
+            self::STATUS_ACTIVE,
+            self::STATUS_INACTIVE,
+            self::STATUS_REJECTED,
+            self::STATUS_PENDING
+        ];
+    }
 
     protected $fillable = [
         'name',
@@ -53,6 +65,9 @@ class WantedProduct extends Model
 
     protected $with = ['images', 'buyer'];
 
+    protected $attributes = [
+        'status' => self::STATUS_PENDING,
+    ];
 
     protected function handleTranslations()
     {
@@ -73,26 +88,12 @@ class WantedProduct extends Model
         });
 
         static::saved(function ($model) {
-            if (request()->has('images')) {
-                $productImages = request()->images;
-                foreach ($productImages as $image) {
-                    $imagePath = $image->store('wanted_products', 'public');
-                    $imageUrl = asset('storage/' . $imagePath);
-
-                    $model->images()->create([
-                        'image_url' => $imageUrl,
-                        'wanted_product_id' => $model->id,
-                    ]);
-                }
-            };
             $model->handleTranslations();
         });
 
         static::updating(function ($model) {
             if ($model->isDirty('duration')) {
-                if (empty($model->listed_until) || $model->getOriginal('listed_until') === $model->listed_until) {
-                    $model->setListedUntil();
-                }
+                $model->setListedUntil();
             }
 
             $model->handleTranslations();
@@ -116,7 +117,6 @@ class WantedProduct extends Model
         if (preg_match($pattern, $duration, $matches)) {
             $amount = (int) $matches[1];
             $unit = $matches[2];
-
 
             if (in_array($unit, ['week', 'weeks'])) {
                 return Carbon::now()->addWeeks($amount);

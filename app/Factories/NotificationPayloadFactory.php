@@ -4,7 +4,6 @@ namespace App\Factories;
 
 use App\Models\ChatMessage;
 use App\Models\Offer;
-use App\Models\Product;
 
 class NotificationPayloadFactory
 {
@@ -66,7 +65,7 @@ class NotificationPayloadFactory
         ];
     }
 
-    public static function productRejected(Product $product, array $reason): array
+    public static function productRejected($product, array $reason): array
     {
         return [
             'title' => [

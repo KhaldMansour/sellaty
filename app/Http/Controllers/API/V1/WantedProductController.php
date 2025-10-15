@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateWantedProductRequest;
 use App\Http\Requests\ListResourceRequest;
+use App\Http\Requests\UpdateWantedProductRequest;
 use App\Http\Resources\WantedProductResource;
 use App\Models\User;
 use App\Models\WantedProduct;
@@ -131,6 +132,69 @@ class WantedProductController extends Controller
      */
     public function show(WantedProduct $wantedProduct)
     {
+        return $this->success(new WantedProductResource($wantedProduct));
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/wanted-products/{id}",
+     *     summary="Update a wanted product",
+     *     description="Updates an existing wanted product with new data",
+     *     operationId="updateWantedProduct",
+     *     tags={"Wanted Products"},
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the wanted product to update",
+     *         @OA\Schema(type="integer", example=12)
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Wanted product update payload",
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateWantedProductRequestSchema")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Wanted product updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 ref="#/components/schemas/WantedProductSchema"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation error or bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation error")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Wanted product not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Not found")
+     *         )
+     *     )
+     * )
+     */
+    public function update(UpdateWantedProductRequest $request, WantedProduct $wantedProduct)
+    {
+        $data = $request->validated();
+
+        $wantedProduct = $this->wantedProductService->updateWantedProduct($wantedProduct, $data);
+
         return $this->success(new WantedProductResource($wantedProduct));
     }
 

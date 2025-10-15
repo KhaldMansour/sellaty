@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\WantedProduct;
+use App\Models\WantedProductImage;
 use App\Repositories\RecentSearchRepository;
 use App\Repositories\WantedProductRepository;
+use Illuminate\Support\Facades\Storage;
 
 class WantedProductService
 {
@@ -22,22 +24,25 @@ class WantedProductService
             ->paginate($limit);
     }
 
-    public function show(int $id)
-    {
-    }
-
     public function create(array $data)
     {
-        try {
-            $user = auth()->user();
-            $data['user_id'] = $user->id;
-            $wantedProduct = $this->wantedProductRepository->create($data);
-            $wantedProduct->categories()->attach($data['category_ids']);
+        $user = auth()->user();
+        $data['user_id'] = $user->id;
+        $wantedProduct = $this->wantedProductRepository->create($data);
+        $wantedProduct->categories()->attach($data['category_ids']);
 
-            return $wantedProduct;
-        } catch (\Exception $e) {
-            throw new \Exception('Error while creating the wanted product: ' . $e->getMessage());
+        if (!empty($data['images'])) {
+            $this->saveWantedProductImages($wantedProduct, $data['images']);
         }
+
+        return $wantedProduct;
+    }
+
+    public function updateWantedProduct(WantedProduct $wantedProduct, array $data)
+    {
+        $data = $this->handleImagesAndStatus($wantedProduct, $data);
+
+        return $this->wantedProductRepository->update($data, $wantedProduct->id);
     }
 
     private function saveSearchValue($data, $user)
@@ -79,5 +84,48 @@ class WantedProductService
             ->paginate($limit);
 
         return $products;
+    }
+
+    private function handleImagesAndStatus(WantedProduct $wantedProduct, array $data): array
+    {
+        $newImagesUploaded = false;
+        $categoryChanged = false;
+
+        if (!empty($data['category_ids'])) {
+            $oldCategoryIds = $wantedProduct->categories()->pluck('categories.id')->toArray();
+            $newCategoryIds = $data['category_ids'];
+
+            $categoryChanged = count(array_diff($newCategoryIds, $oldCategoryIds)) > 0
+                || count(array_diff($oldCategoryIds, $newCategoryIds)) > 0;
+        }
+
+        if (!empty($data['images'])) {
+            $this->saveWantedProductImages($wantedProduct, $data['images']);
+            $newImagesUploaded = true;
+        }
+
+        if ($categoryChanged) {
+            $wantedProduct->categories()->attach($newCategoryIds);
+            // $wantedProduct->images()->update(['scanned' => false]);
+        }
+
+        if ($newImagesUploaded) {
+            $data['status'] = WantedProduct::STATUS_PENDING;
+        }
+
+        return $data;
+    }
+
+    protected function saveWantedProductImages(WantedProduct $wantedProduct, array $images): void
+    {
+        $rows = [];
+        foreach ($images as $image) {
+            $path = $image->store('wanted_products', 'public');
+            $rows[] = [
+                'image_url' => config('app.url') . Storage::url($path),
+                'wanted_product_id' => $wantedProduct->id,
+            ];
+        }
+        WantedProductImage::insert($rows);
     }
 }
