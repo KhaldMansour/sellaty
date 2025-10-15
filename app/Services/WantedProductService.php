@@ -29,7 +29,7 @@ class WantedProductService
         $user = auth()->user();
         $data['user_id'] = $user->id;
         $wantedProduct = $this->wantedProductRepository->create($data);
-        $wantedProduct->categories()->attach($data['category_ids']);
+        $wantedProduct->categories()->sync($data['category_ids']);
 
         if (!empty($data['images'])) {
             $this->saveWantedProductImages($wantedProduct, $data['images']);
