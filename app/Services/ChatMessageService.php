@@ -13,7 +13,7 @@ class ChatMessageService
     {
     }
 
-    public function getPaginatedMessages(Chat $chat, int $perPage = 15)
+    public function getPaginatedMessages(Chat $chat, int $perPage = 100)
     {
         return $chat->messages()
             ->with('sender')
