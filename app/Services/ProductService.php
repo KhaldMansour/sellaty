@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Repositories\RecentSearchRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Cache;
 
 class ProductService
 {
