@@ -20,6 +20,7 @@ class WantedProductService
         $this->saveSearchValue($data, auth()->user());
 
         return $this->wantedProductRepository
+            ->where('status', WantedProduct::STATUS_ACTIVE)
             ->orderBy('created_at', 'desc')
             ->paginate($limit);
     }

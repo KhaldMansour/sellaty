@@ -306,7 +306,7 @@ class WantedProductController extends Controller
         return $this->success(WantedProductResource::make($wantedProduct), 'Wanted Product Deleted Successfuly');
     }
 
-       /**
+    /**
      * @OA\Delete(
      *     path="/api/v1/wanted-products/images/{image}",
      *     summary="Delete a product image",
