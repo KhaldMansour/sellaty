@@ -203,7 +203,7 @@ class CreateWantedProductRequest extends BaseFormRequest
             'address' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'state' => 'required|string|max:255',
-            'city' => 'sometimes|string|max:255',
+            'city' => 'nullable|string|max:255',
             'city_lat' => 'required|numeric',
             'city_long' => 'required|numeric',
             'longitude' => 'numeric',
@@ -232,5 +232,9 @@ class CreateWantedProductRequest extends BaseFormRequest
                 'longitude' => $this->input('city_long'),
             ]);
         }
+
+        $this->merge([
+            'city' => $this->filled('city') ? $this->input('city') : '',
+        ]);
     }
 }
