@@ -24,6 +24,6 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') != 'local') {
             $this->app['request']->server->set('HTTPS', true);
         }
-        Product::observe(ProductObserver::class);
+        // Product::observe(ProductObserver::class);
     }
 }

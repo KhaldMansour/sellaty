@@ -24,17 +24,10 @@ class ProductService
 
         $this->saveSearchValue($data, auth()->user());
 
-        $version = Cache::get('products_cache_version');
-
-        $page = request('page', 1);
-        $cacheKey = "active_products_v{$version}_page_{$page}_limit_{$limit}";
-
-        return Cache::remember($cacheKey, 3600, function () use ($limit) {
-            return $this->productRepository->with('categories')
-                ->where('status', Product::STATUS_ACTIVE)
-                ->orderBy('created_at', 'desc')
-                ->paginate($limit);
-        });
+        return $this->productRepository->with('categories')
+            ->where('status', Product::STATUS_ACTIVE)
+            ->orderBy('created_at', 'desc')
+            ->paginate($limit);
     }
 
     public function createProduct($data)
