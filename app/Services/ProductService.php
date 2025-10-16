@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Repositories\RecentSearchRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class ProductService
 {
@@ -23,10 +24,17 @@ class ProductService
 
         $this->saveSearchValue($data, auth()->user());
 
-        return $this->productRepository->with('categories')
-            ->where('status', Product::STATUS_ACTIVE)
-            ->orderBy('created_at', 'desc')
-            ->paginate($limit);
+        $version = Cache::get('products_cache_version');
+
+        $page = request('page', 1);
+        $cacheKey = "active_products_v{$version}_page_{$page}_limit_{$limit}";
+
+        return Cache::remember($cacheKey, 3600, function () use ($limit) {
+            return $this->productRepository->with('categories')
+                ->where('status', Product::STATUS_ACTIVE)
+                ->orderBy('created_at', 'desc')
+                ->paginate($limit);
+        });
     }
 
     public function createProduct($data)

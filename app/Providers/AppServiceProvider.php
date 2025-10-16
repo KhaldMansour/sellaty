@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Product;
+use App\Observers\ProductObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') != 'local') {
             $this->app['request']->server->set('HTTPS', true);
         }
+        Product::observe(ProductObserver::class);
     }
 }
