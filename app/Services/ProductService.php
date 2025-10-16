@@ -33,7 +33,8 @@ class ProductService
             return $this->productRepository->with('categories')
                 ->where('status', Product::STATUS_ACTIVE)
                 ->orderBy('created_at', 'desc')
-                ->paginate($limit);
+                ->paginate($limit)
+                ->toArray();
         });
     }
 
