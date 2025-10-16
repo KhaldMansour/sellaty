@@ -77,6 +77,7 @@ class Product extends Model
 
     protected $attributes = [
         'status' => self::STATUS_PENDING,
+        'city' => ''
     ];
 
     public function categories()

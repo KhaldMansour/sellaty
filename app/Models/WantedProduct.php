@@ -67,6 +67,7 @@ class WantedProduct extends Model
 
     protected $attributes = [
         'status' => self::STATUS_PENDING,
+        'city' => ''
     ];
 
     protected function handleTranslations()
