@@ -236,5 +236,9 @@ class UpdateProductRequest extends BaseFormRequest
         if (is_null($longitude) && $this->filled('city_long')) {
             $this->merge(['longitude' => $this->input('city_long')]);
         }
+
+        $this->merge([
+            'city' => $this->filled('city') ? $this->input('city') : '',
+        ]);
     }
 }
