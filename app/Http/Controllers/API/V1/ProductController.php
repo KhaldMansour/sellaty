@@ -274,8 +274,6 @@ class ProductController extends Controller
 
         $products = $this->productService->getSellerActiveProducts($user, $limit);
 
-        $products = collect($products['data'])->map(fn ($p) => new Product($p));
-
         return $this->success(ProductResource::collection($products));
     }
 
