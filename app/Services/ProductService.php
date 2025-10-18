@@ -135,6 +135,13 @@ class ProductService
             $query = $query->orderBy('price', $price_order);
         }
 
+        if (isset($data['category']) && !empty($data['category'])) {
+            $categoryId = $data['category'];
+            $query->whereHas('categories', function ($query) use ($categoryId) {
+                $query->where('categories.id', '=', $categoryId);
+            });
+        };
+
         $query = $query->orderBy('created_at', $creation_order);
 
         return $query->paginate($limit);
