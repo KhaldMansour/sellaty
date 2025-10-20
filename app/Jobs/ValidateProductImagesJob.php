@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class ValidateProductImagesJob implements ShouldQueue
 {
@@ -23,59 +24,96 @@ class ValidateProductImagesJob implements ShouldQueue
     protected array $data;
     protected Product $product;
 
-    public function __construct(array $data, Product $product)
+    public function __construct()
     {
-        $this->data = $data;
-        $this->product = $product;
     }
 
-    public function handle(RekognitionService $rekognitionService, FirebaseNotificationService $firebaseNotificationService)
-    {
-        $hasCar = false;
+    public function handle(
+        RekognitionService $rekognitionService,
+        FirebaseNotificationService $firebaseNotificationService
+    ): void {
+        Log::info("🚀 Dispatching ValidateProductImagesJob at " . now());
 
-        foreach ($this->data['image_paths'] as $image) {
-            if (! $rekognitionService->isSafe($image)) {
-                $this->product->update(['status' => Product::STATUS_REJECTED]);
+        $productRejected = false;
 
-                $notification = NotificationPayloadFactory::productRejected(
-                    $this->product,
-                    __('messages.product_rejected_inappropriate')
-                );
-
-
-                $firebaseNotificationService->sendNotification(
-                    $this->product->seller,
-                    $notification
-                );
-
-                return;
-            }
-
-            if ($rekognitionService->containsCar($image)) {
-                $hasCar = true;
-            }
-        }
+        $products = Product::where('status', Product::STATUS_PENDING)
+            ->with(['images', 'categories', 'seller'])
+            ->get();
 
         $carCategoryId = Category::where('name_en', 'Vehicles')->first()->id;
 
-        if ($hasCar && ! in_array($carCategoryId, $this->data['category_ids'])) {
-            $this->product->update(['status' => Product::STATUS_REJECTED]);
+        foreach ($products as $product) {
+            $unverifiedImages = $product->images()
+                ->where(function ($query) {
+                    $query->where('is_nsfw', true)
+                        ->orWhere('scanned', false);
+                })
+                ->get();
 
-            $notification = NotificationPayloadFactory::productRejected(
-                $this->product,
-                __('messages.product_rejected_wrong_category')
-            );
+            if ($unverifiedImages->contains('is_nsfw', true)) {
+                Log::info("⏩ Product #{$product->id} skipped (already has NSFW image)");
+                $product->update(['status' => Product::STATUS_REJECTED]);
+                continue;
+            };
 
-            $firebaseNotificationService->sendNotification(
-                $this->product->seller,
-                $notification
-            );
+            foreach ($unverifiedImages as $image) {
+                Log::info("Checking image {$image->image_url} for product #{$product->id}");
 
-            return;
+                $results = $rekognitionService->analyzeImage($image->image_url);
+
+                if (! $results['is_safe']) {
+                    $product->update(['status' => Product::STATUS_REJECTED]);
+
+                    $notification = NotificationPayloadFactory::productRejected(
+                        $product,
+                        [
+                            'en' => __('messages.product_rejected_inappropriate', [], 'en'),
+                            'ar' => __('messages.product_rejected_inappropriate', [], 'ar'),
+                        ]
+                    );
+
+                    $firebaseNotificationService->sendNotification($product->seller, $notification);
+
+                    Log::warning("❌ Product #{$product->id} rejected (unsafe image)");
+
+                    $productRejected = true;
+                    $image->update(['scanned' => true, 'is_nsfw' => true]);
+                    break;
+                }
+                if ($results['contains_car'] && ! $product->categories->pluck('id')->contains($carCategoryId)) {
+                    $product->update(['status' => Product::STATUS_REJECTED]);
+
+                    $notification = NotificationPayloadFactory::productRejected(
+                        $product,
+                        [
+                            'en' => __('messages.product_rejected_wrong_category', [], 'en'),
+                            'ar' => __('messages.product_rejected_wrong_category', [], 'ar'),
+                        ]
+                    );
+
+                    $firebaseNotificationService->sendNotification(
+                        $product->seller,
+                        $notification
+                    );
+
+                    Log::warning("🚫 Product #{$product->id} rejected (car in wrong category)");
+
+                    $productRejected = true;
+                    $image->update(['scanned' => true]);
+
+                    break;
+                }
+                $image->update(['scanned' => true]);
+            }
+
+            if ($productRejected) {
+                continue;
+            }
+
+            $product->update(['status' => Product::STATUS_ACTIVE]);
+            Log::info("✅ Product #{$product->id} approved and activated");
         }
 
-        $this->product->update(['status' => Product::STATUS_ACTIVE]);
-
-        return;
+        Log::info("✅ ValidateProductImages finished at " . now());
     }
 }

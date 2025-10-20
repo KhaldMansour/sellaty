@@ -25,7 +25,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ])
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('products:deactivate-expired')->daily();
-        $schedule->command('products:validate-images')->everyFifteenMinutes();
+        $schedule->command('products:validate-images')
+            ->everyMinute()
+            ->withoutOverlapping();
         $schedule->command('wanted-products:validate-images')->everyFifteenMinutes();
     })
     ->withMiddleware(function (Middleware $middleware) {
