@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OtpService
 {
-    public const OTP_EXPIRY_TIME = 2;
+    public const OTP_EXPIRY_TIME = 35;
     public const RESEND_TIME_LIMIT = 0;
 
     protected $otpSender;
@@ -24,7 +24,7 @@ class OtpService
     {
         $otp = rand(100000, 999999);
 
-        $expiresAt = Carbon::now()->addMinutes(self::OTP_EXPIRY_TIME);
+        $expiresAt = Carbon::now()->addSeconds(self::OTP_EXPIRY_TIME);
 
         Cache::put("otp:$phoneNumber", $otp, $expiresAt);
 
