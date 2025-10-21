@@ -45,7 +45,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *         property="counterpart",
  *         type="object",
  *         @OA\Property(property="id", type="integer", example=23),
- *         @OA\Property(property="name", type="string", example="John Seller")
+ *         @OA\Property(property="name", type="string", example="John Seller"),
+ *         @OA\Property(property="username", type="string", example="JohnSeller"),
+ *         @OA\Property(property="profile_photo", type="string", example="https://example.com/profile_photo.jpg")
  *     )
  * )
  */
@@ -71,6 +73,7 @@ class ChatResource extends JsonResource
                 'id' => $counterpart->id,
                 'name' => $counterpart->full_name,
                 'username' => $counterpart->username,
+                'profile_photo' => $counterpart->profile_photo
             ],
             'latest_message' => new ChatMessageResource($this->latestMessage),
             'created_at' => $this->created_at,

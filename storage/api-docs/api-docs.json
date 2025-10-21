@@ -6241,6 +6241,14 @@
                             "name": {
                                 "type": "string",
                                 "example": "John Seller"
+                            },
+                            "username": {
+                                "type": "string",
+                                "example": "JohnSeller"
+                            },
+                            "profile_photo": {
+                                "type": "string",
+                                "example": "https://example.com/profile_photo.jpg"
                             }
                         },
                         "type": "object"
