@@ -99,8 +99,8 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $locale = app()->getLocale();
-        $fallbackLocale = $locale === 'en' ? 'ar' : 'en';
+        $locale = 'ar';
+        $fallbackLocale = 'en';
 
         $name = $this->getTranslation('name', $locale);
         if (empty($name)) {

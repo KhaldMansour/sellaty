@@ -151,8 +151,8 @@ class WantedProductResource extends JsonResource
      */
     public function toArray($request)
     {
-        $locale = app()->getLocale();
-        $fallbackLocale = $locale === 'en' ? 'ar' : 'en';
+        $locale = 'ar';
+        $fallbackLocale = 'en';
 
         $name = $this->getTranslation('name', $locale);
         if (empty($name)) {
