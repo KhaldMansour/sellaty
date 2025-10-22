@@ -28,7 +28,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('products:validate-images')
             ->everyFifteenMinutes()
             ->withoutOverlapping();
-        $schedule->command('wanted-products:validate-images')->everyFifteenMinutes();
+        $schedule->command('wanted-products:validate-images')
+            ->everyFifteenMinutes()
+            ->withoutOverlapping();
     })
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
