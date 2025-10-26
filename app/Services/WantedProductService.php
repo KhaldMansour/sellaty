@@ -107,10 +107,10 @@ class WantedProductService
 
         if ($categoryChanged) {
             $wantedProduct->categories()->sync($newCategoryIds);
-            // $wantedProduct->images()->update(['scanned' => false]);
+            $wantedProduct->images()->update(['scanned' => false]);
         }
 
-        if ($newImagesUploaded) {
+        if ($newImagesUploaded || $categoryChanged) {
             $data['status'] = WantedProduct::STATUS_PENDING;
         }
 
