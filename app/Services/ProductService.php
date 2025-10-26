@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\GenerateProductImageThumbnails;
 use App\Jobs\ProcessProductImages;
 use App\Models\Product;
 use App\Models\ProductCustomFieldValue;
@@ -171,24 +172,26 @@ class ProductService
         return $products;
     }
 
-    protected function processProductImages(Product $product, array $images): void
-    {
-        foreach ($images as $image) {
-            $tempPath = $image->store('products', 'public');
-            ProcessProductImages::dispatch($tempPath, $product);
-        }
-    }
+    // protected function processProductImages(Product $product, array $images): void
+    // {
+    //     foreach ($images as $image) {
+    //         $tempPath = $image->store('products', 'public');
+    //         ProcessProductImages::dispatch($tempPath, $product);
+    //     }
+    // }
 
     protected function saveProductImages(Product $product, array $images): void
     {
         foreach ($images as $image) {
             $path = $image->store('products', 'public');
 
-            ProductImage::create([
+            $productImage = ProductImage::create([
                 'image_url' => config('app.url') . Storage::url($path),
                 'product_id' => $product->id,
             ]);
         }
+
+        GenerateProductImageThumbnails::dispatch($productImage)->onConnection('database');
     }
 
     protected function attachCustomFields(Product $product, array $customFields): void
