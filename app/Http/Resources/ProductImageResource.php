@@ -13,6 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="product_id", type="integer", example=1),
  *     @OA\Property(property="url", type="string", example="http://localhost/storage/products/sample-image.jpg"),
+ *     @OA\Property(property="thumbnail", type="string", example="http://localhost/storage/products/sample-image.jpg"),
  *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-03-23T12:34:56Z"),
  *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-03-23T12:34:56Z")
  * )

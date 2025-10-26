@@ -6463,6 +6463,10 @@
                         "type": "string",
                         "example": "http://localhost/storage/products/sample-image.jpg"
                     },
+                    "thumbnail": {
+                        "type": "string",
+                        "example": "http://localhost/storage/products/sample-image.jpg"
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
