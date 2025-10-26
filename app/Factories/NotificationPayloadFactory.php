@@ -67,19 +67,19 @@ class NotificationPayloadFactory
 
     public static function productRejected($product, array $reason): array
     {
+        $productName = $product->name;
+
         return [
             'title' => [
                 'en' => 'Product Rejected',
                 'ar' => 'تم رفض المنتج',
             ],
             'body' => [
-            'en' => (($product->getTranslation('name', 'en')
-                    ?: $product->getTranslation('name', 'ar'))
+            'en' => (($productName)
                 . " was rejected. Reason: {$reason['en']}."),
 
             'ar' => "تم رفض المنتج '" .
-                ($product->getTranslation('name', 'ar')
-                    ?: $product->getTranslation('name', 'en'))
+                ($productName)
                 . "'. السبب: {$reason['ar']}.",
             ],
             'data' => [

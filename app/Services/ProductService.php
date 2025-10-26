@@ -128,7 +128,15 @@ class ProductService
             ->where('status', Product::STATUS_ACTIVE);
 
         if (isset($data['name']) && !empty($data['name'])) {
-            $query = $query->whereRaw("MATCH(name_en, name_ar) AGAINST (? IN BOOLEAN MODE)", [$data['name'] . '*']);
+            $name = $data['name'];
+            if (strlen($name) < 4) {
+                $query = $query->where('name', 'LIKE', "$name%");
+            } else {
+                $query = $query->whereRaw(
+                    "MATCH(name) AGAINST (? IN BOOLEAN MODE)",
+                    [$name . '*']
+                );
+            }
         }
 
         if (!is_null($price_order)) {

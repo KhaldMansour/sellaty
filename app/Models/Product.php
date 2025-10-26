@@ -6,11 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
-use Spatie\Translatable\HasTranslations;
 
 class Product extends Model
 {
-    use HasTranslations;
     use SoftDeletes;
 
     public const STATUS_ACTIVE = 'active';
@@ -56,8 +54,6 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'name' => 'array',
-        'description' => 'array',
         'condition' => 'array',
         'delivery_options' => 'array',
         'negotiable' => 'boolean',
@@ -68,8 +64,6 @@ class Product extends Model
         'latitude' => 'float',
         'longitude' => 'float',
     ];
-
-    public $translatable = ['name' , 'description'];
 
     protected $hidden = ['pivot'];
 
@@ -114,20 +108,15 @@ class Product extends Model
     {
         static::creating(function ($model) {
             $model->setListedUntil();
-
-            $model->handleTranslations();
         });
 
         static::saved(function ($model) {
-            $model->handleTranslations();
         });
 
         static::updating(function ($model) {
             if ($model->isDirty('duration')) {
                 $model->setListedUntil();
             }
-
-            $model->handleTranslations();
         });
 
         static::deleting(function ($model) {

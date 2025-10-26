@@ -87,12 +87,9 @@ class WantedProductResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(true, function ($query, $search) {
-                        $locale = app()->getLocale();
+                        $query->where('name', 'LIKE', "$search%");
 
-                        return $query->whereRaw(
-                            'LOWER(name->"$.'.$locale.'") LIKE ?',
-                            ['%' . strtolower($search) . '%']
-                        );
+                        return $query;
                     }),
                 Tables\Columns\TextColumn::make('min_price')
                     ->sortable(),

@@ -5,11 +5,9 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Translatable\HasTranslations;
 
 class WantedProduct extends Model
 {
-    use HasTranslations;
     use SoftDeletes;
 
     public const STATUS_ACTIVE = 'active';
@@ -51,11 +49,7 @@ class WantedProduct extends Model
         'deleted_at'
     ];
 
-    public $translatable = ['name' , 'description'];
-
     protected $casts = [
-        'name' => 'array',
-        'description' => 'array',
         'condition' => 'array',
         'delivery_options' => 'array',
         'listed_until' => 'datetime',
@@ -83,21 +77,16 @@ class WantedProduct extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
-            $model->handleTranslations();
-
             $model->setListedUntil();
         });
 
         static::saved(function ($model) {
-            $model->handleTranslations();
         });
 
         static::updating(function ($model) {
             if ($model->isDirty('duration')) {
                 $model->setListedUntil();
             }
-
-            $model->handleTranslations();
         });
 
         static::deleting(function ($model) {

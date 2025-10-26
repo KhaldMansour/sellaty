@@ -33,13 +33,10 @@ class SearchByNameCriteria implements CriteriaInterface
 
         if (!empty($name)) {
             if (strlen($name) < 4) {
-                $model = $model->where(function ($query) use ($name) {
-                    $query->where('name_en', 'LIKE', "$name%")
-                          ->orWhere('name_ar', 'LIKE', "$name%");
-                });
+                $model = $model->where('name', 'LIKE', "$name%");
             } else {
                 $model = $model->whereRaw(
-                    "MATCH(name_en, name_ar) AGAINST (? IN BOOLEAN MODE)",
+                    "MATCH(name) AGAINST (? IN BOOLEAN MODE)",
                     [$name . '*']
                 );
             }
