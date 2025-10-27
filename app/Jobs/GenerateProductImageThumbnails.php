@@ -32,7 +32,7 @@ class GenerateProductImageThumbnails implements ShouldQueue
     public function handle(): void
     {
         $url = $this->productImage->image_url;
-        $path = str_replace(config('app.url') . '/storage/', '', $url); // convert URL to storage path
+        $path = str_replace(config('app.url') . '/storage/', '', $url);
 
         if (!Storage::disk('public')->exists($path)) {
             Log::warning("File not found for thumbnail generation: {$path}");

@@ -189,9 +189,9 @@ class ProductService
                 'image_url' => config('app.url') . Storage::url($path),
                 'product_id' => $product->id,
             ]);
-        }
 
-        GenerateProductImageThumbnails::dispatch($productImage)->onConnection('database');
+            GenerateProductImageThumbnails::dispatch($productImage)->onConnection('database');
+        }
     }
 
     protected function attachCustomFields(Product $product, array $customFields): void

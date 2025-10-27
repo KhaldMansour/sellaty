@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @OA\Schema(
@@ -32,7 +33,7 @@ class ProductImageResource extends JsonResource
             'id' => $this->id,
             'product_id' => $this->product_id,
             'url' => $this->image_url,
-            'thumbnail' => $this->thumbnail_path,
+            'thumbnail' => (config('app.url') . Storage::url($this->thumbnail_path)),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
