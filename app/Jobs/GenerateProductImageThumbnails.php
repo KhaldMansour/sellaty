@@ -48,12 +48,8 @@ class GenerateProductImageThumbnails implements ShouldQueue
         $image = $manager->read($origFullPath);
 
 
-        $image->orient()->resize(300, 300, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
-
-        $encodedImage = $image->encode(new JpegEncoder(quality: 70));
+        $encodedImage = $image->orient()->cover(300, 300)
+        ->encode(new JpegEncoder(quality: 80));
 
         $mainPath = "products/{$filename}";
 
