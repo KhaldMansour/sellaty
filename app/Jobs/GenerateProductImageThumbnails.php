@@ -48,10 +48,14 @@ class GenerateProductImageThumbnails implements ShouldQueue
         $image = $manager->read($origFullPath);
 
 
-        $encodedImage = $image->orient()->scaleDown(300, 300)
-        ->encode(new JpegEncoder(quality: 80));
+        $image->orient()->resize(300, 300, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
 
-        $mainPath = "products/thumbnails/{$filename}";
+        $encodedImage = $image->encode(new JpegEncoder(quality: 70));
+
+        $mainPath = "products/{$filename}";
 
         Storage::disk('public')->put($mainPath, (string) $encodedImage);
 
@@ -62,6 +66,5 @@ class GenerateProductImageThumbnails implements ShouldQueue
 
     public function failed(\Throwable $exception): void
     {
-        Log::warning("Error happened in generating wanted product thumbnail: {$exception->getMessage()}");
     }
 }

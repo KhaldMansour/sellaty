@@ -11,7 +11,6 @@ class WantedProductImage extends Model
     protected $fillable = [
         'wanted_product_id',
         'image_url',
-        'thumbnail_path',
     ];
 
     public function wantedProduct()

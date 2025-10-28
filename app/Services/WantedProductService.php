@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Jobs\GenerateWantedProductImageThumbnails;
 use App\Models\User;
 use App\Models\WantedProduct;
 use App\Models\WantedProductImage;
@@ -120,15 +119,14 @@ class WantedProductService
 
     protected function saveWantedProductImages(WantedProduct $wantedProduct, array $images): void
     {
+        $rows = [];
         foreach ($images as $image) {
             $path = $image->store('wanted_products', 'public');
-
-            $wantedProductImage = WantedProductImage::create([
+            $rows[] = [
                 'image_url' => config('app.url') . Storage::url($path),
                 'wanted_product_id' => $wantedProduct->id,
-            ]);
-
-            GenerateWantedProductImageThumbnails::dispatch($wantedProductImage)->onConnection('database');
+            ];
         }
+        WantedProductImage::insert($rows);
     }
 }
