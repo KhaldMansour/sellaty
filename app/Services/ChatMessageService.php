@@ -13,7 +13,7 @@ class ChatMessageService
     {
     }
 
-    public function getPaginatedMessages(Chat $chat, int $perPage = 100)
+    public function getPaginatedMessages(Chat $chat, int $perPage = 5)
     {
         return $chat->messages()
             ->with('sender')
@@ -28,7 +28,7 @@ class ChatMessageService
             ->whereNull('seen_at')
             ->update(['seen_at' => now()]);
 
-        broadcast(new MessagesSeen($chat->id, $user->id))->toOthers();
+        // broadcast(new MessagesSeen($chat->id, $user->id))->toOthers();
 
         return;
     }
